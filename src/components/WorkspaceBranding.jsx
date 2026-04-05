@@ -35,7 +35,7 @@ const items = [
 export default function WorkspaceBranding() {
   const [index, setIndex] = useState(0);
 
-  const visibleItems = window.innerWidth < 768 ? 1 : 3; // number of cards visible at once
+  const visibleItems = window.innerWidth < 768 ? 1 : 4; // number of cards visible at once
 
   const next = () => {
     if (index + visibleItems < items.length) {
@@ -71,7 +71,7 @@ export default function WorkspaceBranding() {
           {items.slice(index, index + visibleItems).map((item, i) => (
             <div
               key={i}
-              className="min-w-full md:min-w-[30%] bg-gray-50 border p-3 shadow-sm"
+              className="w-full md:w-[calc(25%-0.75rem)] flex-shrink-0 bg-gray-50 border p-3 shadow-sm"
             >
               <img
                 src={item.image}
