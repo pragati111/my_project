@@ -46,7 +46,7 @@ const CategoryBanner = () => {
             </div>
 
             {/* Content Card */}
-            <div className="bg-gray-50 rounded-xl p-3 md:p-4 border border-gray-100 shadow-sm">
+            <div className="bg-gray-100 rounded-xl p-3 md:p-4 border border-gray-200 shadow-sm">
               <div className="grid grid-cols-2 md:flex md:flex-col gap-x-2 gap-y-4 md:gap-4">
                 
                 {/* Mobile Banner */}
