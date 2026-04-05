@@ -1,6 +1,7 @@
 import WorkspaceBranding from "./WorkspaceBranding";
 import TradeShows from "./TradeShows";
 import MarketingSection from "./MarketingSection";
+import CategoryBanner from "./CategoryBanner";
 export default function HomeContent() {
   return (
     <div className="space-y-6">
@@ -42,7 +43,11 @@ export default function HomeContent() {
       {/* 🔶 Trade Shows */}
       <TradeShows />
 
+      {/* 🔶 Marketing Section */}
       <MarketingSection/>
+
+      {/* 🔶 Category Banner */}
+      <CategoryBanner />
 
     </div>
   );
