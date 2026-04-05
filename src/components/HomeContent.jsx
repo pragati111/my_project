@@ -2,6 +2,7 @@ import WorkspaceBranding from "./WorkspaceBranding";
 import TradeShows from "./TradeShows";
 import MarketingSection from "./MarketingSection";
 import CategoryBanner from "./CategoryBanner";
+import EcoBackdropBanner from "./EcoBackdropBanner";
 export default function HomeContent() {
   return (
     <div className="space-y-6">
@@ -49,6 +50,8 @@ export default function HomeContent() {
       {/* 🔶 Category Banner */}
       <CategoryBanner />
 
+      {/* Backdrop  */}
+      <EcoBackdropBanner />
     </div>
   );
 }
