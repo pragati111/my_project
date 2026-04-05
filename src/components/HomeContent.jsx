@@ -3,6 +3,7 @@ import TradeShows from "./TradeShows";
 import MarketingSection from "./MarketingSection";
 import CategoryBanner from "./CategoryBanner";
 import EcoBackdropBanner from "./EcoBackdropBanner";
+import OrderProcess from "./OrderProcess";
 export default function HomeContent() {
   return (
     <div className="space-y-6">
@@ -50,8 +51,11 @@ export default function HomeContent() {
       {/* 🔶 Category Banner */}
       <CategoryBanner />
 
-      {/* Backdrop  */}
+      {/* 🔶 Backdrop  */}
       <EcoBackdropBanner />
+
+      {/* 🔶 Order Process */}
+      <OrderProcess />
     </div>
   );
 }

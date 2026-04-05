@@ -11,9 +11,6 @@ export default function TopHeader() {
           alt="logo"
           className="h-8 md:h-10"
         />
-        <span className="font-bold text-sm md:text-lg">
-          DELUXE
-        </span>
       </div>
 
       {/* Search */}
