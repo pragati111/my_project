@@ -18,7 +18,7 @@ const testimonialData = [
 
 const Testimonials = () => {
   return (
-    <section className="relative overflow-hidden py-12 lg:py-20 bg-[#fdfdfd]">
+    <section className="relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] py-12 lg:py-20 overflow-hidden bg-[#fdfdfd]">
       
       {/* THE TEXTURE & FADE YOU LIKED */}
       <div className="absolute inset-0 z-0 opacity-[0.15]" 
