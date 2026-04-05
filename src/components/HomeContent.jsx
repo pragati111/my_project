@@ -1,3 +1,4 @@
+import WorkspaceBranding from "./WorkspaceBranding";
 export default function HomeContent() {
   return (
     <div className="space-y-6">
@@ -32,6 +33,9 @@ export default function HomeContent() {
 
         </div>
       </div>
+
+      {/* 🔶 Workspace Branding */}
+      <WorkspaceBranding />
 
     </div>
   );
