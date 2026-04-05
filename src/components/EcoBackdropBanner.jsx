@@ -2,10 +2,10 @@ import React from 'react';
 
 const EcoBackdropBanner = () => {
   return (
-    /* Main wrapper - W-full for maximum width */
-    <section className="relative w-full max-w-[1270px] mx-auto min-h-[260px] bg-gradient-to-r from-[#a1afce] to-[#bcc9e4] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-4 overflow-hidden shadow-md">
+    /* Added 'w-[92%] mx-auto' so it doesn't touch the phone edges, and 'rounded-xl' for a premium mobile feel */
+    <section className="relative w-[92%] md:w-full max-w-[1270px] mx-auto min-h-[260px] bg-gradient-to-r from-[#a1afce] to-[#bcc9e4] flex flex-col md:flex-row items-center justify-between px-10 md:px-20 py-8 md:py-4 overflow-hidden shadow-md  md:rounded-none">
       
-      {/* Text Container - Wider spacing on desktop */}
+      {/* Text Container */}
       <div className="flex-1 z-10 text-center md:text-left py-4">
         <h1 className="text-white font-black text-4xl md:text-5xl lg:text-6xl leading-[0.85] tracking-tight uppercase mb-5 drop-shadow-sm">
           Eco<br />Friendly<br />Backdrops
@@ -19,8 +19,8 @@ const EcoBackdropBanner = () => {
         </button>
       </div>
 
-      {/* Image Gallery - Spread out horizontally */}
-      <div className="flex-[1.5] flex items-end justify-center md:justify-end relative w-full h-full pt-8 md:pt-0">
+      {/* Image Gallery */}
+      <div className="flex-[1.5] flex items-end justify-center md:justify-end relative w-full h-full pt-12 md:pt-0">
         
         {/* Left Backdrop */}
         <div className="relative z-10 w-[28%] md:w-[22%] transition-transform hover:-translate-y-1 duration-300">
@@ -31,7 +31,7 @@ const EcoBackdropBanner = () => {
           />
         </div>
 
-        {/* Center Backdrop (Curved) */}
+        {/* Center Backdrop */}
         <div className="relative z-20 w-[32%] md:w-[26%] -ml-[8%] md:-ml-[5%] mb-1 transition-transform hover:-translate-y-1 duration-300">
           <img 
             src="images/2.jpg" 
