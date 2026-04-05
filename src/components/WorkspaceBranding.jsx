@@ -50,17 +50,24 @@ export default function WorkspaceBranding() {
   };
 
   return (
-    <div className="px-4 md:px-8 py-8">
-      
-      {/* 🔶 Title */}
-      <h2 className="text-xl md:text-2xl font-bold mb-6">
-        Workspace Branding
-      </h2>
+    <div className="py-8">
+  
+    <div className="px-4 md:px-16">
+        <div className="mb-4">
+          <h2 className="text-xl md:text-2xl font-semibold">
+            Workspace Branding
+          </h2>
+          <div className="w-10 h-[3px] bg-orange-500 mt-1"></div>
+        </div>
+    </div>
 
-      <div className="relative">
-        
-        {/* 🔹 Cards */}
-        <div  className="flex gap-4 overflow-hidden px-4 md:px-12">
+    <div className="relative">
+  
+  {/* wrapper WITHOUT overflow hidden */}
+  <div className="px-4 md:px-16">
+    
+    {/* inner wrapper WITH overflow hidden */}
+    <div className="flex gap-4 overflow-hidden">
           {items.slice(index, index + visibleItems).map((item, i) => (
             <div
               key={i}
@@ -69,7 +76,7 @@ export default function WorkspaceBranding() {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-[180px] object-contain rounded-md bg-gray-50"
+                className="w-full h-[180px] object-contain bg-gray-50"
               />
               <p className="text-sm mt-2 text-center font-medium">
                 {item.name}
@@ -82,7 +89,7 @@ export default function WorkspaceBranding() {
         {index > 0 && (
           <button
             onClick={prev}
-            className="absolute left-1 md:-left-4 top-1/2 -translate-y-1/2 bg-white border rounded-full p-2 shadow"
+            className="absolute left-1 md:-left-4 top-1/2 -translate-y-1/2 bg-white border p-2 shadow"
           >
             <ChevronLeft size={18} />
           </button>
@@ -92,13 +99,14 @@ export default function WorkspaceBranding() {
         {index + visibleItems < items.length && (
           <button
             onClick={next}
-            className="absolute right-1 md:-right-4 top-1/2 -translate-y-1/2 bg-white border rounded-full p-2 shadow"
+            className="absolute right-1 md:-right-4 top-1/2 -translate-y-1/2 bg-white border p-2 shadow"
           >
             <ChevronRight size={18} />
           </button>
         )}
 
       </div>
+    </div>
     </div>
   );
 }

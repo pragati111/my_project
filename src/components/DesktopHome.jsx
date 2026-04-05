@@ -1,4 +1,4 @@
-import { Search, Phone, Mail } from "lucide-react";
+import { Search, Phone, Mail, Home, ChevronDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { categories } from "../data/categories";
 import HomeContent from "./HomeContent";
@@ -34,10 +34,13 @@ export default function DesktopHome() {
       {/* 🔶 Navbar */}
       <div
         ref={menuRef}
-        className="fixed top-[72px] left-0 w-full z-40 bg-gray-50 border-b flex justify-center gap-8 px-8 py-3 text-sm"
+        className="fixed top-[72px] left-0 w-full z-40 bg-gray-50 border-b flex justify-center gap-12 px-16 py-3 text-sm"
       >
         {/* Home */}
-        <span className="cursor-pointer hover:text-orange-500">Home</span>
+        <span className="cursor-pointer hover:text-orange-500 flex items-center gap-2">
+          <Home size={16} />
+          Home
+        </span>
 
         {/* Categories */}
         {categories.map((cat, i) => (
@@ -47,17 +50,20 @@ export default function DesktopHome() {
               setActive(active === i ? null : i);
               setHoveredItem(null);
             }}
-            className={`cursor-pointer hover:text-orange-500 ${
+            className={`cursor-pointer hover:text-orange-500 flex items-center gap-1 ${
               active === i ? "text-orange-500 font-semibold" : ""
             }`}
           >
             {cat.name}
+            {cat.children && cat.children.length > 0 && (
+              <ChevronDown size={14} />
+            )}
           </span>
         ))}
 
         {/* 🔥 SINGLE MEGA MENU (CENTERED) */}
         {active !== null && categories[active]?.children?.length > 0 && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 bg-white shadow-xl p-6 grid grid-cols-5 gap-8 w-[1100px] z-50 rounded-lg">
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 bg-white shadow-xl p-6 grid grid-cols-5 gap-8 w-[1100px] z-50">
             {/* LEFT SIDE */}
             <div className="col-span-3 grid grid-cols-3 gap-6">
               {categories[active].children.map((sub, idx) => (
@@ -88,8 +94,8 @@ export default function DesktopHome() {
             {/* RIGHT SIDE */}
             <div className="col-span-2">
               {/* Preview */}
-              <div className="bg-white border rounded-lg p-4 mb-4 flex flex-col items-center">
-                <div className="w-[180px] h-[120px] flex items-center justify-center bg-white rounded-md overflow-hidden">
+              <div className="bg-white border p-4 mb-4 flex flex-col items-center">
+                <div className="w-[180px] h-[120px] flex items-center justify-center bg-white overflow-hidden">
                   <img
                     src={
                       hoveredItem?.image ||
@@ -117,7 +123,7 @@ export default function DesktopHome() {
                   .map((item, idx) => (
                     <div
                       key={idx}
-                      className="bg-white border rounded-lg p-2 text-center"
+                      className="bg-white border p-2 text-center"
                     >
                       <div className="w-full h-[70px] flex items-center justify-center overflow-hidden">
                         <img
@@ -138,7 +144,7 @@ export default function DesktopHome() {
 
       {/* 🔶 Hero Section */}
       {/* 🔥 CONTENT WRAPPER */}
-<div className="pt-[150px] pb-[100px]">
+<div className="pt-[150px] pb-[100px] px-16">
         <HomeContent />
       </div>
 
