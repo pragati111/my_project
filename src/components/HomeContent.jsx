@@ -10,7 +10,7 @@ export default function HomeContent() {
     <div className="space-y-6">
 
       {/* 🔶 Hero Section */}
-      <div className="px-4 md:px-16">
+      <div className="px-4 md:px-8 lg:px-12">
         <div className="relative bg-gray-100 overflow-hidden">
           <img
             src="https://via.placeholder.com/1200x400"
@@ -27,7 +27,7 @@ export default function HomeContent() {
       </div>
 
       {/* 🔶 Features */}
-      <div className="px-4 md:px-16 pb-6">
+      <div className="px-4 md:px-8 lg:px-12 pb-6">
         <div className="bg-gray-100 p-4 md:p-6 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           
           <Feature title="1217+ Reviews" subtitle="4.7 ★★★★★" />

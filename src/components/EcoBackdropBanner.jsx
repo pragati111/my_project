@@ -2,8 +2,9 @@ import React from 'react';
 
 const EcoBackdropBanner = () => {
   return (
-    /* Added 'w-[92%] mx-auto' so it doesn't touch the phone edges, and 'rounded-xl' for a premium mobile feel */
-    <section className="relative w-[92%] md:w-full max-w-[1270px] mx-auto min-h-[260px] bg-gradient-to-r from-[#a1afce] to-[#bcc9e4] flex flex-col md:flex-row items-center justify-between px-10 md:px-20 py-8 md:py-4 overflow-hidden shadow-md  md:rounded-none">
+    /* Added padding wrapper to match other sections */
+    <section className="px-4 md:px-8 lg:px-12">
+      <div className="relative w-full max-w-[1190px] mx-auto min-h-[260px] bg-gradient-to-r from-[#a1afce] to-[#bcc9e4] flex flex-col md:flex-row items-center justify-between px-10 md:px-20 py-8 md:py-4 overflow-hidden shadow-md  md:rounded-none">
       
       {/* Text Container */}
       <div className="flex-1 z-10 text-center md:text-left py-4">
@@ -49,7 +50,7 @@ const EcoBackdropBanner = () => {
           />
         </div>
       </div>
-      
+      </div>
     </section>
   );
 };

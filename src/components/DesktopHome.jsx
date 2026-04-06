@@ -82,7 +82,7 @@ export default function DesktopHome() {
         </div>
 
         {/* 🔥 MAIN CONTENT (FULL WIDTH NOW) */}
-        <div className="w-full lg:ml-[240px] pt-[120px] px-6">
+        <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[120px]">
           <HomeContent/>
         </div>
       </div>

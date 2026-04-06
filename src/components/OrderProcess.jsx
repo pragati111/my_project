@@ -12,7 +12,7 @@ const OrderProcess = () => {
   ];
 
   return (
-    <section className="relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] py-12 lg:py-20 overflow-hidden bg-[#fdfdfd]">
+    <section  className="py-12 lg:py-20 bg-[#fdfdfd] max-w-[900px] mx-auto px-4 md:px-8 lg:px-12">
       {/* Very compact header */}
       <h2 className="text-lg lg:text-2xl font-bold text-[#333333] text-center mb-4 lg:mb-6 uppercase tracking-wide">
         Order Process

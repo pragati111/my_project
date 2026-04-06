@@ -35,7 +35,7 @@ export default function TradeShows() {
   ];
 
   return (
-    <div className="px-4 md:px-16 pb-10">
+    <div className="px-4 md:px-8 lg:px-12 pb-10">
       {/* Heading */}
       <div className="mb-4">
         <h2 className="text-xl md:text-2xl font-semibold">
