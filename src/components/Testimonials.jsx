@@ -18,7 +18,7 @@ const testimonialData = [
 
 const Testimonials = () => {
   return (
-    <section className="relative z-20 w-full max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12">
+    <section className="relative z-20 w-full max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 pt-8">
       
       {/* THE TEXTURE & FADE YOU LIKED */}
       <div className="absolute inset-0 z-0 opacity-[0.15]" 
@@ -30,9 +30,9 @@ const Testimonials = () => {
       <div className="absolute inset-0 z-10 bg-[radial-gradient(circle,_transparent_30%,_rgba(220,220,220,0.5)_100%)]"></div>
 
       <div className="relative z-20 w-full max-w-[1400px] mx-auto px-4 lg:px-10">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1a1a1a] mb-3">Testimonials</h2>
-          <p className="text-gray-600 text-sm lg:text-base max-w-xl mx-auto">
+        <div className="text-center mt-6 mb-6">
+          <h2 className="text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-2">Testimonials</h2>
+          <p className="text-gray-600 text-xs lg:text-sm max-w-xl mx-auto">
             We have worked with many happy and satisfied clients. Here is what they have to say about us.
           </p>
         </div>
@@ -46,24 +46,24 @@ const Testimonials = () => {
             640: { slidesPerView: 2 },
             1024: { slidesPerView: 4 },
           }}
-          className="pb-16"
+          className="pb-10"
         >
           {testimonialData.map((item) => (
             <SwiperSlide key={item.id} className="h-auto">
-              {/* Added fixed h-[350px] to keep all cards same height */}
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 flex flex-col justify-between h-[350px]">
+              {/* Small square tiles for testimonials */}
+              <div className="bg-white rounded-lg p-4 shadow-md border border-gray-100 flex flex-col justify-between h-[220px]">
                 
                 {/* Scrollable container for the text */}
                 <div className="overflow-y-auto pr-2 custom-review-scroll">
-                  <p className="text-gray-500 text-[13px] lg:text-sm leading-relaxed italic">
+                  <p className="text-gray-600 text-[11px] lg:text-xs leading-relaxed italic">
                     "{item.text}"
                   </p>
                 </div>
 
-                <div className="mt-4 flex justify-between items-end pt-4 border-t border-gray-50">
-                  <Quote className="text-[#e65100] w-10 h-10 rotate-180 opacity-80 shrink-0" fill="currentColor" />
+                <div className="mt-2 flex justify-between items-end pt-2 border-t border-gray-50">
+                  <Quote className="text-[#e65100] w-7 h-7 rotate-180 opacity-80 shrink-0" fill="currentColor" />
                   <div className="text-right">
-                    <h4 className="font-bold text-[#1a1a1a] text-sm lg:text-base uppercase leading-tight">{item.name}</h4>
+                    <h4 className="font-bold text-[#1a1a1a] text-xs lg:text-sm uppercase leading-tight">{item.name}</h4>
                     <div className="flex justify-end gap-0.5 mt-1">
                       {[...Array(item.rating)].map((_, i) => (
                         <Star key={i} size={12} className="text-orange-500" fill="currentColor" />
