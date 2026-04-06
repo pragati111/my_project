@@ -6,6 +6,7 @@ import EcoBackdropBanner from "./EcoBackdropBanner";
 import OrderProcess from "./OrderProcess";
 import Testimonials from "./Testimonials";
 import PremiumFooter from "./PremiumFooter";
+import CardCluster from "./CardCluster";
 import { Star, ShieldCheck, Headphones, Truck, Clock, Award } from "lucide-react";
 const features = [
   {
@@ -105,8 +106,8 @@ export default function HomeContent() {
       {/* 🔶 Trade Shows */}
       <TradeShows />
 
-      {/* 🔶 Marketing Section */}
-      <MarketingSection/>
+      {/* 🔶 Card Cluster */}
+      <CardCluster />
 
       {/* 🔶 Category Banner */}
       <CategoryBanner />
