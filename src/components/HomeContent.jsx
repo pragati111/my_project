@@ -7,7 +7,9 @@ import OrderProcess from "./OrderProcess";
 import Testimonials from "./Testimonials";
 import PremiumFooter from "./PremiumFooter";
 import CardCluster from "./CardCluster";
+import PremiumShowcase from "./PremiumShowcase";
 import { Star, ShieldCheck, Headphones, Truck, Clock, Award } from "lucide-react";
+
 const features = [
   {
     title: "1217+ Reviews",
@@ -109,8 +111,9 @@ export default function HomeContent() {
       {/* 🔶 Card Cluster */}
       <CardCluster />
 
-      {/* 🔶 Category Banner */}
-      <CategoryBanner />
+
+      {/* 🔶 Premium Showcase */}
+      <PremiumShowcase />
 
       {/* 🔶 Backdrop  */}
       <EcoBackdropBanner />
