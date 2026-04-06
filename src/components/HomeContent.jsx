@@ -14,7 +14,7 @@ export default function HomeContent() {
       <div className="px-4 md:px-8 lg:px-12">
         <div className="relative bg-gray-100 overflow-hidden">
           <img
-            src="https://via.placeholder.com/1200x400"
+            src="images/hero.jpg"
             alt="banner"
             className="w-full h-[220px] md:h-[350px] object-cover"
           />

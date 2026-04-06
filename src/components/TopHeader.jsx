@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 
 export default function TopHeader() {
   return (
-    <div className="fixed top-0 left-0 w-full z-50 bg-white flex items-center justify-between px-4 md:px-32  py-4 border-b">
+    <div className="fixed top-0 left-0 w-full z-50 bg-white flex items-center justify-between px-4 md:px-8 py-4 border-b">
       
       {/* Logo */}
       <div className="flex items-center gap-2">
