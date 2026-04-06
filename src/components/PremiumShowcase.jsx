@@ -4,7 +4,7 @@ import { Star } from 'lucide-react';
 const CategoryStack = ({ title, subtitle, items }) => {
   return (
     /* The outer container maintains a consistent height for the whole 'Stack' */
-    <div className="flex flex-col w-full h-[580px] bg-gray-100 border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl transition-all hover:border-amber-500/30 group">
+    <div className="flex flex-col w-full h-[370px] md:h-[580px] bg-gray-100 border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl transition-all hover:border-amber-500/30 group">
       
       {/* Header Section: Fixed Height */}
       <div className="mb-4 md:mb-6 border-b border-gray-200/50 pb-4 flex-shrink-0">
