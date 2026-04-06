@@ -8,12 +8,12 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 const testimonialData = [
-  { id: 1, name: "Meenal Karani", text: "Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.", rating: 5 },
+  { id: 1, name: "Meenal Karani", text: "Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.", rating: 5 },
   { id: 2, name: "Hind Alzarouni", text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items and have listened to my requests.", rating: 5 },
   { id: 3, name: "Larson Dcosta", text: "A very professional organization with competitive rates. Did a really good job preparing a couple of company stamps on an urgent basis. Mr. Yunus was very helpful.", rating: 5 },
   { id: 4, name: "Jelena Pepic", text: "At first, I was skeptical after seeing so many positive reviews. However, I decided to give them a try because of their competitive pricing.", rating: 5 },
   { id: 5, name: "Sarah Khan", text: "Excellent service and high-quality prints. The team was very accommodating and delivered earlier than expected.", rating: 5 },
-  { id: 6, name: "John Doe", text: "Reliable and professional. The quality of the business cards was outstanding.", rating: 5 }
+  { id: 6, name: "John Doe", text: "Reliable and professional. The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.", rating: 5 }
 ];
 
 const Testimonials = () => {
@@ -41,7 +41,6 @@ const Testimonials = () => {
           modules={[Pagination]}
           spaceBetween={24}
           slidesPerView={1}
-          /* Clickable dots are now active */
           pagination={{ clickable: true }}
           breakpoints={{
             640: { slidesPerView: 2 },
@@ -51,15 +50,20 @@ const Testimonials = () => {
         >
           {testimonialData.map((item) => (
             <SwiperSlide key={item.id} className="h-auto">
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 flex flex-col justify-between h-full min-h-[300px]">
-                <p className="text-gray-500 text-[13px] lg:text-sm leading-relaxed italic">
-                  "{item.text}"
-                </p>
+              {/* Added fixed h-[350px] to keep all cards same height */}
+              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 flex flex-col justify-between h-[350px]">
+                
+                {/* Scrollable container for the text */}
+                <div className="overflow-y-auto pr-2 custom-review-scroll">
+                  <p className="text-gray-500 text-[13px] lg:text-sm leading-relaxed italic">
+                    "{item.text}"
+                  </p>
+                </div>
 
-                <div className="mt-8 flex justify-between items-end">
-                  <Quote className="text-[#e65100] w-10 h-10 rotate-180 opacity-80" fill="currentColor" />
+                <div className="mt-4 flex justify-between items-end pt-4 border-t border-gray-50">
+                  <Quote className="text-[#e65100] w-10 h-10 rotate-180 opacity-80 shrink-0" fill="currentColor" />
                   <div className="text-right">
-                    <h4 className="font-bold text-[#1a1a1a] text-sm lg:text-base uppercase">{item.name}</h4>
+                    <h4 className="font-bold text-[#1a1a1a] text-sm lg:text-base uppercase leading-tight">{item.name}</h4>
                     <div className="flex justify-end gap-0.5 mt-1">
                       {[...Array(item.rating)].map((_, i) => (
                         <Star key={i} size={12} className="text-orange-500" fill="currentColor" />
@@ -73,7 +77,6 @@ const Testimonials = () => {
         </Swiper>
       </div>
 
-      {/* STYLING DOTS TO MATCH YOUR IMAGE */}
       <style jsx global>{`
         .swiper-pagination-bullet {
           width: 10px;
@@ -86,6 +89,21 @@ const Testimonials = () => {
         .swiper-pagination-bullet-active {
           background: #7a7a7a !important;
           transform: scale(1.1);
+        }
+
+        /* Minimalist scrollbar for the reviews */
+        .custom-review-scroll::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-review-scroll::-webkit-scrollbar-track {
+          background: #f9f9f9;
+        }
+        .custom-review-scroll::-webkit-scrollbar-thumb {
+          background: #e0e0e0;
+          border-radius: 10px;
+        }
+        .custom-review-scroll::-webkit-scrollbar-thumb:hover {
+          background: #d1d1d1;
         }
       `}</style>
     </section>

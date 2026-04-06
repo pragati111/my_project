@@ -1,168 +1,93 @@
-import { Search, Phone, Mail, Home, ChevronDown } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { categories } from "../data/categories";
-import HomeContent from "./HomeContent";
 import TopHeader from "./TopHeader";
 import BottomBar from "./BottomBar";
+import { ChevronDown } from "lucide-react";
+import HomeContent from "./HomeContent";
 
 export default function DesktopHome() {
-  const [active, setActive] = useState(null);
-  const [hoveredItem, setHoveredItem] = useState(null);
-
-  const menuRef = useRef();
-
-  // 🔥 Close menu on outside click
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setActive(null);
-        setHoveredItem(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
     <div className="font-sans">
-      {/* 🔶 Top Header */}
       <TopHeader />
 
-      {/* 🔶 Navbar */}
-      <div
-        ref={menuRef}
-        className="fixed top-[72px] left-0 w-full z-40 bg-gray-50 border-b flex justify-center gap-12 px-16 py-3 text-sm"
-      >
-        {/* Home */}
-        <span className="cursor-pointer hover:text-orange-500 flex items-center gap-2">
-          <Home size={16} />
-          Home
-        </span>
+      <div className="flex">
+        {/* 🔥 ULTRA COMPACT SIDEBAR */}
+        <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs">
+          {/* Home */}
+          <div className="px-3 py-2 border-b font-medium bg-white">🏠 Home</div>
 
-        {/* Categories */}
-        {categories.map((cat, i) => (
-          <span
-            key={i}
-            onClick={() => {
-              setActive(active === i ? null : i);
-              setHoveredItem(null);
-            }}
-            className={`cursor-pointer hover:text-orange-500 flex items-center gap-1 ${
-              active === i ? "text-orange-500 font-semibold" : ""
-            }`}
-          >
-            {cat.name}
-            {cat.children && cat.children.length > 0 && (
-              <ChevronDown size={14} />
-            )}
-          </span>
-        ))}
-
-        {/* 🔥 SINGLE MEGA MENU (CENTERED) */}
-        {active !== null && categories[active]?.children?.length > 0 && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 bg-white shadow-xl p-6 grid grid-cols-5 gap-8 w-[1100px] z-50">
-            {/* LEFT SIDE */}
-            <div className="col-span-3 grid grid-cols-3 gap-6">
-              {categories[active].children.map((sub, idx) => (
-                <div key={idx}>
-                  <h4 className="font-semibold mb-2 text-gray-800">
-                    {sub.name}
-                  </h4>
-
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {sub.items.map((item, id) => (
-                      <li
-                        key={id}
-                        onMouseEnter={() => setHoveredItem(item)}
-                        className={`cursor-pointer hover:text-orange-500 ${
-                          hoveredItem?.name === item.name
-                            ? "text-orange-500 font-semibold"
-                            : ""
-                        }`}
-                      >
-                        {item.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-            {/* RIGHT SIDE */}
-            <div className="col-span-2">
-              {/* Preview */}
-              <div className="bg-white border p-4 mb-4 flex flex-col items-center">
-                <div className="w-[180px] h-[120px] flex items-center justify-center bg-white overflow-hidden">
-                  <img
-                    src={
-                      hoveredItem?.image ||
-                      categories[active]?.children?.[0]?.items?.[0]?.image ||
-                      "https://via.placeholder.com/150"
-                    }
-                    alt="preview"
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-
-                <p className="text-center mt-3 text-sm font-medium text-gray-700">
-                  {hoveredItem?.name || "Select Item"}
-                </p>
+          {/* Categories */}
+          {categories.map((cat, i) => (
+            <div key={i} className="border-b">
+              {/* Category */}
+              <div
+                onClick={() => setActiveIndex(i)}
+                className={`px-3 py-2 cursor-pointer flex justify-between items-center
+                  ${
+                    activeIndex === i
+                      ? "bg-white text-orange-500 font-semibold"
+                      : "hover:bg-gray-200"
+                  }`}
+              >
+                <span className="truncate">{cat.name}</span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-300 ${
+                    activeIndex === i ? "rotate-180" : ""
+                  }`}
+                />
               </div>
 
-              {/* Most Popular */}
-              <h4 className="font-semibold mb-2">Most Popular</h4>
+              {/* 🔥 EXPANDED CONTENT INSIDE SAME SIDEBAR */}
+              {activeIndex === i && (
+                <div className="px-2 py-2 space-y-3 bg-white max-h-[300px] overflow-y-auto">
+                  {cat.children.map((sub, idx) => (
+                    <div key={idx}>
+                      {/* Subcategory Title */}
+                      <p className="font-semibold text-[11px] mb-1 text-gray-700 truncate">
+                        {sub.name}
+                      </p>
 
-              <div className="grid grid-cols-3 gap-3">
-                {categories[active].children
-                  .flatMap((sub) => sub.items)
-                  .filter((item) => item.popular)
-                  .slice(0, 3)
-                  .map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white border p-2 text-center"
-                    >
-                      <div className="w-full h-[70px] flex items-center justify-center overflow-hidden">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="max-w-full max-h-full object-contain"
-                        />
+                      {/* Items */}
+                      <div className="grid grid-cols-2 gap-2">
+                        {sub.items.map((item, id) => (
+                          <div
+                            key={id}
+                            className="bg-gray-50 p-2 rounded-md text-center hover:bg-white hover:shadow cursor-pointer"
+                          >
+                            {/* Image */}
+                            <div className="h-[45px] flex items-center justify-center mb-1">
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="max-h-full object-contain"
+                              />
+                            </div>
+
+                            {/* Name */}
+                            <p className="text-[10px] leading-tight text-gray-600 truncate">
+                              {item.name}
+                            </p>
+                          </div>
+                        ))}
                       </div>
-
-                      <p className="text-xs mt-2 text-gray-700">{item.name}</p>
                     </div>
                   ))}
-              </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          ))}
+        </div>
+
+        {/* 🔥 MAIN CONTENT (FULL WIDTH NOW) */}
+        <div className="w-full lg:ml-[240px] pt-[120px] px-6">
+          <HomeContent/>
+        </div>
       </div>
 
-      {/* 🔶 Hero Section */}
-      {/* 🔥 CONTENT WRAPPER */}
-<div className="pt-[150px] pb-[100px] px-16">
-        <HomeContent />
-      </div>
-
-      {/* 🔶 Bottom Bar */}
-        <BottomBar />
-    </div>
-  );
-}
-
-/* 🔹 Feature Component */
-function Feature({ title, subtitle }) {
-  return (
-    <div className="flex items-center gap-4">
-      <div className="w-10 h-10 bg-orange-100 rounded-lg"></div>
-      <div>
-        <h4 className="font-semibold text-sm">{title}</h4>
-        <p className="text-xs text-gray-500">{subtitle}</p>
-      </div>
+      <BottomBar />
     </div>
   );
 }
