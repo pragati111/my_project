@@ -4,7 +4,7 @@ const EcoBackdropBanner = () => {
   return (
     /* Added padding wrapper to match other sections */
     <section className="px-4 md:px-8 lg:px-12">
-      <div className="relative w-full max-w-[1190px] mx-auto min-h-[260px] bg-gradient-to-r from-[#a1afce] to-[#bcc9e4] flex flex-col md:flex-row items-center justify-between px-10 md:px-20 py-8 md:py-4 overflow-hidden shadow-md  md:rounded-none">
+      <div className="relative w-full max-w-[1400px] mx-auto min-h-[260px] bg-gradient-to-r from-[#a1afce] to-[#bcc9e4] flex flex-col md:flex-row items-center justify-between px-10 md:px-20 py-8 md:py-4 overflow-hidden shadow-md  md:rounded-none">
       
       {/* Text Container */}
       <div className="flex-1 z-10 text-center md:text-left py-4">

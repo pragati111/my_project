@@ -8,6 +8,7 @@ import Testimonials from "./Testimonials";
 import PremiumFooter from "./PremiumFooter";
 import CardCluster from "./CardCluster";
 import PremiumShowcase from "./PremiumShowcase";
+import InfographicTimeline from "./InfographicTimeline";
 import { Star, ShieldCheck, Headphones, Truck, Clock, Award } from "lucide-react";
 
 const features = [
@@ -115,11 +116,12 @@ export default function HomeContent() {
       {/* 🔶 Premium Showcase */}
       <PremiumShowcase />
 
+
+      {/* 🔶 Infographic Timeline */}
+      <InfographicTimeline />
+
       {/* 🔶 Backdrop  */}
       <EcoBackdropBanner />
-
-      {/* 🔶 Order Process */}
-      <OrderProcess />
 
       {/* 🔶 Testimonials */}
       <Testimonials />

@@ -1,75 +1,169 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
-import { Quote, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 // Required Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 const testimonialData = [
-  { id: 1, name: "Meenal Karani", text: "Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.", rating: 5 },
-  { id: 2, name: "Hind Alzarouni", text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items and have listened to my requests.", rating: 5 },
-  { id: 3, name: "Larson Dcosta", text: "A very professional organization with competitive rates. Did a really good job preparing a couple of company stamps on an urgent basis. Mr. Yunus was very helpful.", rating: 5 },
-  { id: 4, name: "Jelena Pepic", text: "At first, I was skeptical after seeing so many positive reviews. However, I decided to give them a try because of their competitive pricing.", rating: 5 },
-  { id: 5, name: "Sarah Khan", text: "Excellent service and high-quality prints. The team was very accommodating and delivered earlier than expected.", rating: 5 },
-  { id: 6, name: "John Doe", text: "Reliable and professional. The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.The quality of the business cards was outstanding.", rating: 5 }
+  { 
+    id: 1, 
+    name: "Meenal Karani", 
+    role: "Marketing Manager",
+    image: "https://i.pravatar.cc/150?u=meenal", // Placeholder images
+    date: "01/01/2023",
+    text: "Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.Deluxe was efficient with my last minute urgent order for a market for flag and table cover. Farhan delivered my order on time! Very impressed with their quick response.", 
+    rating: 5 
+  },
+  { 
+    id: 2, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 3, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 4, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 5, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 6, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 7, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 8, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  { 
+    id: 9, 
+    name: "Hind Alzarouni", 
+    role: "Creative Director",
+    image: "https://i.pravatar.cc/150?u=hind",
+    date: "12/12/2022",
+    text: "Deluxe Printing are a flexible printing company who complete tasks quickly. They have always provided top quality items.", 
+    rating: 5 
+  },
+  // ... rest of your data (add role, image, and date to each)
+  { 
+    id: 10, 
+    name: "John Doe", 
+    role: "Marketing Manager",
+    image: "https://i.pravatar.cc/150?u=john",
+    date: "01/01/2023",
+    text: "Reliable and professional. The quality of the business cards was outstanding. The team really went above and beyond.", 
+    rating: 5 
+  }
 ];
 
 const Testimonials = () => {
   return (
-    <section className="relative z-20 w-full max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 pt-8">
-      
-      {/* THE TEXTURE & FADE YOU LIKED */}
-      <div className="absolute inset-0 z-0 opacity-[0.15]" 
-           style={{ 
-             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23000000'%3E%3Cpath d='M50 0l50 25v50l-50 25-50-25v-50z' fill-opacity='0.1'/%3E%3Cpath d='M50 5l45 22.5v45l-45 22.5-45-22.5v-45z' fill='none' stroke='%23000000' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E")`,
-             backgroundSize: '120px' 
-           }}>
-      </div>
-      <div className="absolute inset-0 z-10 bg-[radial-gradient(circle,_transparent_30%,_rgba(220,220,220,0.5)_100%)]"></div>
-
-      <div className="relative z-20 w-full max-w-[1400px] mx-auto px-4 lg:px-10">
-        <div className="text-center mt-6 mb-6">
-          <h2 className="text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-2">Testimonials</h2>
-          <p className="text-gray-600 text-xs lg:text-sm max-w-xl mx-auto">
-            We have worked with many happy and satisfied clients. Here is what they have to say about us.
+    <section className="relative w-full py-12 bg-gradient-to-tr from-slate-50 via-white to-blue-50">
+      <div className="max-w-[1200px] mx-auto px-6">
+        
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Testimonials</h2>
+          <p className="text-gray-500 text-xs max-w-md mx-auto">
+            Real feedback from our valued clients across the globe.
           </p>
         </div>
 
         <Swiper
           modules={[Pagination]}
-          spaceBetween={24}
+          spaceBetween={20}
           slidesPerView={1}
           pagination={{ clickable: true }}
           breakpoints={{
             640: { slidesPerView: 2 },
-            1024: { slidesPerView: 4 },
+            1024: { slidesPerView: 4 }, // 4 slides makes the cards smaller/tighter
           }}
-          className="pb-10"
+          className="pb-12"
         >
           {testimonialData.map((item) => (
             <SwiperSlide key={item.id} className="h-auto">
-              {/* Small square tiles for testimonials */}
-              <div className="bg-white rounded-lg p-4 shadow-md border border-gray-100 flex flex-col justify-between h-[220px]">
+              {/* COMPACT CARD DESIGN */}
+              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col h-[260px] transition-transform hover:-translate-y-1">
                 
-                {/* Scrollable container for the text */}
-                <div className="overflow-y-auto pr-2 custom-review-scroll">
-                  <p className="text-gray-600 text-[11px] lg:text-xs leading-relaxed italic">
-                    "{item.text}"
+                {/* Header: Smaller Avatar + Info */}
+                <div className="flex items-center gap-3 mb-3">
+                  <img 
+                    src={item.image} 
+                    alt={item.name} 
+                    className="w-12 h-12 rounded-full object-cover grayscale brightness-95 border border-gray-100"
+                  />
+                  <div className="overflow-hidden">
+                    <h4 className="font-bold text-gray-800 text-sm truncate">{item.name}</h4>
+                    <p className="text-gray-400 text-[11px] leading-none">{item.role}</p>
+                  </div>
+                </div>
+
+                {/* Content: Smaller Text + SCROLLBAR */}
+                <div className="flex-grow overflow-y-auto mb-4 custom-card-scroll pr-1">
+                  <p className="text-gray-600 text-[12px] leading-relaxed">
+                    {item.text}
                   </p>
                 </div>
 
-                <div className="mt-2 flex justify-between items-end pt-2 border-t border-gray-50">
-                  <Quote className="text-[#e65100] w-7 h-7 rotate-180 opacity-80 shrink-0" fill="currentColor" />
-                  <div className="text-right">
-                    <h4 className="font-bold text-[#1a1a1a] text-xs lg:text-sm uppercase leading-tight">{item.name}</h4>
-                    <div className="flex justify-end gap-0.5 mt-1">
-                      {[...Array(item.rating)].map((_, i) => (
-                        <Star key={i} size={12} className="text-orange-500" fill="currentColor" />
-                      ))}
-                    </div>
+                {/* Footer: Stars + Date */}
+                <div className="flex justify-between items-center pt-3 border-t border-gray-50">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        size={12} 
+                        className={i < item.rating ? "text-yellow-400" : "text-gray-200"} 
+                        fill={i < item.rating ? "currentColor" : "none"} 
+                      />
+                    ))}
                   </div>
+                  <span className="text-[9px] font-semibold text-gray-400 uppercase tracking-tighter">
+                    {item.date}
+                  </span>
                 </div>
               </div>
             </SwiperSlide>
@@ -78,32 +172,31 @@ const Testimonials = () => {
       </div>
 
       <style jsx global>{`
+        /* Swiper Pagination Styling */
         .swiper-pagination-bullet {
-          width: 10px;
-          height: 10px;
-          background: #ccc !important;
+          width: 6px;
+          height: 6px;
+          background: #cbd5e1 !important;
           opacity: 1 !important;
-          cursor: pointer !important;
-          margin: 0 5px !important;
         }
         .swiper-pagination-bullet-active {
-          background: #7a7a7a !important;
-          transform: scale(1.1);
+          background: #94a3b8 !important;
+          transform: scale(1.2);
         }
 
-        /* Minimalist scrollbar for the reviews */
-        .custom-review-scroll::-webkit-scrollbar {
-          width: 4px;
+        /* Subtle Scrollbar for the review text */
+        .custom-card-scroll::-webkit-scrollbar {
+          width: 3px;
         }
-        .custom-review-scroll::-webkit-scrollbar-track {
-          background: #f9f9f9;
+        .custom-card-scroll::-webkit-scrollbar-track {
+          background: transparent;
         }
-        .custom-review-scroll::-webkit-scrollbar-thumb {
-          background: #e0e0e0;
+        .custom-card-scroll::-webkit-scrollbar-thumb {
+          background: #f1f5f9;
           border-radius: 10px;
         }
-        .custom-review-scroll::-webkit-scrollbar-thumb:hover {
-          background: #d1d1d1;
+        .custom-card-scroll:hover::-webkit-scrollbar-thumb {
+          background: #e2e8f0;
         }
       `}</style>
     </section>
