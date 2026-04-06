@@ -89,7 +89,7 @@ const PremiumFooter = () => {
 
       {/* Tighter Bottom Copyright section */}
       <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-800 text-center text-[12px] text-slate-300">
-        <p className="opacity-90">© {new Date().getFullYear()} Your Brand Identity. All rights reserved.</p>
+        <p className="opacity-90">© {new Date().getFullYear()} Your Print Studio. All Rights Reserved. Unauthorized reproduction, distribution, or theft of website design and content is strictly prohibited and constitutes a punishable legal offense under the Copyright Act. </p>
       </div>
     </footer>
   );
