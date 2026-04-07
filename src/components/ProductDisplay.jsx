@@ -6,6 +6,8 @@ import { categories } from "../data/categories";
 import { useEffect, useState } from "react";
 
 export default function ProductDisplay() {
+  const { id } = useParams();
+
   const offers = [
     {
       tag: "MOST POPULAR",
@@ -27,77 +29,101 @@ export default function ProductDisplay() {
     },
   ];
 
-  const { id } = useParams();
-
   // ✅ Find product
   const product = categories
     .flatMap((cat) => cat.children)
     .flatMap((sub) => sub.items)
     .find((item) => item.id === id);
 
-  // ✅ Safety fallback
   if (!product) {
     return <div className="p-10">Product not found</div>;
   }
 
-  // ✅ Media handling
+  // ✅ Media
   const media = product.media?.length
     ? product.media
     : [{ type: "image", url: product.image }];
 
-  // ✅ Correct state (store full media object)
-  const [activeMedia, setActiveMedia] = useState(media[0]);
+  // ✅ State
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // ✅ Update on route change
   useEffect(() => {
-    setActiveMedia(media[0]);
+    setActiveIndex(0);
   }, [id]);
+
+  const activeMedia = media[activeIndex];
+
+  // ✅ Navigation
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % media.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) =>
+      prev === 0 ? media.length - 1 : prev - 1
+    );
+  };
 
   return (
     <div>
       <TopHeader />
 
       <div className="flex">
-        {/* Sidebar */}
         <Sidebar />
 
         {/* MAIN */}
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[100px] px-6">
           <div className="flex gap-10">
-            {/* 🔥 LEFT IMAGE SECTION */}
+
+            {/* 🔥 LEFT SECTION */}
             <div className="flex gap-4 sticky top-[120px] h-fit">
-              {/* Thumbnails */}
-              <div className="flex flex-col gap-3">
-                {media.map((item, i) => (
-                  <div
-                    key={i}
-                    onClick={() => setActiveMedia(item)}
-                    className={`w-[65px] h-[65px] border rounded cursor-pointer flex items-center justify-center bg-white
-                      ${
-                        activeMedia?.url === item.url
-                          ? "border-black"
-                          : "border-gray-300"
-                      }
-                    `}
-                  >
-                    {item.type === "image" ? (
-                      <img
-                        src={item.url}
-                        className="max-h-full object-contain"
-                      />
-                    ) : (
-                      <video
-                        src={item.url}
-                        className="max-h-full object-contain"
-                        muted
-                      />
-                    )}
-                  </div>
-                ))}
+
+              {/* ✅ THUMBNAILS (SCROLLABLE) */}
+              <div className="h-[360px] overflow-y-auto pr-1">
+                <div className="flex flex-col gap-3">
+                  {media.map((item, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      className={`w-[65px] h-[65px] border rounded cursor-pointer flex items-center justify-center bg-white
+                        ${
+                          activeIndex === i
+                            ? "border-black"
+                            : "border-gray-300"
+                        }
+                      `}
+                    >
+                      {item.type === "image" ? (
+                        <img
+                          src={item.url}
+                          className="max-h-full object-contain"
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          muted
+                          autoPlay
+                          loop
+                          className="max-h-full object-contain"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Main Media */}
-              <div className="w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
+              {/* ✅ MAIN MEDIA */}
+              <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
+
+                {/* LEFT BUTTON */}
+                <button
+                  onClick={handlePrev}
+                  className="absolute left-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
+                >
+                  ‹
+                </button>
+
+                {/* MEDIA */}
                 {activeMedia?.type === "image" ? (
                   <img
                     src={activeMedia.url}
@@ -114,19 +140,33 @@ export default function ProductDisplay() {
                     className="max-h-full object-contain"
                   />
                 )}
+
+                {/* RIGHT BUTTON */}
+                <button
+                  onClick={handleNext}
+                  className="absolute right-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
+                >
+                  ›
+                </button>
+
               </div>
-            </div>{" "}
-            {/* ✅ FIXED missing closing div */}
+            </div>
+
             {/* 🔥 RIGHT CONTENT */}
             <div className="flex-1 space-y-5">
-              <h1 className="text-2xl font-semibold">{product.name}</h1>
+
+              <h1 className="text-2xl font-semibold">
+                {product.name}
+              </h1>
 
               {/* Rating */}
               <div className="flex items-center gap-2 text-sm">
                 <span className="bg-green-600 text-white px-2 py-[2px] rounded text-xs">
                   {product.rating} ★
                 </span>
-                <span className="text-gray-500">{product.reviews} Reviews</span>
+                <span className="text-gray-500">
+                  {product.reviews} Reviews
+                </span>
               </div>
 
               {/* Price */}
@@ -146,16 +186,18 @@ export default function ProductDisplay() {
                     {Math.round(
                       ((product.originalPrice - product.price) /
                         product.originalPrice) *
-                        100,
+                        100
                     )}
                     % OFF
                   </span>
                 )}
               </div>
 
-              <p className="text-gray-500 text-sm">Inclusive of all taxes</p>
+              <p className="text-gray-500 text-sm">
+                Inclusive of all taxes
+              </p>
 
-              {/* Offer */}
+              {/* Offer Box */}
               <div className="bg-green-50 p-4 rounded border border-green-200">
                 <p className="text-sm font-medium">
                   🎉 Buy more & save more offers available
@@ -168,6 +210,7 @@ export default function ProductDisplay() {
                 performance. Perfect for both personal and professional use.
               </p>
 
+              {/* Offers */}
               <div className="space-y-3">
                 <p className="text-sm font-semibold">Active Offers</p>
 
@@ -177,12 +220,10 @@ export default function ProductDisplay() {
                       key={i}
                       className="relative w-[200px] bg-green-50 border border-green-300 rounded-lg p-3 text-center hover:shadow transition"
                     >
-                      {/* Tag */}
                       <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-[2px] rounded">
                         {offer.tag}
                       </span>
 
-                      {/* Content */}
                       <p className="text-sm font-semibold mt-2">
                         {offer.title}
                       </p>
@@ -195,7 +236,9 @@ export default function ProductDisplay() {
 
                       <p className="text-[11px] text-gray-600 mt-1">
                         Code:{" "}
-                        <span className="font-semibold">{offer.code}</span>
+                        <span className="font-semibold">
+                          {offer.code}
+                        </span>
                       </p>
                     </div>
                   ))}
@@ -213,7 +256,6 @@ export default function ProductDisplay() {
                 </button>
               </div>
 
-              {/* Scroll space */}
               <div className="h-[1200px]"></div>
             </div>
           </div>
