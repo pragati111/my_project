@@ -1,4 +1,6 @@
 import DesktopHome from "./components/DesktopHome";
+import ProductDisplay from "./components/ProductDisplay";
+
 import MobileBottomNav from "./components/MobileBottomNav";
 
 import { Routes, Route } from "react-router-dom";
@@ -10,17 +12,21 @@ import Cart from "./pages/Cart";
 function App() {
   return (
     <>
-      {/* ✅ Desktop View */}
+      {/* ✅ DESKTOP ROUTES */}
       <div className="hidden md:block">
-        <DesktopHome />
+        <Routes>
+          <Route path="/" element={<DesktopHome />} />
+          <Route path="/product/:id" element={<ProductDisplay />} />
+        </Routes>
       </div>
 
-      {/* ✅ Mobile View */}
+      {/* ✅ MOBILE ROUTES */}
       <div className="block md:hidden">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/cart" element={<Cart />} />
+          {/* (optional) product page for mobile later */}
         </Routes>
 
         <MobileBottomNav />
