@@ -86,78 +86,75 @@ export default function ProductDisplay() {
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[100px] px-6">
           <div className="flex gap-10">
             {/* 🔥 LEFT SECTION */}
-            {/* 🔥 LEFT SECTION */}
-<div className="sticky top-[120px] h-fit">
+            <div className="sticky top-[120px] h-fit">
+              {/* ✅ MAIN MEDIA */}
+              <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
+                {/* LEFT BUTTON */}
+                <button
+                  onClick={handlePrev}
+                  className="absolute left-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
+                >
+                  ‹
+                </button>
 
-  {/* ✅ MAIN MEDIA */}
-  <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
+                {/* MEDIA */}
+                {activeMedia?.type === "image" ? (
+                  <img
+                    src={activeMedia.url}
+                    className="max-h-full object-contain"
+                  />
+                ) : (
+                  <video
+                    src={activeMedia.url}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    className="max-h-full object-contain"
+                  />
+                )}
 
-    {/* LEFT BUTTON */}
-    <button
-      onClick={handlePrev}
-      className="absolute left-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
-    >
-      ‹
-    </button>
+                {/* RIGHT BUTTON */}
+                <button
+                  onClick={handleNext}
+                  className="absolute right-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
+                >
+                  ›
+                </button>
+              </div>
 
-    {/* MEDIA */}
-    {activeMedia?.type === "image" ? (
-      <img
-        src={activeMedia.url}
-        className="max-h-full object-contain"
-      />
-    ) : (
-      <video
-        src={activeMedia.url}
-        autoPlay
-        muted
-        loop
-        playsInline
-        controls
-        className="max-h-full object-contain"
-      />
-    )}
-
-    {/* RIGHT BUTTON */}
-    <button
-      onClick={handleNext}
-      className="absolute right-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
-    >
-      ›
-    </button>
-  </div>
-
-  {/* ✅ THUMBNAILS BELOW (HORIZONTAL SCROLL) */}
-  <div className="mt-4 w-[420px] overflow-x-auto no-scrollbar">
-    <div className="flex gap-3">
-      {media.map((item, i) => (
-        <div
-          key={i}
-          ref={(el) => (thumbnailRefs.current[i] = el)}
-          onClick={() => setActiveIndex(i)}
-          className={`min-w-[70px] h-[70px] border rounded cursor-pointer flex items-center justify-center bg-white
+              {/* ✅ THUMBNAILS BELOW (HORIZONTAL SCROLL) */}
+              <div className="mt-4 w-[420px] overflow-x-auto no-scrollbar">
+                <div className="flex gap-3">
+                  {media.map((item, i) => (
+                    <div
+                      key={i}
+                      ref={(el) => (thumbnailRefs.current[i] = el)}
+                      onClick={() => setActiveIndex(i)}
+                      className={`min-w-[70px] h-[70px] border rounded cursor-pointer flex items-center justify-center bg-white
             ${activeIndex === i ? "border-black" : "border-gray-300"}
           `}
-        >
-          {item.type === "image" ? (
-            <img
-              src={item.url}
-              className="max-h-full object-contain"
-            />
-          ) : (
-            <video
-              src={item.url}
-              muted
-              autoPlay
-              loop
-              className="max-h-full object-contain"
-            />
-          )}
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
+                    >
+                      {item.type === "image" ? (
+                        <img
+                          src={item.url}
+                          className="max-h-full object-contain"
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          muted
+                          autoPlay
+                          loop
+                          className="max-h-full object-contain"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             {/* 🔥 RIGHT CONTENT */}
             <div className="flex-1 space-y-5">
