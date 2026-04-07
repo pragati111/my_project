@@ -3,7 +3,7 @@ import Sidebar from "./SideBar";
 import TopHeader from "./TopHeader";
 import BottomBar from "./BottomBar";
 import { categories } from "../data/categories";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function ProductDisplay() {
   const { id } = useParams();
@@ -29,6 +29,8 @@ export default function ProductDisplay() {
     },
   ];
 
+  const thumbnailRefs = useRef([]);
+
   // ✅ Find product
   const product = categories
     .flatMap((cat) => cat.children)
@@ -51,6 +53,17 @@ export default function ProductDisplay() {
     setActiveIndex(0);
   }, [id]);
 
+  useEffect(() => {
+    const currentThumb = thumbnailRefs.current[activeIndex];
+
+    if (currentThumb) {
+      currentThumb.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [activeIndex]);
+
   const activeMedia = media[activeIndex];
 
   // ✅ Navigation
@@ -59,9 +72,7 @@ export default function ProductDisplay() {
   };
 
   const handlePrev = () => {
-    setActiveIndex((prev) =>
-      prev === 0 ? media.length - 1 : prev - 1
-    );
+    setActiveIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
   };
 
   return (
@@ -74,99 +85,90 @@ export default function ProductDisplay() {
         {/* MAIN */}
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[100px] px-6">
           <div className="flex gap-10">
-
             {/* 🔥 LEFT SECTION */}
-            <div className="flex gap-4 sticky top-[120px] h-fit">
+            {/* 🔥 LEFT SECTION */}
+<div className="sticky top-[120px] h-fit">
 
-              {/* ✅ THUMBNAILS (SCROLLABLE) */}
-              <div className="h-[360px] overflow-y-auto pr-1">
-                <div className="flex flex-col gap-3">
-                  {media.map((item, i) => (
-                    <div
-                      key={i}
-                      onClick={() => setActiveIndex(i)}
-                      className={`w-[65px] h-[65px] border rounded cursor-pointer flex items-center justify-center bg-white
-                        ${
-                          activeIndex === i
-                            ? "border-black"
-                            : "border-gray-300"
-                        }
-                      `}
-                    >
-                      {item.type === "image" ? (
-                        <img
-                          src={item.url}
-                          className="max-h-full object-contain"
-                        />
-                      ) : (
-                        <video
-                          src={item.url}
-                          muted
-                          autoPlay
-                          loop
-                          className="max-h-full object-contain"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+  {/* ✅ MAIN MEDIA */}
+  <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
 
-              {/* ✅ MAIN MEDIA */}
-              <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
+    {/* LEFT BUTTON */}
+    <button
+      onClick={handlePrev}
+      className="absolute left-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
+    >
+      ‹
+    </button>
 
-                {/* LEFT BUTTON */}
-                <button
-                  onClick={handlePrev}
-                  className="absolute left-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
-                >
-                  ‹
-                </button>
+    {/* MEDIA */}
+    {activeMedia?.type === "image" ? (
+      <img
+        src={activeMedia.url}
+        className="max-h-full object-contain"
+      />
+    ) : (
+      <video
+        src={activeMedia.url}
+        autoPlay
+        muted
+        loop
+        playsInline
+        controls
+        className="max-h-full object-contain"
+      />
+    )}
 
-                {/* MEDIA */}
-                {activeMedia?.type === "image" ? (
-                  <img
-                    src={activeMedia.url}
-                    className="max-h-full object-contain"
-                  />
-                ) : (
-                  <video
-                    src={activeMedia.url}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    controls
-                    className="max-h-full object-contain"
-                  />
-                )}
+    {/* RIGHT BUTTON */}
+    <button
+      onClick={handleNext}
+      className="absolute right-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
+    >
+      ›
+    </button>
+  </div>
 
-                {/* RIGHT BUTTON */}
-                <button
-                  onClick={handleNext}
-                  className="absolute right-2 z-10 bg-white border rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-gray-100"
-                >
-                  ›
-                </button>
-
-              </div>
-            </div>
+  {/* ✅ THUMBNAILS BELOW (HORIZONTAL SCROLL) */}
+  <div className="mt-4 w-[420px] overflow-x-auto no-scrollbar">
+    <div className="flex gap-3">
+      {media.map((item, i) => (
+        <div
+          key={i}
+          ref={(el) => (thumbnailRefs.current[i] = el)}
+          onClick={() => setActiveIndex(i)}
+          className={`min-w-[70px] h-[70px] border rounded cursor-pointer flex items-center justify-center bg-white
+            ${activeIndex === i ? "border-black" : "border-gray-300"}
+          `}
+        >
+          {item.type === "image" ? (
+            <img
+              src={item.url}
+              className="max-h-full object-contain"
+            />
+          ) : (
+            <video
+              src={item.url}
+              muted
+              autoPlay
+              loop
+              className="max-h-full object-contain"
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
 
             {/* 🔥 RIGHT CONTENT */}
             <div className="flex-1 space-y-5">
-
-              <h1 className="text-2xl font-semibold">
-                {product.name}
-              </h1>
+              <h1 className="text-2xl font-semibold">{product.name}</h1>
 
               {/* Rating */}
               <div className="flex items-center gap-2 text-sm">
                 <span className="bg-green-600 text-white px-2 py-[2px] rounded text-xs">
                   {product.rating} ★
                 </span>
-                <span className="text-gray-500">
-                  {product.reviews} Reviews
-                </span>
+                <span className="text-gray-500">{product.reviews} Reviews</span>
               </div>
 
               {/* Price */}
@@ -186,16 +188,14 @@ export default function ProductDisplay() {
                     {Math.round(
                       ((product.originalPrice - product.price) /
                         product.originalPrice) *
-                        100
+                        100,
                     )}
                     % OFF
                   </span>
                 )}
               </div>
 
-              <p className="text-gray-500 text-sm">
-                Inclusive of all taxes
-              </p>
+              <p className="text-gray-500 text-sm">Inclusive of all taxes</p>
 
               {/* Offer Box */}
               <div className="bg-green-50 p-4 rounded border border-green-200">
@@ -236,9 +236,7 @@ export default function ProductDisplay() {
 
                       <p className="text-[11px] text-gray-600 mt-1">
                         Code:{" "}
-                        <span className="font-semibold">
-                          {offer.code}
-                        </span>
+                        <span className="font-semibold">{offer.code}</span>
                       </p>
                     </div>
                   ))}
