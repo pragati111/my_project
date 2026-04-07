@@ -78,13 +78,10 @@ export default function ProductDisplay() {
 
   const activeMedia = media[activeIndex];
 
-  const handleNext = () =>
-    setActiveIndex((prev) => (prev + 1) % media.length);
+  const handleNext = () => setActiveIndex((prev) => (prev + 1) % media.length);
 
   const handlePrev = () =>
-    setActiveIndex((prev) =>
-      prev === 0 ? media.length - 1 : prev - 1
-    );
+    setActiveIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
 
   return (
     <div>
@@ -94,21 +91,39 @@ export default function ProductDisplay() {
         <Sidebar />
 
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[100px] px-6">
-          <div className="flex gap-10">
-            
+          <div className="flex gap-10 h-[calc(100vh-120px)] overflow-hidden">
             {/* LEFT */}
-            <div className="sticky top-[120px] h-fit">
+            <div className="w-[420px] flex-shrink-0">
               <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
-                
-                <button onClick={handlePrev} className="absolute left-2 bg-white border rounded-full w-8 h-8 shadow">‹</button>
+                <button
+                  onClick={handlePrev}
+                  className="absolute left-2 bg-white border rounded-full w-8 h-8 shadow"
+                >
+                  ‹
+                </button>
 
                 {activeMedia?.type === "image" ? (
-                  <img src={activeMedia.url} className="max-h-full object-contain" />
+                  <img
+                    src={activeMedia.url}
+                    className="max-h-full object-contain"
+                  />
                 ) : (
-                  <video src={activeMedia.url} autoPlay muted loop controls className="max-h-full object-contain" />
+                  <video
+                    src={activeMedia.url}
+                    autoPlay
+                    muted
+                    loop
+                    controls
+                    className="max-h-full object-contain"
+                  />
                 )}
 
-                <button onClick={handleNext} className="absolute right-2 bg-white border rounded-full w-8 h-8 shadow">›</button>
+                <button
+                  onClick={handleNext}
+                  className="absolute right-2 bg-white border rounded-full w-8 h-8 shadow"
+                >
+                  ›
+                </button>
               </div>
 
               {/* THUMBNAILS */}
@@ -124,9 +139,15 @@ export default function ProductDisplay() {
                       }`}
                     >
                       {item.type === "image" ? (
-                        <img src={item.url} className="max-h-full object-contain" />
+                        <img
+                          src={item.url}
+                          className="max-h-full object-contain"
+                        />
                       ) : (
-                        <video src={item.url} className="max-h-full object-contain" />
+                        <video
+                          src={item.url}
+                          className="max-h-full object-contain"
+                        />
                       )}
                     </div>
                   ))}
@@ -135,7 +156,7 @@ export default function ProductDisplay() {
             </div>
 
             {/* RIGHT */}
-            <div className="flex-1 space-y-5">
+            <div className="flex-1 space-y-5 overflow-y-auto pr-2">
               <h1 className="text-2xl font-semibold">{product.name}</h1>
 
               {/* Rating */}
@@ -143,9 +164,7 @@ export default function ProductDisplay() {
                 <span className="bg-green-600 text-white px-2 py-[2px] rounded text-xs">
                   {product.rating} ★
                 </span>
-                <span className="text-gray-500">
-                  {product.reviews} Reviews
-                </span>
+                <span className="text-gray-500">{product.reviews} Reviews</span>
               </div>
 
               {/* Price */}
@@ -162,7 +181,7 @@ export default function ProductDisplay() {
                       {Math.round(
                         ((product.originalPrice - product.price) /
                           product.originalPrice) *
-                          100
+                          100,
                       )}
                       % OFF
                     </span>
@@ -170,9 +189,7 @@ export default function ProductDisplay() {
                 )}
               </div>
 
-              <p className="text-gray-500 text-sm">
-                Inclusive of all taxes
-              </p>
+              <p className="text-gray-500 text-sm">Inclusive of all taxes</p>
 
               {/* OFFER BOX */}
               <div className="bg-green-50 p-4 rounded border border-green-200">
@@ -181,21 +198,26 @@ export default function ProductDisplay() {
 
               {/* DESCRIPTION */}
               <p className="text-gray-600 text-sm">
-                High-quality premium product designed for durability and performance.
+                High-quality premium product designed for durability and
+                performance.
               </p>
 
               {/* 🔥 MULTI DESIGN CUSTOMIZATION */}
               <div className="space-y-8">
-                <h2 className="text-lg font-semibold">Customize Your Product</h2>
+                <h2 className="text-lg font-semibold">
+                  Customize Your Product
+                </h2>
 
                 {configs.map((config, index) => (
                   <div key={index} className="border p-4 rounded space-y-4">
-                    
                     <div className="flex justify-between">
                       <h3 className="font-medium">Design {index + 1}</h3>
 
                       {configs.length > 1 && (
-                        <button onClick={() => removeConfig(index)} className="text-red-500 text-sm">
+                        <button
+                          onClick={() => removeConfig(index)}
+                          className="text-red-500 text-sm"
+                        >
                           Remove
                         </button>
                       )}
@@ -301,11 +323,7 @@ export default function ProductDisplay() {
                             <input
                               type="file"
                               onChange={(e) =>
-                                handleChange(
-                                  index,
-                                  field.id,
-                                  e.target.files[0]
-                                )
+                                handleChange(index, field.id, e.target.files[0])
                               }
                             />
                           )}
@@ -342,12 +360,17 @@ export default function ProductDisplay() {
 
                 <div className="flex gap-4 flex-wrap">
                   {offers.map((offer, i) => (
-                    <div key={i} className="relative w-[200px] bg-green-50 border border-green-300 rounded-lg p-3 text-center hover:shadow transition">
+                    <div
+                      key={i}
+                      className="relative w-[200px] bg-green-50 border border-green-300 rounded-lg p-3 text-center hover:shadow transition"
+                    >
                       <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-[2px] rounded">
                         {offer.tag}
                       </span>
 
-                      <p className="text-sm font-semibold mt-2">{offer.title}</p>
+                      <p className="text-sm font-semibold mt-2">
+                        {offer.title}
+                      </p>
 
                       <div className="border-t my-2"></div>
 
@@ -356,7 +379,8 @@ export default function ProductDisplay() {
                       </p>
 
                       <p className="text-[11px] text-gray-600 mt-1">
-                        Code: <span className="font-semibold">{offer.code}</span>
+                        Code:{" "}
+                        <span className="font-semibold">{offer.code}</span>
                       </p>
                     </div>
                   ))}
@@ -376,8 +400,54 @@ export default function ProductDisplay() {
                   Buy Now
                 </button>
               </div>
+              {/* 🔥 PRODUCT DETAILS SECTION */}
+              <div className="space-y-6 pt-6">
+                {/* Highlights */}
+                <div className="bg-white border rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3">
+                    Product Highlights
+                  </h3>
 
-              <div className="h-[800px]"></div>
+                  <ul className="list-disc pl-5 space-y-2 text-sm text-gray-700">
+                    <li>Premium quality material for long-lasting use</li>
+                    <li>High-resolution printing with vibrant colors</li>
+                    <li>Customizable design as per your needs</li>
+                    <li>Perfect for personal & business use</li>
+                    <li>Fast processing and reliable delivery</li>
+                  </ul>
+                </div>
+
+                {/* Additional Details */}
+                <div className="bg-white border rounded-lg p-4">
+                  <h3 className="font-semibold text-lg mb-3">
+                    Additional Details
+                  </h3>
+
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li>
+                      <span className="font-medium">Material:</span>{" "}
+                      High-quality standard stock
+                    </li>
+                    <li>
+                      <span className="font-medium">Printing:</span> Digital /
+                      Offset
+                    </li>
+                    <li>
+                      <span className="font-medium">Finish:</span> Matte /
+                      Glossy options available
+                    </li>
+                    <li>
+                      <span className="font-medium">Turnaround Time:</span> 3–5
+                      business days
+                    </li>
+                    <li>
+                      <span className="font-medium">Note:</span> Colors may
+                      slightly vary due to screen differences
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="h-[100px]"></div>
             </div>
           </div>
         </div>
