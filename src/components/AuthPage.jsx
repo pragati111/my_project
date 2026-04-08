@@ -83,7 +83,7 @@ export default function AuthPage() {
                     className="flex-1 px-3 py-2 outline-none text-sm"
                   />
 
-                  <button className="px-3 text-sm text-gray-500">
+                  <button className="px-3 text-sm text-gray-500 md:text-xs">
                     Resend
                   </button>
                 </div>
@@ -135,12 +135,12 @@ export default function AuthPage() {
             <h3 className="text-center mb-3 font-medium">
               Our Milestones
             </h3>
-            <div className="border rounded-lg divide-y bg-white">
+            <div className="border rounded-lg divide-y bg-white pb-20">
               <div className="p-3">58 Lakh+ Products Delivered</div>
               <div className="p-3">57321+ Google Reviews</div>
             </div>
           </div>
-
+        
         </div>
       </div>
     </>

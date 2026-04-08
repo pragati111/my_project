@@ -528,7 +528,8 @@ export default function ProductDisplay() {
 
       {/* MOBILE LAYOUT */}
       <div className="block md:hidden">
-        <div className="pt-4 px-4 pb-32">
+        <TopHeader />
+        <div className="pt-20 px-4 pb-32">
           {/* MAIN IMAGE */}
           <div className="relative w-full h-[300px] bg-white border rounded flex items-center justify-center mb-4">
             <button
