@@ -76,9 +76,39 @@ export default function ProductDisplay() {
     }
   }, [activeIndex]);
 
+  useEffect(() => {
+    const left = document.querySelector("#left-section");
+
+    const handler = (e) => {
+      if (!rightRef.current) return;
+
+      const el = rightRef.current;
+
+      const isScrollingDown = e.deltaY > 0;
+      const isScrollingUp = e.deltaY < 0;
+
+      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+
+      const atTop = el.scrollTop <= 0;
+
+      if ((isScrollingDown && !atBottom) || (isScrollingUp && !atTop)) {
+        e.preventDefault();
+        el.scrollTop += e.deltaY;
+      }
+    };
+
+    left?.addEventListener("wheel", handler, { passive: false });
+
+    return () => {
+      left?.removeEventListener("wheel", handler);
+    };
+  }, []);
+
   const activeMedia = media[activeIndex];
 
   const handleNext = () => setActiveIndex((prev) => (prev + 1) % media.length);
+
+  const rightRef = useRef(null);
 
   const handlePrev = () =>
     setActiveIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
@@ -93,7 +123,32 @@ export default function ProductDisplay() {
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[100px] px-6">
           <div className="flex gap-10 h-[calc(100vh-120px)] overflow-hidden">
             {/* LEFT */}
-            <div className="w-[420px] flex-shrink-0">
+            <div
+              id="left-section"
+              className="w-[420px] flex-shrink-0"
+              onWheel={(e) => {
+                if (!rightRef.current) return;
+
+                const el = rightRef.current;
+
+                const isScrollingDown = e.deltaY > 0;
+                const isScrollingUp = e.deltaY < 0;
+
+                const atBottom =
+                  el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+
+                const atTop = el.scrollTop <= 0;
+
+                // 🚫 Prevent page scroll ONLY when right section can still scroll
+                if (
+                  (isScrollingDown && !atBottom) ||
+                  (isScrollingUp && !atTop)
+                ) {
+                  e.preventDefault(); // 💥 THIS is the key
+                  el.scrollTop += e.deltaY;
+                }
+              }}
+            >
               <div className="relative w-[420px] h-[420px] bg-white border rounded flex items-center justify-center">
                 <button
                   onClick={handlePrev}
@@ -156,7 +211,10 @@ export default function ProductDisplay() {
             </div>
 
             {/* RIGHT */}
-            <div className="flex-1 space-y-5 overflow-y-auto pr-2">
+            <div
+              ref={rightRef}
+              className="flex-1 space-y-5 overflow-y-auto pr-2"
+            >
               <h1 className="text-2xl font-semibold">{product.name}</h1>
 
               {/* Rating */}
@@ -400,54 +458,64 @@ export default function ProductDisplay() {
                   Buy Now
                 </button>
               </div>
-              {/* 🔥 PRODUCT DETAILS SECTION */}
-              <div className="space-y-6 pt-6">
-                {/* Highlights */}
-                <div className="bg-white border rounded-lg p-4">
-                  <h3 className="font-semibold text-lg mb-3">
-                    Product Highlights
-                  </h3>
 
-                  <ul className="list-disc pl-5 space-y-2 text-sm text-gray-700">
-                    <li>Premium quality material for long-lasting use</li>
-                    <li>High-resolution printing with vibrant colors</li>
-                    <li>Customizable design as per your needs</li>
-                    <li>Perfect for personal & business use</li>
-                    <li>Fast processing and reliable delivery</li>
-                  </ul>
+              <div className="h-[100px]"></div>
+            </div>
+          </div>
+          {/* 🔥 FULL WIDTH PRODUCT SPECIFICATIONS */}
+          <div className="mt-10 bg-gray-50 border rounded-lg p-8">
+            <h2 className="text-2xl font-semibold mb-6">
+              Product <span className="font-bold">Specifications</span>
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+              {/* LEFT COLUMN */}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-gray-500">Name</p>
+                  <p className="font-medium">boAt Rockerz 255 Pro+</p>
                 </div>
 
-                {/* Additional Details */}
-                <div className="bg-white border rounded-lg p-4">
-                  <h3 className="font-semibold text-lg mb-3">
-                    Additional Details
-                  </h3>
+                <div>
+                  <p className="text-gray-500">Net Content</p>
+                  <p>
+                    1 UNIT Rockerz 255 Pro+, 1 UNIT Warranty Card, 1 USB Cable
+                  </p>
+                </div>
 
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <li>
-                      <span className="font-medium">Material:</span>{" "}
-                      High-quality standard stock
-                    </li>
-                    <li>
-                      <span className="font-medium">Printing:</span> Digital /
-                      Offset
-                    </li>
-                    <li>
-                      <span className="font-medium">Finish:</span> Matte /
-                      Glossy options available
-                    </li>
-                    <li>
-                      <span className="font-medium">Turnaround Time:</span> 3–5
-                      business days
-                    </li>
-                    <li>
-                      <span className="font-medium">Note:</span> Colors may
-                      slightly vary due to screen differences
-                    </li>
-                  </ul>
+                <div>
+                  <p className="text-gray-500">Marketed By</p>
+                  <p>Imagine Marketing Limited, Mumbai</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Driver Size</p>
+                  <p>10mm</p>
                 </div>
               </div>
-              <div className="h-[100px]"></div>
+
+              {/* RIGHT COLUMN */}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-gray-500">Category</p>
+                  <p className="font-medium">Neckband Earphones</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">MRP</p>
+                  <p>₹3,990</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Country of Origin</p>
+                  <p>India</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Bluetooth</p>
+                  <p>v5.0</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
