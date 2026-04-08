@@ -823,7 +823,7 @@ export default function ProductDisplay() {
             </div>
 
             {/* SPECIFICATIONS */}
-            <div className="bg-gray-50 border rounded-lg p-4 mt-6 mb-16">
+            <div className="bg-gray-50 border rounded-lg p-4 mt-6 mb-20">
               <h2 className="text-lg font-semibold mb-4">
                 Product <span className="font-bold">Specifications</span>
               </h2>
@@ -831,29 +831,24 @@ export default function ProductDisplay() {
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="text-gray-500">Name</p>
-                  <p className="font-medium">boAt Rockerz 255 Pro+</p>
+                  <p className="font-medium">Printing Product Pro+</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">Net Content</p>
                   <p>
-                    1 UNIT Rockerz 255 Pro+, 1 UNIT Warranty Card, 1 USB Cable
+                    1 UNIT 
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-gray-500">Marketed By</p>
-                  <p>Imagine Marketing Limited, Mumbai</p>
-                </div>
-
-                <div>
-                  <p className="text-gray-500">Driver Size</p>
-                  <p>10mm</p>
+                  <p className="text-gray-500">Size</p>
+                  <p>100x100 (inches)</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">Category</p>
-                  <p className="font-medium">Neckband Earphones</p>
+                  <p className="font-medium">Printing Products</p>
                 </div>
 
                 <div>
@@ -866,10 +861,6 @@ export default function ProductDisplay() {
                   <p>India</p>
                 </div>
 
-                <div>
-                  <p className="text-gray-500">Bluetooth</p>
-                  <p>v5.0</p>
-                </div>
               </div>
             </div>
           </div>
