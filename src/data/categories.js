@@ -367,4 +367,209 @@ export const categories = [
       },
     ],
   },
+  {
+    name: "Home Decoratives",
+    children: [
+      {
+        name: "Corporate Gifts",
+        items: [
+          {
+            id: "cg-mug-1",
+            name: "Custom Mugs",
+            image: "/images/business.jpg",
+            price: 399,
+            originalPrice: 599,
+            rating: 4.4,
+            reviews: 210,
+            media: [
+              { type: "image", url: "/images/business.jpg" },
+              { type: "video", url: "/videos/demo.mp4" },
+            ],
+            customizations: [
+              {
+                id: "color",
+                label: "Color",
+                type: "radio",
+                options: ["White", "Black"],
+              },
+              {
+                id: "photo",
+                label: "Upload Photo",
+                type: "file",
+              },
+              {
+                id: "message",
+                label: "Message",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Desk Decoratives",
+    children: [
+      {
+        name: "Corporate Gifts",
+        items: [
+          {
+            id: "cg-mug-1",
+            name: "Custom Mugs",
+            image: "/images/business.jpg",
+            price: 399,
+            originalPrice: 599,
+            rating: 4.4,
+            reviews: 210,
+            media: [
+              { type: "image", url: "/images/business.jpg" },
+              { type: "video", url: "/videos/demo.mp4" },
+            ],
+            customizations: [
+              {
+                id: "color",
+                label: "Color",
+                type: "radio",
+                options: ["White", "Black"],
+              },
+              {
+                id: "photo",
+                label: "Upload Photo",
+                type: "file",
+              },
+              {
+                id: "message",
+                label: "Message",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Kids' Zone",
+    children: [
+      {
+        name: "Corporate Gifts",
+        items: [
+          {
+            id: "cg-mug-1",
+            name: "Custom Mugs",
+            image: "/images/business.jpg",
+            price: 399,
+            originalPrice: 599,
+            rating: 4.4,
+            reviews: 210,
+            media: [
+              { type: "image", url: "/images/business.jpg" },
+              { type: "video", url: "/videos/demo.mp4" },
+            ],
+            customizations: [
+              {
+                id: "color",
+                label: "Color",
+                type: "radio",
+                options: ["White", "Black"],
+              },
+              {
+                id: "photo",
+                label: "Upload Photo",
+                type: "file",
+              },
+              {
+                id: "message",
+                label: "Message",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Marketing Products",
+    children: [
+      {
+        name: "Corporate Gifts",
+        items: [
+          {
+            id: "cg-mug-1",
+            name: "Custom Mugs",
+            image: "/images/business.jpg",
+            price: 399,
+            originalPrice: 599,
+            rating: 4.4,
+            reviews: 210,
+            media: [
+              { type: "image", url: "/images/business.jpg" },
+              { type: "video", url: "/videos/demo.mp4" },
+            ],
+            customizations: [
+              {
+                id: "color",
+                label: "Color",
+                type: "radio",
+                options: ["White", "Black"],
+              },
+              {
+                id: "photo",
+                label: "Upload Photo",
+                type: "file",
+              },
+              {
+                id: "message",
+                label: "Message",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Combo Gift Sets",
+    children: [
+      {
+        name: "Corporate Gifts",
+        items: [
+          {
+            id: "cg-mug-1",
+            name: "Custom Mugs",
+            image: "/images/business.jpg",
+            price: 399,
+            originalPrice: 599,
+            rating: 4.4,
+            reviews: 210,
+            media: [
+              { type: "image", url: "/images/business.jpg" },
+              { type: "video", url: "/videos/demo.mp4" },
+            ],
+            customizations: [
+              {
+                id: "color",
+                label: "Color",
+                type: "radio",
+                options: ["White", "Black"],
+              },
+              {
+                id: "photo",
+                label: "Upload Photo",
+                type: "file",
+              },
+              {
+                id: "message",
+                label: "Message",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];

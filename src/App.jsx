@@ -26,7 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/cart" element={<Cart />} />
-          {/* (optional) product page for mobile later */}
+          <Route path="/product/:id" element={<ProductDisplay />} />
         </Routes>
 
         <MobileBottomNav />
