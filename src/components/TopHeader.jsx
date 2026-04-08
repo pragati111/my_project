@@ -1,11 +1,18 @@
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function TopHeader() {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="fixed top-0 left-0 w-full z-50 bg-white flex items-center justify-between px-4 md:px-8 py-4 border-b">
       
       {/* Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogoClick}>
         <img
           src="https://via.placeholder.com/120x40"
           alt="logo"

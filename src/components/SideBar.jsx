@@ -9,7 +9,12 @@ export default function Sidebar() {
 
   return (
     <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs">
-      <div className="px-3 py-2 border-b font-medium bg-white">🏠 Home</div>
+      <div 
+        className="px-3 py-2 border-b font-medium bg-white cursor-pointer hover:bg-gray-50"
+        onClick={() => navigate("/")}
+      >
+        🏠 Home
+      </div>
 
       {categories.map((cat, i) => (
         <div key={i} className="border-b">
