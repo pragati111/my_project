@@ -528,7 +528,7 @@ export default function ProductDisplay() {
 
       {/* MOBILE LAYOUT */}
       <div className="block md:hidden">
-        <div className="pt-4 px-4 pb-24">
+        <div className="pt-4 px-4 pb-32">
           {/* MAIN IMAGE */}
           <div className="relative w-full h-[300px] bg-white border rounded flex items-center justify-center mb-4">
             <button
@@ -823,7 +823,7 @@ export default function ProductDisplay() {
             </div>
 
             {/* SPECIFICATIONS */}
-            <div className="bg-gray-50 border rounded-lg p-4 mt-6">
+            <div className="bg-gray-50 border rounded-lg p-4 mt-6 mb-16">
               <h2 className="text-lg font-semibold mb-4">
                 Product <span className="font-bold">Specifications</span>
               </h2>
