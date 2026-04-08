@@ -1,13 +1,14 @@
 import { categories } from "../data/categories";
 import { useNavigate } from "react-router-dom";
+import TopHeader from "../components/TopHeader";
 
 export default function Categories() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-4 md:hidden">
-      <h1 className="text-xl font-bold mb-4">Categories</h1>
-
+    <>
+    <TopHeader/>
+    <div className="mt-16 p-4 md:hidden">
       {categories.map((cat, i) => (
         <div key={i} className="mb-6">
           <h2 className="text-lg font-semibold mb-2">{cat.name}</h2>
@@ -42,5 +43,6 @@ export default function Categories() {
         </div>
       ))}
     </div>
+    </>
   );
 }

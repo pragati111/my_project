@@ -475,19 +475,19 @@ export default function ProductDisplay() {
                 <div className="space-y-4">
                   <div>
                     <p className="text-gray-500">Name</p>
-                    <p className="font-medium">boAt Rockerz 255 Pro+</p>
+                    <p className="font-medium">Printing Product Pro+</p>
                   </div>
 
                   <div>
                     <p className="text-gray-500">Net Content</p>
                     <p>
-                      1 UNIT Rockerz 255 Pro+, 1 UNIT Warranty Card, 1 USB Cable
+                      1 UNIT 
                     </p>
                   </div>
 
                   <div>
                     <p className="text-gray-500">Marketed By</p>
-                    <p>Imagine Marketing Limited, Mumbai</p>
+                    <p>Creative Studio, Jaipur</p>
                   </div>
 
                   <div>
@@ -500,7 +500,7 @@ export default function ProductDisplay() {
                 <div className="space-y-4">
                   <div>
                     <p className="text-gray-500">Category</p>
-                    <p className="font-medium">Neckband Earphones</p>
+                    <p className="font-medium">Printing Products</p>
                   </div>
 
                   <div>
