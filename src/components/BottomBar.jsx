@@ -2,7 +2,7 @@ import { Phone, Mail } from "lucide-react";
 
 export default function BottomBar() {
   return (
-    <div className="fixed bottom-[60px] md:bottom-0 left-0 w-full z-50 bg-white flex items-center justify-between px-4 md:px-8 py-2 md:py-4 border-t gap-4">
+    <div className="fixed bottom-20 md:bottom-0 left-0 w-full z-50 bg-white flex items-center justify-between px-4 md:px-8 py-2 md:py-4 border-t gap-4">
         <div className="flex flex-col md:flex-row gap-1 md:gap-6 text-xs md:text-sm">
           <div className="flex items-center gap-2">
             <Phone size={16} /> +91 98765 43210
