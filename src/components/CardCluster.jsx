@@ -27,8 +27,8 @@ const TextOnlyCard = ({ title, author, className = "" }) => (
 
 const BannerCard = ({ className = "" }) => (
   <div className={`bg-rose-600 p-4 md:p-6 ${CARD_ROUNDING} flex flex-col justify-center items-start ${className}`}>
-    <p className="text-rose-100 text-sm md:text-base font-bold leading-none">Join the</p>
-    <p className="text-white text-2xl md:text-3xl font-black leading-tight">Upside Down</p>
+    <p className="text-rose-100 text-sm md:text-base font-bold leading-none">Check our</p>
+    <p className="text-white text-2xl md:text-3xl font-black leading-tight">New Products</p>
   </div>
 );
 
@@ -43,13 +43,13 @@ const CardCluster = () => {
         <div className="md:col-span-3 flex flex-col gap-4">
           <ContentCard
             imageUrl="https://upload.wikimedia.org/wikipedia/en/2/21/Web_of_Spider-Man_Vol_1_129-1.png"
-            title="Spiderman: Into the Spider-Verse"
-            author="By Marvel Studios"
+            title="ABCD EFGH ahjdhvdsfj"
+            author="qwertyui"
             className="h-64 md:h-80"
           />
           <TextOnlyCard
-            title="The Future of Web Development"
-            author="By Jane Doe"
+            title="QRBNMYIOKJBJGHJ"
+            author="FVBNJKIUYHG"
             className="h-32 md:h-40"
           />
         </div>
@@ -58,19 +58,19 @@ const CardCluster = () => {
         <div className="md:col-span-6 flex flex-col gap-4">
           <ContentCard
             imageUrl="https://images.unsplash.com/photo-1512132411229-c30391241dd8?q=80&w=600&auto=format&fit=crop"
-            title="The Art of Still Life Photography"
-            author="By Michael Jordan"
+            title="QWERTY UIOP ADFG "
+            author="asdfgvbnmrtyu"
             className="h-64 md:h-80" // REDUCED HEIGHT HERE
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
              <TextOnlyCard 
-                title="Branding Strategy 101" 
-                author="By Sarah Lee" 
+                title="Printing 101 asdfghj sdfghj dfghj dfghj rtyu  byfgtuyjhukj " 
+                author="cvbnmg"
                 className="h-32 md:h-40"
              />
              <TextOnlyCard 
-                title="Mastering Tailwind CSS" 
-                author="By Leo Messi" 
+                title="Wrtyuhgfvghjkhgfrtgyhujik rgfhgjyukilijukhygtfgrhtjyukji rdfthgyjhukjil" 
+                author="vbnm" 
                 className="h-32 md:h-40"
              />
           </div>
@@ -81,8 +81,8 @@ const CardCluster = () => {
           <BannerCard className="h-32 md:h-40" />
           <ContentCard
             imageUrl="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=600&auto=format&fit=crop"
-            title="Landscape Photography Essentials"
-            author="By Alex Wong"
+            title="Lbnmkiuytfghjk"
+            author="vbnmhyu"
             className="h-64 md:h-80"
           />
         </div>

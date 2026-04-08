@@ -1,6 +1,5 @@
 import DesktopHome from "./components/DesktopHome";
 import ProductDisplay from "./components/ProductDisplay";
-
 import MobileBottomNav from "./components/MobileBottomNav";
 
 import { Routes, Route } from "react-router-dom";
@@ -8,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Categories from "./pages/Categories";
 import Cart from "./pages/Cart";
+import AuthPage from "./components/AuthPage"; // ✅ added
+import AccountPage from "./components/AccountPage"; // ✅ add this
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
         <Routes>
           <Route path="/" element={<DesktopHome />} />
           <Route path="/product/:id" element={<ProductDisplay />} />
+          <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
+          <Route path="/account" element={<AccountPage />} />
         </Routes>
       </div>
 
@@ -27,6 +30,8 @@ function App() {
           <Route path="/categories" element={<Categories />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/:id" element={<ProductDisplay />} />
+          <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
+          <Route path="/account" element={<AccountPage />} />
         </Routes>
 
         <MobileBottomNav />
