@@ -10,10 +10,17 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
+import { useState } from "react";
+import FAQPage from "./FAQPage";
 
 export default function AccountPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showFAQ, setShowFAQ] = useState(false);
+  
+  if (showFAQ) {
+    return <FAQPage onBack={() => setShowFAQ(false)} />;
+  }
 
   return (
     <>
@@ -89,13 +96,16 @@ export default function AccountPage() {
               <span>{">"}</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition">
-              <div className="flex items-center gap-3">
-                <HelpCircle size={20} />
-                <span className="text-sm">FAQs</span>
-              </div>
-              <span>{">"}</span>
-            </div>
+            <div 
+    onClick={() => setShowFAQ(true)}
+    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition"
+  >
+     <div className="flex items-center gap-3">
+       <HelpCircle size={20} />
+       <span className="text-sm">FAQs</span>
+     </div>
+     <span>{">"}</span>
+  </div>
 
           </div>
         </div>

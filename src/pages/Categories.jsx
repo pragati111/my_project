@@ -49,8 +49,8 @@ export default function Categories() {
       <div className="mt-16 flex h-[calc(100vh-64px)] bg-gradient-to-br from-white via-gray-50 to-gray-100">
         {/* LEFT SIDEBAR */}
         <div className="w-[22%] min-w-[120px] max-w-[220px] flex-shrink-0 p-3 overflow-y-auto backdrop-blur-xl bg-white/70 border-r border-gray-200 shadow-xl z-10">
-          <h1 className="text-sm font-semibold mb-4 tracking-wide text-gray-700">
-            Categories
+          <h1 className="text-sm font-semibold mb-4 tracking-wide text-gray-700 pl-1">
+               Our Products
           </h1>
 
           {categories.map((cat, index) => (
