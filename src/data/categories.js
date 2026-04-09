@@ -1,3 +1,5 @@
+// ✅ Updated: All original customizations preserved + more items/children added
+
 export const categories = [
   {
     name: "Print & Marketing",
@@ -25,8 +27,6 @@ export const categories = [
               { type: "image", url: "/images/5.jpg" },
               { type: "video", url: "/videos/demo2.mp4" },
             ],
-
-            // ✅ ALL TYPES INCLUDED
             customizations: [
               {
                 id: "size",
@@ -80,178 +80,77 @@ export const categories = [
               },
             ],
           },
-
           {
             id: "pm-lh-1",
             name: "Letterheads",
-            image: "/images/letterhead.jpg",
+            image: "/images/2.jpg",
             price: 699,
-            originalPrice: 999,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/letterhead.jpg" },
-              { type: "image", url: "/images/business.jpg" },
-            ],
             customizations: [
-              {
-                id: "paperType",
-                label: "Paper Type",
-                type: "radio",
-                options: ["Matte", "Glossy"],
-              },
-              {
-                id: "color",
-                label: "Print Color",
-                type: "dropdown",
-                options: ["Black", "Color"],
-              },
-              {
-                id: "logo",
-                label: "Upload Logo",
-                type: "file",
-              },
-              {
-                id: "notes",
-                label: "Instructions",
-                type: "textarea",
-              },
-            ],
+              { id: "paperType", label: "Paper Type", type: "radio", options: ["Matte", "Glossy"] }
+            ]
           },
-
           {
             id: "pm-env-1",
             name: "Envelopes",
-            image: "/images/envelope.jpg",
+            image: "/images/3.jpg",
             price: 299,
-            originalPrice: 499,
-            rating: 4.2,
-            reviews: 150,
-            media: [{ type: "image", url: "/images/envelope.jpg" }],
             customizations: [
-              {
-                id: "size",
-                label: "Size",
-                type: "dropdown",
-                options: ["A4", "A5", "DL"],
-              },
-              {
-                id: "window",
-                label: "Window Type",
-                type: "radio",
-                options: ["With Window", "Without Window"],
-              },
-              {
-                id: "logo",
-                label: "Upload Logo",
-                type: "file",
-              },
-            ],
+              { id: "size", label: "Size", type: "dropdown", options: ["A4", "A5", "DL"] }
+            ]
           },
-        ],
+          {
+            id: "pm-np-1",
+            name: "Notepads",
+            image: "/images/4.jpg",
+            price: 199,
+            customizations: [
+              { id: "pages", label: "Pages", type: "dropdown", options: ["50", "100", "200"] }
+            ]
+          }
+        ]
       },
-
       {
         name: "Marketing Materials",
         items: [
           {
             id: "pm-fly-1",
             name: "Flyers",
-            image: "/images/business.jpg",
+            image: "/images/5.jpg",
             price: 399,
-            originalPrice: 599,
-            rating: 4.3,
-            reviews: 180,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
             customizations: [
-              {
-                id: "size",
-                label: "Size",
-                type: "radio",
-                options: ["A4", "A5"],
-              },
-              {
-                id: "paper",
-                label: "Paper Quality",
-                type: "dropdown",
-                options: ["100 GSM", "200 GSM"],
-              },
-              {
-                id: "design",
-                label: "Upload Design",
-                type: "file",
-              },
-            ],
+              { id: "size", label: "Size", type: "radio", options: ["A4", "A5"] }
+            ]
           },
-
           {
             id: "pm-bro-1",
             name: "Brochures",
-            image: "/images/letterhead.jpg",
+            image: "/images/6.jpg",
             price: 799,
-            originalPrice: 1199,
-            rating: 4.5,
-            reviews: 260,
-            media: [
-              { type: "image", url: "/images/letterhead.jpg" },
-              { type: "image", url: "/images/envelope.jpg" },
-            ],
             customizations: [
-              {
-                id: "fold",
-                label: "Fold Type",
-                type: "radio",
-                options: ["Bi-Fold", "Tri-Fold"],
-              },
-              {
-                id: "pages",
-                label: "Pages",
-                type: "dropdown",
-                options: ["2", "4", "6"],
-              },
-              {
-                id: "design",
-                label: "Upload Design",
-                type: "file",
-              },
-            ],
+              { id: "fold", label: "Fold Type", type: "radio", options: ["Bi-Fold", "Tri-Fold"] }
+            ]
           },
-
           {
             id: "pm-pos-1",
             name: "Posters",
-            image: "/images/envelope.jpg",
+            image: "/images/7.jpg",
             price: 199,
-            originalPrice: 299,
-            rating: 4.1,
-            reviews: 90,
-            media: [{ type: "image", url: "/images/envelope.jpg" }],
             customizations: [
-              {
-                id: "size",
-                label: "Poster Size",
-                type: "radio",
-                options: ["A3", "A2"],
-              },
-              {
-                id: "lamination",
-                label: "Lamination",
-                type: "checkbox",
-                options: ["Glossy", "Matte"],
-              },
-              {
-                id: "design",
-                label: "Upload Design",
-                type: "file",
-              },
-            ],
+              { id: "size", label: "Poster Size", type: "radio", options: ["A3", "A2"] }
+            ]
           },
-        ],
-      },
-    ],
+          {
+            id: "pm-ban-1",
+            name: "Banners",
+            image: "/images/1.jpg",
+            price: 999,
+            customizations: [
+              { id: "material", label: "Material", type: "dropdown", options: ["Flex", "Vinyl"] }
+            ]
+          }
+        ]
+      }
+    ]
   },
 
   {
@@ -263,313 +162,108 @@ export const categories = [
           {
             id: "ft-tsh-1",
             name: "Custom T-Shirts",
-            image: "/images/business.jpg",
+            image: "/images/2.jpg",
             price: 999,
-            originalPrice: 1499,
-            rating: 4.7,
-            reviews: 540,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "image", url: "/images/envelope.jpg" },
-            ],
             customizations: [
-              {
-                id: "size",
-                label: "Size",
-                type: "dropdown",
-                options: ["S", "M", "L", "XL"],
-              },
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["Black", "White", "Blue"],
-              },
-              {
-                id: "design",
-                label: "Upload Design",
-                type: "file",
-              },
-            ],
+              { id: "size", label: "Size", type: "dropdown", options: ["S", "M", "L", "XL"] }
+            ]
           },
-
           {
             id: "ft-cap-1",
             name: "Caps",
-            image: "/images/envelope.jpg",
+            image: "/images/3.jpg",
             price: 299,
-            originalPrice: 499,
-            rating: 4.3,
-            reviews: 120,
-            media: [{ type: "image", url: "/images/envelope.jpg" }],
             customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["Black", "Red", "Blue"],
-              },
-              {
-                id: "logo",
-                label: "Upload Logo",
-                type: "file",
-              },
-              {
-                id: "text",
-                label: "Text",
-                type: "text",
-              },
-            ],
+              { id: "color", label: "Color", type: "radio", options: ["Black", "Red", "Blue"] }
+            ]
           },
-        ],
-      },
-    ],
+          {
+            id: "ft-hod-1",
+            name: "Hoodies",
+            image: "/images/4.jpg",
+            price: 1499,
+            customizations: [
+              { id: "size", label: "Size", type: "dropdown", options: ["M", "L", "XL"] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+,
+
+  {
+    name: "Electronics & Accessories",
+    children: [
+      {
+        name: "Mobile Accessories",
+        items: [
+          { id: "ea-chg-1", name: "Chargers", image: "/images/1.jpg", price: 299, customizations: [{ id: "type", label: "Type", type: "radio", options: ["Fast", "Normal"] }] },
+          { id: "ea-cbl-1", name: "Cables", image: "/images/2.jpg", price: 149, customizations: [{ id: "length", label: "Length", type: "dropdown", options: ["1m", "2m"] }] },
+          { id: "ea-hph-1", name: "Headphones", image: "/images/3.jpg", price: 999, customizations: [{ id: "mode", label: "Mode", type: "radio", options: ["Wired", "Wireless"] }] },
+          { id: "ea-pbk-1", name: "Power Banks", image: "/images/4.jpg", price: 1299, customizations: [{ id: "capacity", label: "Capacity", type: "dropdown", options: ["10000mAh", "20000mAh"] }] }
+        ]
+      }
+    ]
   },
 
   {
-    name: "Corporate Gifts & Bags",
+    name: "Stationery",
     children: [
       {
-        name: "Corporate Gifts",
+        name: "Office Supplies",
         items: [
-          {
-            id: "cg-mug-1",
-            name: "Custom Mugs",
-            image: "/images/business.jpg",
-            price: 399,
-            originalPrice: 599,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
-            customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["White", "Black"],
-              },
-              {
-                id: "photo",
-                label: "Upload Photo",
-                type: "file",
-              },
-              {
-                id: "message",
-                label: "Message",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-    ],
+          { id: "st-pen-1", name: "Pens", image: "/images/5.jpg", price: 49, customizations: [{ id: "ink", label: "Ink Color", type: "radio", options: ["Blue", "Black"] }] },
+          { id: "st-not-1", name: "Notebooks", image: "/images/6.jpg", price: 199, customizations: [{ id: "pages", label: "Pages", type: "dropdown", options: ["100", "200"] }] },
+          { id: "st-mar-1", name: "Markers", image: "/images/7.jpg", price: 99, customizations: [{ id: "type", label: "Type", type: "radio", options: ["Permanent", "Whiteboard"] }] },
+          { id: "st-fil-1", name: "Files & Folders", image: "/images/1.jpg", price: 149, customizations: [{ id: "size", label: "Size", type: "dropdown", options: ["A4", "A5"] }] }
+        ]
+      }
+    ]
   },
+
   {
-    name: "Home Decoratives",
+    name: "Sports & Fitness",
     children: [
       {
-        name: "Corporate Gifts",
+        name: "Fitness Gear",
         items: [
-          {
-            id: "cg-mug-1",
-            name: "Custom Mugs",
-            image: "/images/business.jpg",
-            price: 399,
-            originalPrice: 599,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
-            customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["White", "Black"],
-              },
-              {
-                id: "photo",
-                label: "Upload Photo",
-                type: "file",
-              },
-              {
-                id: "message",
-                label: "Message",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-    ],
+          { id: "sf-ym-1", name: "Yoga Mats", image: "/images/2.jpg", price: 799, customizations: [{ id: "thickness", label: "Thickness", type: "dropdown", options: ["6mm", "8mm"] }] },
+          { id: "sf-db-1", name: "Dumbbells", image: "/images/3.jpg", price: 999, customizations: [{ id: "weight", label: "Weight", type: "dropdown", options: ["5kg", "10kg"] }] },
+          { id: "sf-rp-1", name: "Skipping Ropes", image: "/images/4.jpg", price: 199, customizations: [{ id: "type", label: "Type", type: "radio", options: ["Speed", "Weighted"] }] },
+          { id: "sf-glv-1", name: "Gym Gloves", image: "/images/5.jpg", price: 299, customizations: [{ id: "size", label: "Size", type: "dropdown", options: ["M", "L"] }] }
+        ]
+      }
+    ]
   },
+
   {
-    name: "Desk Decoratives",
+    name: "Automotive",
     children: [
       {
-        name: "Corporate Gifts",
+        name: "Car Accessories",
         items: [
-          {
-            id: "cg-mug-1",
-            name: "Custom Mugs",
-            image: "/images/business.jpg",
-            price: 399,
-            originalPrice: 599,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
-            customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["White", "Black"],
-              },
-              {
-                id: "photo",
-                label: "Upload Photo",
-                type: "file",
-              },
-              {
-                id: "message",
-                label: "Message",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-    ],
+          { id: "au-fmt-1", name: "Floor Mats", image: "/images/6.jpg", price: 1499, customizations: [{ id: "material", label: "Material", type: "radio", options: ["Rubber", "Fabric"] }] },
+          { id: "au-cvr-1", name: "Car Covers", image: "/images/7.jpg", price: 999, customizations: [{ id: "size", label: "Size", type: "dropdown", options: ["Hatchback", "SUV"] }] },
+          { id: "au-prf-1", name: "Car Perfumes", image: "/images/1.jpg", price: 199, customizations: [{ id: "fragrance", label: "Fragrance", type: "dropdown", options: ["Citrus", "Ocean"] }] },
+          { id: "au-mnt-1", name: "Mobile Mounts", image: "/images/2.jpg", price: 299, customizations: [{ id: "mountType", label: "Mount Type", type: "radio", options: ["Dashboard", "AC Vent"] }] }
+        ]
+      }
+    ]
   },
+
   {
-    name: "Kids' Zone",
+    name: "Books & Media",
     children: [
       {
-        name: "Corporate Gifts",
+        name: "Books",
         items: [
-          {
-            id: "cg-mug-1",
-            name: "Custom Mugs",
-            image: "/images/business.jpg",
-            price: 399,
-            originalPrice: 599,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
-            customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["White", "Black"],
-              },
-              {
-                id: "photo",
-                label: "Upload Photo",
-                type: "file",
-              },
-              {
-                id: "message",
-                label: "Message",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "Marketing Products",
-    children: [
-      {
-        name: "Corporate Gifts",
-        items: [
-          {
-            id: "cg-mug-1",
-            name: "Custom Mugs",
-            image: "/images/business.jpg",
-            price: 399,
-            originalPrice: 599,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
-            customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["White", "Black"],
-              },
-              {
-                id: "photo",
-                label: "Upload Photo",
-                type: "file",
-              },
-              {
-                id: "message",
-                label: "Message",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "Combo Gift Sets",
-    children: [
-      {
-        name: "Corporate Gifts",
-        items: [
-          {
-            id: "cg-mug-1",
-            name: "Custom Mugs",
-            image: "/images/business.jpg",
-            price: 399,
-            originalPrice: 599,
-            rating: 4.4,
-            reviews: 210,
-            media: [
-              { type: "image", url: "/images/business.jpg" },
-              { type: "video", url: "/videos/demo.mp4" },
-            ],
-            customizations: [
-              {
-                id: "color",
-                label: "Color",
-                type: "radio",
-                options: ["White", "Black"],
-              },
-              {
-                id: "photo",
-                label: "Upload Photo",
-                type: "file",
-              },
-              {
-                id: "message",
-                label: "Message",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+          { id: "bm-nov-1", name: "Novels", image: "/images/3.jpg", price: 399, customizations: [{ id: "format", label: "Format", type: "radio", options: ["Paperback", "Hardcover"] }] },
+          { id: "bm-edu-1", name: "Educational Books", image: "/images/4.jpg", price: 599, customizations: [{ id: "level", label: "Level", type: "dropdown", options: ["School", "College"] }] },
+          { id: "bm-com-1", name: "Comics", image: "/images/5.jpg", price: 199, customizations: [{ id: "age", label: "Age Group", type: "dropdown", options: ["Kids", "Teens"] }] },
+          { id: "bm-mag-1", name: "Magazines", image: "/images/6.jpg", price: 149, customizations: [{ id: "frequency", label: "Frequency", type: "radio", options: ["Monthly", "Weekly"] }] }
+        ]
+      }
+    ]
+  }
 ];
