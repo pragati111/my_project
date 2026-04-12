@@ -60,7 +60,7 @@ export default function AccountPage() {
               <div className="mx-auto w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:bg-green-100 transition">
                 <MapPin size={22} />
               </div>
-              <p className="mt-2 text-sm">Edit Address</p>
+              <p className="mt-2 text-sm">Your Addresses</p>
             </div>
 
             <div className="group cursor-pointer">

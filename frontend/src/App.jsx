@@ -9,9 +9,11 @@ import Categories from "./pages/Categories";
 import Cart from "./pages/Cart";
 import AuthPage from "./components/AuthPage"; // ✅ added
 import AccountPage from "./components/AccountPage"; // ✅ add this
+import CartProvider from "./components/CartContext"; // ✅ added
 
 function App() {
   return (
+    <CartProvider>
     <>
       {/* ✅ DESKTOP ROUTES */}
       <div className="hidden md:block">
@@ -20,6 +22,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDisplay />} />
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </div>
 
@@ -37,6 +40,7 @@ function App() {
         <MobileBottomNav />
       </div>
     </>
+    </CartProvider>
   );
 }
 

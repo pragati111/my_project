@@ -5,7 +5,12 @@ import BottomBar from "./BottomBar";
 import { categories } from "../data/categories";
 import { useEffect, useState, useRef } from "react";
 
+import { useCart } from "./CartContext";
+
+
 export default function ProductDisplay() {
+  
+  const { addToCart } = useCart();
   const { id } = useParams();
 
   const offers = [
@@ -397,10 +402,11 @@ export default function ProductDisplay() {
                         <input
                           type="number"
                           className="border p-2 rounded w-full"
-                          value={config.quantity || ""}
+                          value={config.quantity || 1}
                           onChange={(e) =>
-                            handleChange(index, "quantity", e.target.value)
+                            handleChange(index, "quantity", parseInt(e.target.value) || 1)
                           }
+                          min="1"
                         />
                       </div>
                     </div>
@@ -450,7 +456,13 @@ export default function ProductDisplay() {
                 {/* BUTTONS */}
                 <div className="flex gap-4 pt-6">
                   <button
-                    onClick={() => console.log(configs)}
+                    onClick={() => {
+                      const formattedConfigs = configs.map(c => ({
+                        config: c,
+                        quantity: parseInt(c.quantity) || 1
+                      }));
+                      addToCart(product, formattedConfigs);
+                    }}
                     className="bg-black text-white px-6 py-3 rounded w-[200px]"
                   >
                     Add to Cart
@@ -773,10 +785,11 @@ export default function ProductDisplay() {
                     <input
                       type="number"
                       className="border p-2 rounded w-full"
-                      value={config.quantity || ""}
+                      value={config.quantity || 1}
                       onChange={(e) =>
-                        handleChange(index, "quantity", e.target.value)
+                        handleChange(index, "quantity", parseInt(e.target.value) || 1)
                       }
+                      min="1"
                     />
                   </div>
                 </div>
@@ -871,7 +884,13 @@ export default function ProductDisplay() {
         <div className="fixed bottom-16 left-0 right-0 bg-white border-t p-4 z-40">
           <div className="flex gap-4">
             <button
-              onClick={() => console.log(configs)}
+              onClick={() => {
+                const formattedConfigs = configs.map(c => ({
+                  config: c,
+                  quantity: parseInt(c.quantity) || 1
+                }));
+                addToCart(product, formattedConfigs);
+              }}
               className="bg-black text-white px-4 py-3 rounded flex-1"
             >
               Add to Cart
