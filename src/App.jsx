@@ -9,11 +9,9 @@ import Categories from "./pages/Categories";
 import Cart from "./pages/Cart";
 import AuthPage from "./components/AuthPage"; // ✅ added
 import AccountPage from "./components/AccountPage"; // ✅ add this
-import CartProvider from "./components/CartContext"; // ✅ added
 
 function App() {
   return (
-    <CartProvider>
     <>
       {/* ✅ DESKTOP ROUTES */}
       <div className="hidden md:block">
@@ -40,7 +38,6 @@ function App() {
         <MobileBottomNav />
       </div>
     </>
-    </CartProvider>
   );
 }
 

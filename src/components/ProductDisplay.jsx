@@ -5,7 +5,7 @@ import BottomBar from "./BottomBar";
 import { categories } from "../data/categories";
 import { useEffect, useState, useRef } from "react";
 
-import { useCart } from "./CartContext";
+import { useCart } from "../redux/useCart";
 
 
 export default function ProductDisplay() {

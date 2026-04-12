@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
-import { useCart } from "./CartContext";
+import { useCart } from "../redux/useCart";
 
 export default function TopHeader() {
   const navigate = useNavigate();

@@ -1,20 +1,11 @@
 import TopHeader from "../components/TopHeader";
-import { useCart } from "../components/CartContext";
+import { useCart } from "../redux/useCart";
 
 export default function Cart() {
-  const { cart } = useCart(); // ✅ THIS is where cart comes from
+  const { cart, getTotalPrice, removeFromCart, updateQuantity } = useCart();
 
-  // ✅ TOTAL PRICE
-  const getTotalPrice = () => {
-    return cart.reduce((total, product) =>
-      total +
-      product.designs.reduce(
-        (sum, d) => sum + Number(d.quantity || 0) * product.price,
-        0
-      ),
-      0
-    );
-  };
+  // ✅ TOTAL PRICE is now from Redux hook
+  // const getTotalPrice = () => { ... } // Removed - now using Redux hook
 
   return (
     <>
