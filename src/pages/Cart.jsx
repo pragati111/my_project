@@ -82,7 +82,7 @@ export default function Cart() {
                             key.includes("Design") && val ? (
                               <div key={key} className="flex-shrink-0 w-12 h-12 border rounded overflow-hidden">
                                 <img
-                                  src={URL.createObjectURL(val)}
+                                  src={typeof val === "string" ? val : URL.createObjectURL(val)}
                                   alt={key}
                                   className="w-full h-full object-cover"
                                 />
@@ -170,8 +170,14 @@ export default function Cart() {
                 </button>
               </div>
             ) : (
-              <div className="mb-4 bg-gray-50 p-4 rounded-sm text-sm text-gray-600">
-                No saved address found. Add one in Manage Address to see it here.
+              <div className="mb-4 bg-gray-50 p-4 rounded-sm text-sm">
+                <button
+                  type="button"
+                  onClick={() => navigate("/manage-address")}
+                  className="text-blue-600 font-medium underline decoration-1 underline-offset-2 hover:text-blue-800"
+                >
+                  No saved address found. Add one in Manage Address to see it here.
+                </button>
               </div>
             )}
 

@@ -14,7 +14,7 @@ export default function ManageAddressPage() {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length) {
+        if (Array.isArray(parsed)) {
           const hasDefault = parsed.some((addr) => addr.isDefault);
           return parsed.map((addr, index) => ({
             ...addr,
@@ -26,14 +26,7 @@ export default function ManageAddressPage() {
       }
     }
 
-    return [
-      {
-        id: 1,
-        text: "D-482, Malviya Nagar, Jaipur, Rajasthan, 302017",
-        type: "Home",
-        isDefault: true,
-      },
-    ];
+    return [];
   });
 
   const [showAdd, setShowAdd] = useState(false);
@@ -146,70 +139,78 @@ export default function ManageAddressPage() {
 
         {/* ADDRESS LIST */}
         <div className="space-y-4">
-          {addresses.map((addr) => (
-            <div
-              key={addr.id}
-              className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-lg transition border ${
-                addr.isDefault ? "border-black" : "border-gray-200"
-              }`}
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    checked={addr.isDefault}
-                    onChange={() => setDefault(addr.id)}
-                  />
+          {addresses.length === 0 ? (
+            <div className="bg-white rounded-3xl p-10 shadow-md text-center border border-dashed border-gray-300">
+              
+                No Addresses added by you. Add your delivery address
+              
+            </div>
+          ) : (
+            addresses.map((addr) => (
+              <div
+                key={addr.id}
+                className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-lg transition border ${
+                  addr.isDefault ? "border-black" : "border-gray-200"
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-3">
+                    <input
+                      type="radio"
+                      checked={addr.isDefault}
+                      onChange={() => setDefault(addr.id)}
+                    />
 
-                  <div>
-                    {addr.isDefault && (
-                      <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full">
-                        Default
-                      </span>
-                    )}
+                    <div>
+                      {addr.isDefault && (
+                        <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full">
+                          Default
+                        </span>
+                      )}
 
-                    {addr.type && (
-                      <span className="ml-2 text-xs bg-gray-200 px-2 py-0.5 rounded">
-                        {addr.type}
-                      </span>
-                    )}
+                      {addr.type && (
+                        <span className="ml-2 text-xs bg-gray-200 px-2 py-0.5 rounded">
+                          {addr.type}
+                        </span>
+                      )}
 
-                    <p className="text-sm text-gray-700 mt-2 leading-relaxed">
-                      {addr.text}
-                    </p>
+                      <p className="text-sm text-gray-700 mt-2 leading-relaxed">
+                        {addr.text}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 text-gray-400">
+                    <Pencil
+                      size={18}
+                      onClick={() => {
+                        const addrParts = addr.text.split(", ");
+
+                        setFormData({
+                          house: addrParts[0] || "",
+                          area: addrParts[1] || "",
+                          city: addrParts[2] || "",
+                          state: addrParts[3]?.split(" - ")[0] || "",
+                          pincode: addrParts[3]?.split(" - ")[1] || "",
+                          type: addr.type || "",
+                          landmark: "",
+                        });
+
+                        setEditId(addr.id);
+                        setShowAdd(true);
+                      }}
+                      className="cursor-pointer hover:text-blue-500"
+                    />
+                    <Trash2
+                      size={18}
+                      onClick={() => handleDelete(addr.id)}
+                      className="cursor-pointer hover:text-red-500"
+                    />
                   </div>
                 </div>
-
-                <div className="flex gap-3 text-gray-400">
-                  <Pencil
-  size={18}
-  onClick={() => {
-    const addrParts = addr.text.split(", ");
-
-    setFormData({
-      house: addrParts[0] || "",
-      area: addrParts[1] || "",
-      city: addrParts[2] || "",
-      state: addrParts[3]?.split(" - ")[0] || "",
-      pincode: addrParts[3]?.split(" - ")[1] || "",
-      type: addr.type || "",
-      landmark: "",
-    });
-
-    setEditId(addr.id);
-    setShowAdd(true);
-  }}
-  className="cursor-pointer hover:text-blue-500"
-/>
-                  <Trash2
-                    size={18}
-                    onClick={() => handleDelete(addr.id)}
-                    className="cursor-pointer hover:text-red-500"
-                  />
-                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* ✅ ADD ADDRESS MODAL */}

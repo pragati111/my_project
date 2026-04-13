@@ -43,6 +43,19 @@ export default function ProductDisplay() {
     setConfigs(updated);
   };
 
+  const handleFileChange = (index, id, file) => {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      handleChange(index, id, event.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const getPreviewSrc = (value) =>
+    typeof value === "string" ? value : URL.createObjectURL(value);
+
   const addConfig = () => setConfigs((prev) => [...prev, {}]);
 
   const removeConfig = (index) => {
@@ -389,7 +402,7 @@ export default function ProductDisplay() {
                                 {config[field.id] && (
                                   <div className="w-20 h-20 border rounded overflow-hidden">
                                     <img
-                                      src={URL.createObjectURL(config[field.id])}
+                                      src={getPreviewSrc(config[field.id])}
                                       alt="Uploaded design"
                                       className="w-full h-full object-cover"
                                     />
@@ -400,7 +413,7 @@ export default function ProductDisplay() {
                                   accept="image/*"
                                   onChange={(e) => {
                                     const file = e.target.files[0];
-                                    handleChange(index, field.id, file);
+                                    handleFileChange(index, field.id, file);
                                   }}
                                 />
                                 <p className="text-xs text-gray-500">
@@ -786,8 +799,9 @@ export default function ProductDisplay() {
                         {field.type === "file" && (
                           <input
                             type="file"
+                            accept="image/*"
                             onChange={(e) =>
-                              handleChange(index, field.id, e.target.files[0])
+                              handleFileChange(index, field.id, e.target.files[0])
                             }
                           />
                         )}
