@@ -385,12 +385,28 @@ export default function ProductDisplay() {
 
                             {/* FILE */}
                             {field.type === "file" && (
-                              <input
-                                type="file"
-                                onChange={(e) =>
-                                  handleChange(index, field.id, e.target.files[0])
-                                }
-                              />
+                              <div className="space-y-2">
+                                {config[field.id] && (
+                                  <div className="w-20 h-20 border rounded overflow-hidden">
+                                    <img
+                                      src={URL.createObjectURL(config[field.id])}
+                                      alt="Uploaded design"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                )}
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    handleChange(index, field.id, file);
+                                  }}
+                                />
+                                <p className="text-xs text-gray-500">
+                                  {config[field.id] ? field.label.replace("Upload", "Change") : field.label}
+                                </p>
+                              </div>
                             )}
                           </div>
                         );

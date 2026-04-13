@@ -18,6 +18,8 @@ export default function Cart() {
               Your Shopping Cart ({cart.reduce((sum, product) => sum + product.designs.length, 0)} items)
             </h1>
 
+          
+
             {/* HEADER */}
             <div className="hidden md:grid grid-cols-5 text-gray-500 text-sm border-b pb-2 mb-4">
               <span>Item</span>
@@ -47,11 +49,31 @@ export default function Cart() {
 
                     {Object.entries(d.config).map(
                       ([key, val]) =>
-                        key !== "quantity" && (
+                        key !== "quantity" && !key.includes("Design") && (
                           <p key={key} className="text-gray-500 text-xs">
                             {key}: {String(val)}
                           </p>
                         )
+                    )}
+
+                    {/* UPLOADED DESIGNS */}
+                    {Object.entries(d.config).some(([key, val]) => key.includes("Design") && val) && (
+                      <div className="mt-2">
+                        <p className="text-xs font-medium text-gray-700">Uploaded Designs:</p>
+                        <div className="flex gap-2 mt-1 overflow-x-auto">
+                          {Object.entries(d.config).map(([key, val]) =>
+                            key.includes("Design") && val ? (
+                              <div key={key} className="flex-shrink-0 w-12 h-12 border rounded overflow-hidden">
+                                <img
+                                  src={URL.createObjectURL(val)}
+                                  alt={key}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ) : null
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
 
