@@ -9,9 +9,9 @@ export const addToCart = (product, configs) => ({
   payload: { product, configs }
 });
 
-export const removeFromCart = (productId) => ({
+export const removeFromCart = (productId, designIndex) => ({
   type: REMOVE_FROM_CART,
-  payload: productId
+  payload: { productId, designIndex }
 });
 
 export const updateQuantity = (productId, designIndex, quantity) => ({

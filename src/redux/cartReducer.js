@@ -44,14 +44,29 @@ export const cartReducer = (state = initialState, action) => {
       };
     }
 
-    case REMOVE_FROM_CART:
+    case REMOVE_FROM_CART: {
+      const payload = action.payload || {};
+      const productId = payload.productId ?? payload;
+      const designIndex = payload.designIndex;
+
       return {
         ...state,
-        items: state.items.filter(p => p.productId !== action.payload)
+        items: state.items
+          .map(p =>
+            p.productId === productId
+              ? {
+                  ...p,
+                  designs: p.designs.filter((_, idx) => idx !== designIndex)
+                }
+              : p
+          )
+          .filter(p => p.designs.length > 0)
       };
+    }
 
     case UPDATE_QUANTITY: {
       const { productId, designIndex, quantity } = action.payload;
+      const nextQuantity = Math.max(1, Number(quantity) || 1);
       return {
         ...state,
         items: state.items.map(p =>
@@ -60,7 +75,7 @@ export const cartReducer = (state = initialState, action) => {
                 ...p,
                 designs: p.designs.map((d, idx) =>
                   idx === designIndex
-                    ? { ...d, quantity: Number(quantity) }
+                    ? { ...d, quantity: nextQuantity }
                     : d
                 )
               }

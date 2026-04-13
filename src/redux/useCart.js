@@ -5,10 +5,13 @@ export const useCart = () => {
   const dispatch = useDispatch();
   const items = useSelector(state => state.cart.items);
 
+  
+
   return {
     cart: items,
     addToCart: (product, configs) => dispatch(addToCart(product, configs)),
-    removeFromCart: (productId) => dispatch(removeFromCart(productId)),
+    removeFromCart: (productId, designIndex) =>
+      dispatch(removeFromCart(productId, designIndex)),
     updateQuantity: (productId, designIndex, quantity) =>
       dispatch(updateQuantity(productId, designIndex, quantity)),
     clearCart: () => dispatch(clearCart()),
