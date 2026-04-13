@@ -2,10 +2,63 @@ import { useState } from "react";
 import { categories } from "../data/categories";
 import { ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Sidebar() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+  fetch("https://my-project-backend-ee4t.onrender.com/api/product")
+    .then(res => res.json())
+    .then(res => {
+      const structured = transformData(res.data);
+      setCategories(structured);
+    });
+}, []);
+
+const transformData = (products) => {
+  console.log(categories);
+  const map = {};
+
+  products.forEach((p) => {
+    const catName = p.category?.name || "Other";
+    const subName = p.subCategory?.name || "General";
+
+    // create category
+    if (!map[catName]) {
+      map[catName] = {
+        name: catName,
+        children: {}
+      };
+    }
+
+    // create subcategory
+    if (!map[catName].children[subName]) {
+      map[catName].children[subName] = {
+        name: subName,
+        items: []
+      };
+    }
+
+    // push product as item
+    map[catName].children[subName].items.push({
+      id: p._id,
+      name: p.productName || p.name,
+      image:
+  p.images?.[0] ||
+  p.media?.find(m => m.type === "image")?.url ||
+  "",
+    });
+  });
+
+  // convert object → array
+  return Object.values(map).map(cat => ({
+    ...cat,
+    children: Object.values(cat.children)
+  }));
+};
 
   return (
     <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs">
