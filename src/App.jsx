@@ -9,6 +9,7 @@ import Categories from "./pages/Categories";
 import Cart from "./pages/Cart";
 import AuthPage from "./components/AuthPage"; // ✅ added
 import AccountPage from "./components/AccountPage"; // ✅ add this
+import ManageAddressPage from "./components/ManageAddressPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDisplay />} />
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/manage-address" element={<ManageAddressPage />} />
           <Route path="/cart" element={<Cart />} />
         </Routes>
       </div>
@@ -33,6 +35,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDisplay />} />
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/manage-address" element={<ManageAddressPage />} />
         </Routes>
 
         <MobileBottomNav />

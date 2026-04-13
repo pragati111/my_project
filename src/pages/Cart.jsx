@@ -1,9 +1,26 @@
 import TopHeader from "../components/TopHeader";
 import { useCart } from "../redux/useCart";
 import { X } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const ADDRESS_STORAGE_KEY = "user_addresses";
 
 export default function Cart() {
   const { cart, getTotalPrice, removeFromCart, updateQuantity } = useCart();
+  const [addresses] = useState(() => {
+    const stored = localStorage.getItem(ADDRESS_STORAGE_KEY);
+    if (!stored) return [];
+
+    try {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.warn("Failed to load saved addresses", error);
+      return [];
+    }
+  });
+  const navigate = useNavigate();
 
   return (
     <>
@@ -135,6 +152,28 @@ export default function Cart() {
           {/* RIGHT SIDE - SUMMARY */}
           <div className="w-full lg:w-[300px] bg-white p-6 rounded shadow h-fit">
             <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+
+            {addresses.length > 0 ? (
+              <div className="mb-4 bg-gray-50 p-4 rounded-sm">
+                <p className="text-sm font-semibold mb-2">Deliver To</p>
+                <p className="text-sm font-medium">
+                  {addresses.find((addr) => addr.isDefault)?.type || addresses[0]?.type || "Address"}
+                </p>
+                <p className="text-sm text-gray-700 mt-1">
+                  {addresses.find((addr) => addr.isDefault)?.text || addresses[0]?.text}
+                </p>
+                <button
+                  onClick={() => navigate("/manage-address")}
+                  className="mt-3 text-blue-600 text-sm underline"
+                >
+                  Change address
+                </button>
+              </div>
+            ) : (
+              <div className="mb-4 bg-gray-50 p-4 rounded-sm text-sm text-gray-600">
+                No saved address found. Add one in Manage Address to see it here.
+              </div>
+            )}
 
             <div className="flex justify-between text-sm mb-2">
               <span>Items</span>
