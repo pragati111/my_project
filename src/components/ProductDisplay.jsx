@@ -16,7 +16,7 @@ export default function ProductDisplay() {
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
   const getPreviewSrc = (value) =>
-  typeof value === "string" ? value : URL.createObjectURL(value);
+    typeof value === "string" ? value : URL.createObjectURL(value);
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -28,6 +28,41 @@ export default function ProductDisplay() {
       })
       .catch((err) => console.error(err));
   }, [id]);
+
+  useEffect(() => {
+    const attachScroll = () => {
+      const left = document.querySelector("#left-section");
+
+      if (!left || !rightRef.current) return;
+
+      const handler = (e) => {
+        const el = rightRef.current;
+
+        const isScrollingDown = e.deltaY > 0;
+        const isScrollingUp = e.deltaY < 0;
+
+        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
+
+        const atTop = el.scrollTop <= 5;
+
+        if ((isScrollingDown && !atBottom) || (isScrollingUp && !atTop)) {
+          e.preventDefault();
+          el.scrollTop += e.deltaY;
+        }
+      };
+
+      left.addEventListener("wheel", handler, { passive: false });
+
+      return () => {
+        left.removeEventListener("wheel", handler);
+      };
+    };
+
+    // 🔥 IMPORTANT: delay until DOM + product render
+    const timeout = setTimeout(attachScroll, 100);
+
+    return () => clearTimeout(timeout);
+  }, [product]); // 👈 THIS is the key
 
   // RESET
   useEffect(() => {
@@ -89,7 +124,7 @@ export default function ProductDisplay() {
         <div className="w-full lg:ml-[240px] pt-[100px] px-4 lg:px-6">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* LEFT */}
-            <div className="w-full lg:w-[420px]">
+            <div id="left-section" className="w-full lg:w-[420px]">
               <div className="relative h-[320px] lg:h-[420px] bg-white border rounded flex items-center justify-center">
                 <button
                   onClick={handlePrev}
@@ -136,14 +171,34 @@ export default function ProductDisplay() {
             </div>
 
             {/* RIGHT */}
-            <div ref={rightRef} className="flex-1 space-y-6">
+            <div
+              ref={rightRef}
+              className="flex-1 space-y-6 overflow-y-auto max-h-[calc(100vh-120px)] pr-2 no-scrollbar"
+            >
               <h1 className="text-xl lg:text-2xl font-semibold">
                 {product.productName || product.name}
               </h1>
 
-              <p className="text-green-600 text-lg font-bold">
-                ₹{product.price}
-              </p>
+              <div className="flex items-center gap-3">
+                {/* Discounted Price */}
+                <p className="text-green-600 text-2xl lg:text-3xl font-bold">
+                  ₹{product.discountedMRP}
+                </p>
+
+                {/* Original Price */}
+                {product.originalPrice && (
+                  <p className="text-gray-400 line-through text-sm lg:text-base">
+                    ₹{product.originalPrice}
+                  </p>
+                )}
+
+                {/* Discount */}
+                {product.discount && (
+                  <p className="text-green-600 text-sm lg:text-base font-semibold">
+                    {product.discount}% OFF
+                  </p>
+                )}
+              </div>
 
               <p className="text-gray-600 text-sm leading-relaxed break-all">
                 {product.description}
@@ -376,18 +431,16 @@ export default function ProductDisplay() {
 
                       {/* QUANTITY */}
                       <div>
-                      <label className="text-sm">
-                                        Quantity
-                                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={config.quantity || 1}
-                        className="border p-2 w-full"
-                        onChange={(e) =>
-                          handleChange(index, "quantity", +e.target.value)
-                        }
-                      />
+                        <label className="text-sm">Quantity</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={config.quantity || 1}
+                          className="border p-2 w-full"
+                          onChange={(e) =>
+                            handleChange(index, "quantity", +e.target.value)
+                          }
+                        />
                       </div>
                     </div>
                   ))}
@@ -398,31 +451,108 @@ export default function ProductDisplay() {
                 </button>
               </div>
 
-              {/* ADD TO CART */}
-              <button
-                onClick={() => {
-                  const formattedConfigs = configs.map((c) => ({
-                    config: c,
-                    quantity: c.quantity || 1,
-                  }));
-                  addToCart(product, formattedConfigs);
-                }}
-                className="bg-black text-white px-6 py-3 w-full"
-              >
-                Add to Cart
-              </button>
+              {/* DESKTOP STICKY BUTTONS */}
+              <div className="hidden lg:flex gap-4 pt-4">
+                <button
+                  onClick={() => {
+                    const formattedConfigs = configs.map((c) => ({
+                      config: c,
+                      quantity: c.quantity || 1,
+                    }));
+                    addToCart(product, formattedConfigs);
+                  }}
+                  className="bg-black text-white px-6 py-3 w-full"
+                >
+                  Add to Cart
+                </button>
 
-              {/* REVIEWS SECTION */}
-              <div className="pt-6 border-t">
-                <h2 className="font-semibold text-lg mb-2">Reviews</h2>
-                <p className="text-sm text-gray-500">No reviews yet.</p>
+                <button className="bg-green-500 text-white px-6 py-3 w-full">
+                  Buy Now
+                </button>
+              </div>
+            </div>
+          </div>
+          {/* PRODUCT SPECIFICATIONS */}
+          <div className="mt-8 bg-gray-50 border rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">
+              Product <span className="font-bold">Specifications</span>
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              {/* LEFT COLUMN */}
+              <div className="space-y-3">
+                <div>
+                  <p className="text-gray-500">Name</p>
+                  <p className="font-medium">
+                    {product.productName || product.name}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Net Content</p>
+                  <p>1 UNIT</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Marketed By</p>
+                  <p>Creative Studio, Jaipur</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Category</p>
+                  <p className="font-medium">
+                    {product.category?.name || "Printing Products"}
+                  </p>
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN */}
+              <div className="space-y-3">
+                <div>
+                  <p className="text-gray-500">Price</p>
+                  <p>₹{product.price}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Country of Origin</p>
+                  <p>India</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Type</p>
+                  <p>Custom Printed Product</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-500">Brand</p>
+                  <p>Your Brand</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {/* MOBILE FIXED BUTTONS */}
+      <div className=" lg:hidden fixed bottom-[64px] left-0 right-0 bg-white border-t p-3 z-50">
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              const formattedConfigs = configs.map((c) => ({
+                config: c,
+                quantity: c.quantity || 1,
+              }));
+              addToCart(product, formattedConfigs);
+            }}
+            className="bg-black text-white py-3 flex-1 rounded"
+          >
+            Add to Cart
+          </button>
 
-      <BottomBar />
+          <button className="bg-green-500 text-white py-3 flex-1 rounded">
+            Buy Now
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
