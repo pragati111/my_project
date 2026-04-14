@@ -15,6 +15,8 @@ export default function ProductDisplay() {
 
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
+  const getPreviewSrc = (value) =>
+  typeof value === "string" ? value : URL.createObjectURL(value);
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -90,11 +92,11 @@ export default function ProductDisplay() {
             <div className="w-full lg:w-[420px]">
               <div className="relative h-[320px] lg:h-[420px] bg-white border rounded flex items-center justify-center">
                 <button
-  onClick={handlePrev}
-  className="absolute left-3 bg-white/90 hover:bg-white text-black w-8 h-8 flex items-center justify-center rounded-full shadow-md"
->
-  ‹
-</button>
+                  onClick={handlePrev}
+                  className="absolute left-3 bg-white/90 hover:bg-white text-black w-8 h-8 flex items-center justify-center rounded-full shadow-md"
+                >
+                  ‹
+                </button>
 
                 {activeMedia?.type === "image" ? (
                   <img
@@ -106,11 +108,11 @@ export default function ProductDisplay() {
                 )}
 
                 <button
-  onClick={handleNext}
-  className="absolute right-3 bg-white/90 hover:bg-white text-black w-8 h-8 flex items-center justify-center rounded-full shadow-md"
->
-  ›
-</button>
+                  onClick={handleNext}
+                  className="absolute right-3 bg-white/90 hover:bg-white text-black w-8 h-8 flex items-center justify-center rounded-full shadow-md"
+                >
+                  ›
+                </button>
               </div>
 
               {/* THUMB */}
@@ -245,22 +247,138 @@ export default function ProductDisplay() {
                           )}
 
                           {/* FILE */}
-                          {field.type === "file" && (
-                            <input
-                              type="file"
-                              onChange={(e) =>
-                                handleFileChange(
-                                  index,
-                                  field.id,
-                                  e.target.files[0],
-                                )
+                          {field.type === "file" &&
+                            (() => {
+                              // find radio selection (Double / Single)
+                              const selectedOption = Object.values(config).find(
+                                (val) =>
+                                  val === "Double Sided" ||
+                                  val === "Single Sided",
+                              );
+
+                              // SINGLE SIDED
+                              if (selectedOption === "Single Sided") {
+                                const value = config[field.id];
+
+                                return (
+                                  <div className="space-y-2">
+                                    <label className="text-sm">Design</label>
+
+                                    {value && (
+                                      <img
+                                        src={getPreviewSrc(value)}
+                                        className="w-16 h-16 object-cover border"
+                                      />
+                                    )}
+
+                                    <input
+                                      type="file"
+                                      onChange={(e) =>
+                                        handleFileChange(
+                                          index,
+                                          field.id,
+                                          e.target.files[0],
+                                        )
+                                      }
+                                    />
+
+                                    <p className="text-xs text-gray-500">
+                                      {value ? "Change" : "Upload"}
+                                    </p>
+                                  </div>
+                                );
                               }
-                            />
-                          )}
+
+                              // DOUBLE SIDED
+                              if (selectedOption === "Double Sided") {
+                                const frontKey = `${field.id}_front`;
+                                const backKey = `${field.id}_back`;
+
+                                return (
+                                  <div className="space-y-3">
+                                    {/* FRONT */}
+                                    <div>
+                                      <label className="text-sm">
+                                        Front Design
+                                      </label>
+
+                                      {config[frontKey] && (
+                                        <img
+                                          src={getPreviewSrc(config[frontKey])}
+                                          className="w-16 h-16 object-cover border"
+                                        />
+                                      )}
+
+                                      <input
+                                        type="file"
+                                        onChange={(e) =>
+                                          handleFileChange(
+                                            index,
+                                            frontKey,
+                                            e.target.files[0],
+                                          )
+                                        }
+                                      />
+
+                                      <p className="text-xs text-gray-500">
+                                        {config[frontKey] ? "Change" : "Upload"}
+                                      </p>
+                                    </div>
+
+                                    {/* BACK */}
+                                    <div>
+                                      <label className="text-sm">
+                                        Back Design
+                                      </label>
+
+                                      {config[backKey] && (
+                                        <img
+                                          src={getPreviewSrc(config[backKey])}
+                                          className="w-16 h-16 object-cover border"
+                                        />
+                                      )}
+
+                                      <input
+                                        type="file"
+                                        onChange={(e) =>
+                                          handleFileChange(
+                                            index,
+                                            backKey,
+                                            e.target.files[0],
+                                          )
+                                        }
+                                      />
+
+                                      <p className="text-xs text-gray-500">
+                                        {config[backKey] ? "Change" : "Upload"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              // DEFAULT (if nothing selected yet)
+                              return (
+                                <input
+                                  type="file"
+                                  onChange={(e) =>
+                                    handleFileChange(
+                                      index,
+                                      field.id,
+                                      e.target.files[0],
+                                    )
+                                  }
+                                />
+                              );
+                            })()}
                         </div>
                       ))}
 
                       {/* QUANTITY */}
+                      <div>
+                      <label className="text-sm">
+                                        Quantity
+                                      </label>
                       <input
                         type="number"
                         min="1"
@@ -270,6 +388,7 @@ export default function ProductDisplay() {
                           handleChange(index, "quantity", +e.target.value)
                         }
                       />
+                      </div>
                     </div>
                   ))}
                 </div>
