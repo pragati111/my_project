@@ -7,62 +7,86 @@ import { useEffect } from "react";
 export default function Sidebar() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-  fetch("https://my-project-backend-ee4t.onrender.com/api/product")
-    .then(res => res.json())
-    .then(res => {
-      const structured = transformData(res.data);
-      setCategories(structured);
+    setLoading(true);
+
+    fetch("https://my-project-backend-ee4t.onrender.com/api/product")
+      .then((res) => res.json())
+      .then((res) => {
+        const structured = transformData(res.data);
+
+        setCategories(structured);
+
+        // ✅ OPEN FIRST CATEGORY BY DEFAULT
+        if (structured.length > 0) {
+          setActiveIndex(0);
+        }
+
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const transformData = (products) => {
+    console.log(categories);
+    const map = {};
+
+    products.forEach((p) => {
+      const catName = p.category?.name || "Other";
+      const subName = p.subCategory?.name || "General";
+
+      // create category
+      if (!map[catName]) {
+        map[catName] = {
+          name: catName,
+          children: {},
+        };
+      }
+
+      // create subcategory
+      if (!map[catName].children[subName]) {
+        map[catName].children[subName] = {
+          name: subName,
+          items: [],
+        };
+      }
+
+      // push product as item
+      map[catName].children[subName].items.push({
+        id: p._id,
+        name: p.productName || p.name,
+        image:
+          p.images?.[0] || p.media?.find((m) => m.type === "image")?.url || "",
+      });
     });
-}, []);
 
-const transformData = (products) => {
-  console.log(categories);
-  const map = {};
+    // convert object → array
+    return Object.values(map).map((cat) => ({
+      ...cat,
+      children: Object.values(cat.children),
+    }));
+  };
 
-  products.forEach((p) => {
-    const catName = p.category?.name || "Other";
-    const subName = p.subCategory?.name || "General";
+  if (loading) {
+    return (
+      <div className="hidden lg:flex w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          {/* Spinner */}
+          <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
 
-    // create category
-    if (!map[catName]) {
-      map[catName] = {
-        name: catName,
-        children: {}
-      };
-    }
-
-    // create subcategory
-    if (!map[catName].children[subName]) {
-      map[catName].children[subName] = {
-        name: subName,
-        items: []
-      };
-    }
-
-    // push product as item
-    map[catName].children[subName].items.push({
-      id: p._id,
-      name: p.productName || p.name,
-      image:
-  p.images?.[0] ||
-  p.media?.find(m => m.type === "image")?.url ||
-  "",
-    });
-  });
-
-  // convert object → array
-  return Object.values(map).map(cat => ({
-    ...cat,
-    children: Object.values(cat.children)
-  }));
-};
+          {/* Text */}
+          <p className="text-xs text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs">
-      <div 
+      <div
         className="px-3 py-2 border-b font-medium bg-white cursor-pointer hover:bg-gray-50"
         onClick={() => navigate("/")}
       >
