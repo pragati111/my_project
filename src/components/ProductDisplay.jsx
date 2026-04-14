@@ -89,9 +89,12 @@ export default function ProductDisplay() {
             {/* LEFT */}
             <div className="w-full lg:w-[420px]">
               <div className="relative h-[320px] lg:h-[420px] bg-white border rounded flex items-center justify-center">
-                <button onClick={handlePrev} className="absolute left-2">
-                  ‹
-                </button>
+                <button
+  onClick={handlePrev}
+  className="absolute left-3 bg-white/90 hover:bg-white text-black w-8 h-8 flex items-center justify-center rounded-full shadow-md"
+>
+  ‹
+</button>
 
                 {activeMedia?.type === "image" ? (
                   <img
@@ -102,19 +105,22 @@ export default function ProductDisplay() {
                   <video src={activeMedia.url} autoPlay muted loop controls />
                 )}
 
-                <button onClick={handleNext} className="absolute right-2">
-                  ›
-                </button>
+                <button
+  onClick={handleNext}
+  className="absolute right-3 bg-white/90 hover:bg-white text-black w-8 h-8 flex items-center justify-center rounded-full shadow-md"
+>
+  ›
+</button>
               </div>
 
               {/* THUMB */}
-              <div className="mt-4 flex gap-3 overflow-x-auto">
+              <div className="mt-4 flex gap-3 overflow-x-auto no-scrollbar">
                 {media.map((item, i) => (
                   <div
                     key={i}
                     ref={(el) => (thumbnailRefs.current[i] = el)}
                     onClick={() => setActiveIndex(i)}
-                    className={`w-[70px] h-[70px] border cursor-pointer ${
+                    className={`w-[70px] h-[70px] flex-shrink-0 border cursor-pointer ${
                       activeIndex === i ? "border-black" : ""
                     }`}
                   >
@@ -138,8 +144,8 @@ export default function ProductDisplay() {
               </p>
 
               <p className="text-gray-600 text-sm leading-relaxed break-all">
-  {product.description}
-</p>
+                {product.description}
+              </p>
 
               {/* CUSTOMIZATION */}
               <div>
