@@ -1,10 +1,18 @@
 import React from 'react';
 import { Phone, Mail, Clock, MapPin, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const PremiumFooter = () => {
+  const links = [
+  { name: "Home", path: "/" },
+  { name: "About Us", path: "/about" },
+  { name: "FAQs", path: "/faqs" },
+  { name: "Privacy", path: "/privacy" },
+  { name: "Contact Us", path: "/contact" },
+];
   return (
     /* Reduced vertical padding from py-16 to py-10 and added mb-12 for bottom margin */
-    <footer className="bg-[#0f172a] text-slate-300 py-10 pb-24 px-6 font-sans mb-12 ">
+    <footer className="bg-[#0f172a] text-slate-300 py-10 pb-24 px-6 font-sans ">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         
         {/* Section 1: Contact Us */}
@@ -61,13 +69,16 @@ const PremiumFooter = () => {
             Quick Links
           </h3>
           <ul className="space-y-2 text-sm">
-            {['Home', 'About Us', 'FAQs', 'Privacy', 'Contact Us'].map((link) => (
-              <li key={link} className="flex items-center gap-2 group cursor-pointer">
-                <ChevronRight size={12} className="text-blue-500 opacity-0 group-hover:opacity-100 transition-all -ml-3 group-hover:ml-0" />
-                <span className="hover:text-white transition-colors">{link}</span>
-              </li>
-            ))}
-          </ul>
+  {links.map((link) => (
+    <li key={link.name} className="flex items-center gap-2 group cursor-pointer">
+      <ChevronRight size={12} className="text-blue-500 opacity-0 group-hover:opacity-100 transition-all -ml-3 group-hover:ml-0" />
+      
+      <Link to={link.path} className="hover:text-white transition-colors">
+        {link.name}
+      </Link>
+    </li>
+  ))}
+</ul>
         </div>
 
         {/* Section 4: Address */}

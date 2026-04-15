@@ -10,6 +10,7 @@ import Cart from "./pages/Cart";
 import AuthPage from "./components/AuthPage"; // ✅ added
 import AccountPage from "./components/AccountPage"; // ✅ add this
 import ManageAddressPage from "./components/ManageAddressPage";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/account" element={<AccountPage />} />
           <Route path="/manage-address" element={<ManageAddressPage />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
       </div>
 
@@ -36,6 +38,7 @@ function App() {
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />
           <Route path="/manage-address" element={<ManageAddressPage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
 
         <MobileBottomNav />
