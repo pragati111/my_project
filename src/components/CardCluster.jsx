@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CARD_ROUNDING = "rounded-3xl";
 
@@ -11,8 +12,11 @@ const gradients = [
 ];
 
 // 🔥 Product Card (unchanged)
-const ProductCard = ({ img, name }) => (
-  <div className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md hover:shadow-lg transition overflow-hidden">
+const ProductCard = ({ img, name, onClick }) => (
+  <div
+    onClick={onClick}
+    className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md hover:shadow-lg transition overflow-hidden cursor-pointer"
+  >
     <div className="flex-1 flex items-center justify-center min-h-0">
       <img src={img} alt={name} className="h-14 md:h-20 object-contain" />
     </div>
@@ -62,6 +66,7 @@ const shuffleArray = (arr) => arr.sort(() => 0.5 - Math.random());
 
 const CardCluster = () => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,17 +95,18 @@ const CardCluster = () => {
 
   // 🎯 Helper to safely render product
   const renderCard = (index) => {
-    const p = products[index];
-    if (!p) return null;
+  const p = products[index];
+  if (!p) return null;
 
-    return (
-      <ProductCard
-        key={p._id}
-        img={getImage(p)}
-        name={p.productName || p.name}
-      />
-    );
-  };
+  return (
+    <ProductCard
+      key={p._id}
+      img={getImage(p)}
+      name={p.productName || p.name}
+      onClick={() => navigate(`/product/${p._id}`)}   // ✅ THIS LINE
+    />
+  );
+};
 
   return (
     <div className="w-full bg-white p-4 md:p-10">

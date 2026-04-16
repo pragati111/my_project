@@ -20,14 +20,14 @@ export default function ProductDisplay() {
 
   // FETCH PRODUCT
   useEffect(() => {
-    fetch(`https://my-project-backend-ee4t.onrender.com/api/product`)
-      .then((res) => res.json())
-      .then((res) => {
-        const found = res.data.find((p) => p._id === id);
-        setProduct(found || null);
-      })
-      .catch((err) => console.error(err));
-  }, [id]);
+  fetch(`/api/product/${id}`)
+    .then((res) => res.json())
+    .then((res) => {
+      console.log("API:", res); // debug once
+      setProduct(res.product || null); // ✅ FIX
+    })
+    .catch((err) => console.error(err));
+}, [id]);
 
   useEffect(() => {
     const attachScroll = () => {
@@ -133,14 +133,18 @@ export default function ProductDisplay() {
                   ‹
                 </button>
 
-                {activeMedia?.type === "image" ? (
-                  <img
-                    src={activeMedia.url}
-                    className="max-h-full object-contain"
-                  />
-                ) : (
-                  <video src={activeMedia.url} autoPlay muted loop controls />
-                )}
+                {activeMedia ? (
+  activeMedia.type === "image" ? (
+    <img
+      src={activeMedia.url}
+      className="max-h-full object-contain"
+    />
+  ) : (
+    <video src={activeMedia.url} autoPlay muted loop controls />
+  )
+) : (
+  <div className="text-gray-400">No media available</div>
+)}
 
                 <button
                   onClick={handleNext}
@@ -256,15 +260,15 @@ export default function ProductDisplay() {
                           {/* RADIO */}
                           {field.type === "radio" &&
                             field.options?.map((opt) => (
-                              <label key={opt} className="block">
+                              <label key={opt.label} className="block">
                                 <input
                                   type="radio"
                                   name={`${field.id}-${index}`}
                                   onChange={() =>
-                                    handleChange(index, field.id, opt)
+                                    handleChange(index, field.id, opt.label)
                                   }
                                 />{" "}
-                                {opt}
+                                {opt.label}
                               </label>
                             ))}
 
@@ -277,12 +281,12 @@ export default function ProductDisplay() {
                                   onChange={(e) => {
                                     const prev = config[field.id] || [];
                                     const updated = e.target.checked
-                                      ? [...prev, opt]
-                                      : prev.filter((o) => o !== opt);
+                                      ? [...prev, opt.label]
+                                      : prev.filter((o) => o !== opt.label);
                                     handleChange(index, field.id, updated);
                                   }}
                                 />{" "}
-                                {opt}
+                                {opt.label}
                               </label>
                             ))}
 
@@ -296,7 +300,7 @@ export default function ProductDisplay() {
                             >
                               <option>Select</option>
                               {field.options?.map((opt) => (
-                                <option key={opt}>{opt}</option>
+                                <option key={opt.label} value={opt.label}>{opt.label}</option>
                               ))}
                             </select>
                           )}
