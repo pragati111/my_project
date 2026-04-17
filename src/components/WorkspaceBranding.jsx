@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function WorkspaceBranding() {
   const [products, setProducts] = useState([]);
   const [index, setIndex] = useState(0);
   const [visibleItems, setVisibleItems] = useState(4);
+  const navigate = useNavigate();
 
   // Fetch products
   useEffect(() => {
@@ -22,6 +24,7 @@ export default function WorkspaceBranding() {
           );
 
           const formatted = featured.map((p) => ({
+            _id: p._id,
             name: p.name,
             images: (p.media || [])
               .filter((m) => m.type === "image")
@@ -87,6 +90,7 @@ export default function WorkspaceBranding() {
             {products.slice(index, index + visibleItems).map((item, i) => (
               <div
                 key={i}
+                onClick={() => navigate(`/product/${item._id}`)}
                 className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] flex-shrink-0 bg-white border border-[#e6d3b8] p-3 shadow-md hover:shadow-lg transition duration-300"
               >
                 {/* TILE GRID */}
