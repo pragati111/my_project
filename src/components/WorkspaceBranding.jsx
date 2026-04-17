@@ -89,28 +89,34 @@ export default function WorkspaceBranding() {
           <div className="flex gap-4 overflow-hidden">
             {products.slice(index, index + visibleItems).map((item, i) => (
               <div
-                key={i}
-                onClick={() => navigate(`/product/${item._id}`)}
-                className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] flex-shrink-0 bg-white border border-[#e6d3b8] p-3 shadow-md hover:shadow-lg transition duration-300"
-              >
-                {/* TILE GRID */}
-                <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
-                  <img
-                    src={item.images?.[0]}
-                    className="col-span-2 row-span-2 w-full h-full object-cover"
-                  />
-                  <img src={item.images?.[1]} className="w-full h-full object-cover" />
-                  <img src={item.images?.[2]} className="w-full h-full object-cover" />
-                  <img src={item.images?.[3]} className="w-full h-full object-cover" />
-                  <img src={item.images?.[4]} className="w-full h-full object-cover" />
-                  <img src={item.images?.[5]} className="w-full h-full object-cover" />
-                </div>
+  key={i}
+  onClick={() => navigate(`/product/${item._id}`)}
+  className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] flex-shrink-0 cursor-pointer"
+>
+  {/* BORDER WRAPPER (stays stable) */}
+  <div className="bg-white border border-[#e6d3b8] p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-out rounded-md">
+    
+    {/* INNER CONTENT (scales smoothly) */}
+    <div className="transition-transform duration-300 ease-out hover:scale-[1.03]">
+      
+      {/* TILE GRID */}
+      <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
+        <img src={item.images?.[0]} className="col-span-2 row-span-2 w-full h-full object-cover" />
+        <img src={item.images?.[1]} className="w-full h-full object-cover" />
+        <img src={item.images?.[2]} className="w-full h-full object-cover" />
+        <img src={item.images?.[3]} className="w-full h-full object-cover" />
+        <img src={item.images?.[4]} className="w-full h-full object-cover" />
+        <img src={item.images?.[5]} className="w-full h-full object-cover" />
+      </div>
 
-                {/* TITLE */}
-                <p className="text-sm mt-2 text-center font-medium">
-                  {item.name}
-                </p>
-              </div>
+      {/* TITLE */}
+      <p className="text-sm mt-2 text-center font-medium">
+        {item.name}
+      </p>
+
+    </div>
+  </div>
+</div>
             ))}
           </div>
 
