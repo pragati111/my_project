@@ -48,7 +48,7 @@ export default function HeroSection() {
             </button>
 
             <button className="bg-white/70 backdrop-blur-md text-gray-700 px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition">
-              Customize Now
+              Contact Us
             </button>
           </div>
 
