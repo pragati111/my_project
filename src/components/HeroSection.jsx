@@ -1,65 +1,66 @@
 import React from "react";
-
+import ImageCarousel from "./ImageCarousel";
 export default function HeroSection() {
   return (
-    <div className="px-4 md:px-8 lg:px-12 m-0 p-0">
-      <div className="relative overflow-hidden w-full h-[220px] md:h-[350px] bg-[#080808] border border-white/5 shadow-2xl rounded-sm">
+    <div className="w-full flex justify-center px-3 md:px-6 lg:px-10 py-6">
+      
+      <div className="relative w-full max-w-[1400px] min-h-[300px] md:h-[380px] lg:h-[440px] rounded-[36px] overflow-hidden 
+      
+      backdrop-blur-xl bg-white/50 border border-white/40 shadow-[0_20px_60px_rgba(0,0,0,0.08)]
+      
+      flex flex-col md:flex-row items-center justify-between 
+      px-6 md:px-20 py-8 md:py-0 gap-8 md:gap-0">
         
-        {/* Sophisticated Linear Gradient Background */}
-        <div className="absolute inset-0 bg-[linear-gradient(110deg,#0a0a0a_0%,#1a1a1a_50%,#0a0a0a_100%)] opacity-60" />
-
-        {/* Content Container */}
-        <div className="relative z-10 h-full w-full flex items-center justify-between px-6 md:px-16">
-          
-          {/* Left Side */}
-          <div className="flex-shrink-0">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
-              <span className="text-[9px] md:text-[10px] tracking-[0.4em] text-white/40 uppercase font-bold">
-                Next-Gen Print
-              </span>
-            </div>
-            
-            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none italic">
-              ULTRA <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-purple-400 not-italic">
-                MARKETING.
-              </span>
-            </h1>
-            
-            <p className="mt-3 text-[10px] md:text-[11px] text-gray-500 uppercase tracking-[0.2em] font-medium hidden sm:block">
-              Precision in every pixel. Quality in every print.
-            </p>
-          </div>
-
-          {/* Right Side */}
-          <div className="relative w-[180px] md:w-[320px] h-full flex items-center justify-center">
-            
-            <div className="absolute z-20 w-24 h-24 md:w-36 md:h-36 rounded-xl overflow-hidden border border-white/10 shadow-2xl transition-transform hover:scale-110 duration-500">
-              <img src="images/1.jpg" alt="Work 1" className="w-full h-full object-cover" />
-            </div>
-
-            <div className="absolute top-6 md:top-10 right-0 md:right-4 z-10 w-16 h-16 md:w-24 md:h-24 rounded-lg overflow-hidden border border-white/5 opacity-40 rotate-12 hover:rotate-0 hover:opacity-100 transition-all duration-500">
-              <img src="images/2.jpg" alt="Work 2" className="w-full h-full object-cover grayscale hover:grayscale-0" />
-            </div>
-
-            <div className="absolute bottom-6 md:bottom-10 right-0 md:right-4 z-10 w-14 h-14 md:w-20 md:h-20 rounded-lg overflow-hidden border border-white/5 opacity-30 rotate-6 hover:rotate-0 hover:opacity-100 transition-all duration-500 delay-100">
-              <img src="images/3.jpg" alt="Work 4" className="w-full h-full object-cover grayscale hover:grayscale-0" />
-            </div>
-
-            <div className="absolute bottom-6 md:bottom-10 left-0 md:left-4 z-10 w-14 h-14 md:w-20 md:h-20 rounded-lg overflow-hidden border border-white/5 opacity-30 -rotate-12 hover:rotate-0 hover:opacity-100 transition-all duration-500">
-              <img src="images/4.jpg" alt="Work 3" className="w-full h-full object-cover" />
-            </div>
-
-            <div className="absolute top-12 left-6 md:left-12 z-30 w-10 h-10 md:w-12 md:h-12 rounded-md overflow-hidden border border-white/20 bg-white/5 backdrop-blur-md hidden sm:block transition-all duration-500">
-              <img src="images/5.jpg" alt="Work 5" className="w-full h-full object-cover opacity-60" />
-            </div>
-
-            <div className="absolute inset-0 bg-purple-500/5 blur-[60px] rounded-full scale-150" />
-          </div>
+        {/* RIGHT SECTION */}
+        <div className="order-1 md:order-2 relative w-[200px] sm:w-[240px] md:w-[340px] lg:w-[400px] mx-auto md:mx-0 flex items-center justify-center">
+          <ImageCarousel />
         </div>
 
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="order-2 md:order-1 max-w-[100%] md:max-w-[420px] text-center md:text-left">
+  
+
+  <div className="relative pl-5 md:pl-6">
+  
+  {/* Continuous Red Line */}
+  <div className="absolute left-0 top-0 h-full w-[2px] bg-red-400 rounded-full" />
+
+  {/* CONTENT */}
+  <div>
+    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-semibold text-black leading-tight">
+      Custom Prints <br className="hidden sm:block" /> That Stand Out
+    </h1>
+
+    <p className="text-sm md:text-lg text-gray-600 mt-1">
+      Designed for Your Brand & Style
+    </p>
+
+    <p className="text-[11px] md:text-sm text-gray-500 mt-3 leading-relaxed max-w-[300px]">
+      From visiting cards and pens to photo frames and home decor,
+      we craft personalized prints that leave a lasting impression.
+    </p>
+  </div>
+
+</div>
+
+  <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-5">
+    
+    <button className="bg-red-500 text-white px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition">
+      Explore Products
+    </button>
+
+    <button className="bg-white/70 backdrop-blur-md text-gray-700 px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition">
+      Customize Now
+    </button>
+  </div>
+
+  <div className="mt-5 text-xs md:text-sm text-gray-600 text-center md:text-left">
+    <span className="font-medium">Fast Delivery</span>
+    <span className="ml-2 text-[10px] md:text-xs text-gray-400">
+      Premium Quality Prints →
+    </span>
+  </div>
+</div>
+
       </div>
     </div>
   );
