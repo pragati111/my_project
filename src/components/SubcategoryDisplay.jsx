@@ -13,7 +13,7 @@ export default function SubcategoryDisplay() {
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("");
   const [priceSort, setPriceSort] = useState("");
-const [ratingSort, setRatingSort] = useState("");
+  const [ratingSort, setRatingSort] = useState("");
 
   useEffect(() => {
     fetch("https://my-project-backend-ee4t.onrender.com/api/product")
@@ -42,17 +42,17 @@ const [ratingSort, setRatingSort] = useState("");
   };
 
   const sortedProducts = [...products]
-  .sort((a, b) => {
-    // Price sorting
-    if (priceSort === "lowHigh") return a.price - b.price;
-    if (priceSort === "highLow") return b.price - a.price;
-    return 0;
-  })
-  .sort((a, b) => {
-    // Rating sorting (applied after price)
-    if (ratingSort === "highLow") return (b.rating || 0) - (a.rating || 0);
-    return 0;
-  });
+    .sort((a, b) => {
+      // Price sorting
+      if (priceSort === "lowHigh") return a.price - b.price;
+      if (priceSort === "highLow") return b.price - a.price;
+      return 0;
+    })
+    .sort((a, b) => {
+      // Rating sorting (applied after price)
+      if (ratingSort === "highLow") return (b.rating || 0) - (a.rating || 0);
+      return 0;
+    });
 
   return (
     <div className="font-sans">
@@ -67,48 +67,49 @@ const [ratingSort, setRatingSort] = useState("");
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[90px] md:pt-[110px]">
           <div className="px-4 md:px-8 lg:px-12 pb-10">
             {/* TITLE + FILTERS */}
-<div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              {/* LEFT: TITLE */}
+              <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
+                Products List{" "}
+                <span className="text-gray-400 font-normal text-sm sm:text-base md:text-lg">
+                  ({products.length})
+                </span>
+              </h1>
 
-  {/* LEFT: TITLE */}
-  <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
-    Products List{" "}
-    <span className="text-gray-400 font-normal text-sm sm:text-base md:text-lg">
-      ({products.length})
-    </span>
-  </h1>
+              {/* RIGHT: FILTERS */}
+              <div className="flex gap-2 overflow-x-auto no-scrollbar sm:justify-end">
+                {/* PRICE */}
+                <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md shrink-0">
+                  <span className="text-[10px] sm:text-xs text-gray-600">
+                    Price:
+                  </span>
+                  <select
+                    value={priceSort}
+                    onChange={(e) => setPriceSort(e.target.value)}
+                    className="text-[10px] sm:text-xs bg-transparent focus:outline-none"
+                  >
+                    <option value="">None</option>
+                    <option value="lowHigh">Low → High</option>
+                    <option value="highLow">High → Low</option>
+                  </select>
+                </div>
 
-  {/* RIGHT: FILTERS */}
-  <div className="flex gap-2 overflow-x-auto no-scrollbar sm:justify-end">
-    
-    {/* PRICE */}
-    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md shrink-0">
-      <span className="text-[10px] sm:text-xs text-gray-600">Price:</span>
-      <select
-        value={priceSort}
-        onChange={(e) => setPriceSort(e.target.value)}
-        className="text-[10px] sm:text-xs bg-transparent focus:outline-none"
-      >
-        <option value="">None</option>
-        <option value="lowHigh">Low → High</option>
-        <option value="highLow">High → Low</option>
-      </select>
-    </div>
-
-    {/* RATING */}
-    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md shrink-0">
-      <span className="text-[10px] sm:text-xs text-gray-600">Rating:</span>
-      <select
-        value={ratingSort}
-        onChange={(e) => setRatingSort(e.target.value)}
-        className="text-[10px] sm:text-xs bg-transparent focus:outline-none"
-      >
-        <option value="">None</option>
-        <option value="highLow">High → Low</option>
-      </select>
-    </div>
-
-  </div>
-</div>
+                {/* RATING */}
+                <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md shrink-0">
+                  <span className="text-[10px] sm:text-xs text-gray-600">
+                    Rating:
+                  </span>
+                  <select
+                    value={ratingSort}
+                    onChange={(e) => setRatingSort(e.target.value)}
+                    className="text-[10px] sm:text-xs bg-transparent focus:outline-none"
+                  >
+                    <option value="">None</option>
+                    <option value="highLow">High → Low</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             {/* EMPTY STATE */}
             {products.length === 0 && (
               <p className="text-gray-500">No products found.</p>
