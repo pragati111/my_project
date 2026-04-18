@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function TradeShows() {
   const [groupedData, setGroupedData] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("https://my-project-backend-ee4t.onrender.com/api/product")
@@ -90,7 +92,7 @@ export default function TradeShows() {
               return (
                 <div key={index} className="group cursor-pointer relative">
 
-                  <div className="bg-white border border-gray-300 shadow-sm overflow-hidden p-2 transition duration-300 group-hover:shadow-lg">
+                  <div onClick={() => navigate(`/subcategory/${encodeURIComponent(subCatName)}`)} className="bg-white border border-gray-300 shadow-sm overflow-hidden p-2 transition duration-300 group-hover:shadow-lg">
 
                     {/* MOSAIC */}
                     <div className="grid grid-cols-2 gap-2 aspect-square sm:aspect-auto sm:h-[190px] md:h-[210px] overflow-hidden">
@@ -138,7 +140,7 @@ export default function TradeShows() {
                       <p className="text-sm font-medium">
                         {subCatName}
                       </p>
-                    </div>
+                    </div>                    
 
                   </div>
                 </div>

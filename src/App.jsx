@@ -11,6 +11,7 @@ import AuthPage from "./components/AuthPage"; // ✅ added
 import AccountPage from "./components/AccountPage"; // ✅ add this
 import ManageAddressPage from "./components/ManageAddressPage";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import SubcategoryDisplay from "./components/SubcategoryDisplay"; // ✅ added
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/manage-address" element={<ManageAddressPage />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
         </Routes>
       </div>
 
@@ -39,6 +41,7 @@ function App() {
           <Route path="/account" element={<AccountPage />} />
           <Route path="/manage-address" element={<ManageAddressPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
         </Routes>
 
         <MobileBottomNav />
