@@ -63,60 +63,53 @@ export default function SubcategoryDisplay() {
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {products.map((product) => (
                 <div
-  key={product._id}
-  className="bg-white rounded-xl overflow-hidden shadow-md shadow-black/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100"
->
-  {/* IMAGE */}
-  <div className="w-full aspect-[4/3] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
-    <img
-      src={getImage(product)}
-      alt={product.productName}
-      className="w-full h-full object-cover"
-    />
-  </div>
+                  key={product._id}
+                  className="bg-white rounded-xl overflow-hidden shadow-md shadow-black/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100"
+                >
+                  {/* IMAGE */}
+                  <div className="w-full aspect-[4/3] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
+                    <img
+                      src={getImage(product)}
+                      alt={product.productName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-  {/* CONTENT */}
-  <div className="p-2.5 sm:p-3 md:p-4 flex flex-col gap-1.5">
-    
-    {/* TITLE */}
-    <h2 className="text-[12px] sm:text-sm md:text-base font-semibold text-gray-800 leading-tight ">
-      {product.productName}
-    </h2>
+                  {/* CONTENT */}
+                  <div className="p-2.5 sm:p-3 md:p-4 flex flex-col gap-1.5">
+                    {/* TITLE */}
+                    <h2 className="text-[12px] sm:text-sm md:text-base font-semibold text-gray-800 leading-tight ">
+                      {product.productName}
+                    </h2>
 
-    {/* DESCRIPTION (only on >= sm) */}
-    <p className="hidden sm:block text-xs text-gray-500 line-clamp-2">
-      {product.description?.slice(0, 70)}...
-    </p>
+                    {/* RATING + TAG */}
+                    <div className="flex items-center gap-1 text-[9px] sm:text-[10px] overflow-x-auto whitespace-nowrap no-scrollbar">
+                      <div className="bg-gray-100 px-1.5 py-[2px] rounded-full shrink-0">
+                        ⭐ {product.rating || 4.5}
+                      </div>
 
-    {/* RATING + TAG */}
-    <div className="flex items-center gap-1 text-[9px] sm:text-[10px] overflow-x-auto whitespace-nowrap no-scrollbar">
-      
-      <div className="bg-gray-100 px-1.5 py-[2px] rounded-full shrink-0">
-        ⭐ {product.rating || 4.5}
-      </div>
+                      {product.tags && product.tags.length > 0 ? (
+                        product.tags.slice(0, 1).map((tag, i) => (
+                          <div
+                            key={i}
+                            className="bg-gray-100 px-1.5 py-[2px] rounded-full capitalize shrink-0"
+                          >
+                            {tag}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="bg-gray-100 px-1.5 py-[2px] rounded-full shrink-0">
+                          General
+                        </div>
+                      )}
+                    </div>
 
-      {product.tags && product.tags.length > 0 ? (
-        product.tags.slice(0, 1).map((tag, i) => (
-          <div
-            key={i}
-            className="bg-gray-100 px-1.5 py-[2px] rounded-full capitalize shrink-0"
-          >
-            {tag}
-          </div>
-        ))
-      ) : (
-        <div className="bg-gray-100 px-1.5 py-[2px] rounded-full shrink-0">
-          General
-        </div>
-      )}
-    </div>
-
-    {/* BUTTON */}
-    <button className="mt-1 w-full bg-black text-white text-[10px] sm:text-xs py-1 rounded-md font-medium hover:bg-gray-800 transition">
-      View Product
-    </button>
-  </div>
-</div>
+                    {/* DESCRIPTION (only on >= sm) */}
+                    <p className="hidden sm:block text-xs text-gray-500 line-clamp-2">
+                      {product.description?.slice(0, 70)}...
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
