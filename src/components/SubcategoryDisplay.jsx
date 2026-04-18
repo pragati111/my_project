@@ -67,7 +67,7 @@ export default function SubcategoryDisplay() {
   className="bg-white rounded-xl overflow-hidden shadow-md shadow-black/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100"
 >
   {/* IMAGE */}
-  <div className="w-full aspect-[1/1] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
+  <div className="w-full aspect-[4/3] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
     <img
       src={getImage(product)}
       alt={product.productName}
@@ -79,7 +79,7 @@ export default function SubcategoryDisplay() {
   <div className="p-2.5 sm:p-3 md:p-4 flex flex-col gap-1.5">
     
     {/* TITLE */}
-    <h2 className="text-[12px] sm:text-sm md:text-base font-semibold text-gray-800 leading-tight line-clamp-1">
+    <h2 className="text-[12px] sm:text-sm md:text-base font-semibold text-gray-800 leading-tight ">
       {product.productName}
     </h2>
 
@@ -113,7 +113,7 @@ export default function SubcategoryDisplay() {
 
     {/* BUTTON */}
     <button className="mt-1 w-full bg-black text-white text-[10px] sm:text-xs py-1 rounded-md font-medium hover:bg-gray-800 transition">
-      View
+      View Product
     </button>
   </div>
 </div>
