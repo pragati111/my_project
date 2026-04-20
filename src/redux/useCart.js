@@ -49,15 +49,18 @@ export const useCart = () => {
       if (!user?.id) return;
 
       try {
-        await axios.delete(`${API}/api/cart/remove`, {
-          data: {
+        await axios.post(
+          `${API}/api/cart/remove`,
+          {
             userId: user.id,
             productId,
           },
-          headers: {
-            Authorization: `Bearer ${token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
       } catch (err) {
         console.error("Backend remove failed", err);
       }
