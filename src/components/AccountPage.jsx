@@ -18,6 +18,10 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const [showFAQ, setShowFAQ] = useState(false);
 
+  if (!user) {
+  return <div className="p-10 text-center">Loading...</div>;
+}
+
   if (showFAQ) {
     return <FAQPage onBack={() => setShowFAQ(false)} />;
   }
@@ -30,13 +34,17 @@ export default function AccountPage() {
         {/* PROFILE CARD */}
         <div className="bg-white rounded-2xl shadow-sm p-6 flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center justify-center text-lg font-semibold shadow">
-            {user?.name?.[0]}
-          </div>
+  {user?.phoneNumber?.slice(-2) || "U"}
+</div>
 
-          <div>
-            <h3 className="font-semibold text-lg">{user?.name}</h3>
-            <p className="text-sm text-gray-500">+91 {user?.mobile}</p>
-          </div>
+<div>
+  <h3 className="font-semibold text-lg">
+    User
+  </h3>
+  <p className="text-sm text-gray-500">
+    {user?.phoneNumber}
+  </p>
+</div>
         </div>
 
         {/* QUICK ACTIONS */}

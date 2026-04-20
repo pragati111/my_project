@@ -53,7 +53,7 @@ export default function TopHeader() {
           onClick={() => setOpen(!open)}
           className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center cursor-pointer"
         >
-          {user.name[0]}
+          {user?.phoneNumber?.slice(-2) || "U"}
         </div>
 
         {open && (

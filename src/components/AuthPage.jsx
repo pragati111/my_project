@@ -50,17 +50,19 @@ export default function AuthPage() {
       // ✅ store token
       localStorage.setItem("token", res.data.token);
 
-      // optional (full data)
-      localStorage.setItem("auth", JSON.stringify(res.data));
 
       // ✅ update your auth context
-      login(mobile);
+      login({
+  user: res.data.user,
+  token: res.data.token,
+});
 
       // ✅ redirect
       navigate("/account");
     } else {
       alert("Invalid OTP");
     }
+
   } catch (err) {
     console.error(err);
     alert("OTP verification failed");

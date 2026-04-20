@@ -2,30 +2,31 @@ import {
   ADD_TO_CART,
   REMOVE_FROM_CART,
   CLEAR_CART,
-  UPDATE_QUANTITY
+  UPDATE_QUANTITY,
+  SET_CART,
 } from "./cartActions";
 
 const initialState = {
-  items: []
+  items: [],
 };
 
 export const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART: {
       const { product, configs } = action.payload;
-      const existing = state.items.find(p => p.productId === product.id);
+      const existing = state.items.find((p) => p.productId === product.id);
 
       if (existing) {
         return {
           ...state,
-          items: state.items.map(p =>
+          items: state.items.map((p) =>
             p.productId === product.id
               ? {
                   ...p,
-                  designs: [...p.designs, ...configs]
+                  designs: [...p.designs, ...configs],
                 }
-              : p
-          )
+              : p,
+          ),
         };
       }
 
@@ -38,9 +39,9 @@ export const cartReducer = (state = initialState, action) => {
             name: product.name,
             price: product.price,
             image: product.image,
-            designs: configs
-          }
-        ]
+            designs: configs,
+          },
+        ],
       };
     }
 
@@ -52,15 +53,15 @@ export const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         items: state.items
-          .map(p =>
+          .map((p) =>
             p.productId === productId
               ? {
                   ...p,
-                  designs: p.designs.filter((_, idx) => idx !== designIndex)
+                  designs: p.designs.filter((_, idx) => idx !== designIndex),
                 }
-              : p
+              : p,
           )
-          .filter(p => p.designs.length > 0)
+          .filter((p) => p.designs.length > 0),
       };
     }
 
@@ -69,21 +70,23 @@ export const cartReducer = (state = initialState, action) => {
       const nextQuantity = Math.max(1, Number(quantity) || 1);
       return {
         ...state,
-        items: state.items.map(p =>
+        items: state.items.map((p) =>
           p.productId === productId
             ? {
                 ...p,
                 designs: p.designs.map((d, idx) =>
-                  idx === designIndex
-                    ? { ...d, quantity: nextQuantity }
-                    : d
-                )
+                  idx === designIndex ? { ...d, quantity: nextQuantity } : d,
+                ),
               }
-            : p
-        )
+            : p,
+        ),
       };
     }
-
+    case SET_CART:
+      return {
+        ...state,
+        items: action.payload,
+      };
     case CLEAR_CART:
       return initialState;
 

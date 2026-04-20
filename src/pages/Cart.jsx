@@ -3,11 +3,19 @@ import { useCart } from "../redux/useCart";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setCart } from "../redux/cartActions";
+import axios from "axios";
 
 const ADDRESS_STORAGE_KEY = "user_addresses";
+const API = "https://my-project-backend-ee4t.onrender.com";
 
 export default function Cart() {
   const { cart, getTotalPrice, removeFromCart, updateQuantity } = useCart();
+  const { user, token } = useAuth();
+  const dispatch = useDispatch();
   const [addresses] = useState(() => {
     const stored = localStorage.getItem(ADDRESS_STORAGE_KEY);
     if (!stored) return [];
@@ -21,6 +29,48 @@ export default function Cart() {
     }
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const fetchCart = async () => {
+    if (!user?.id) return;
+
+    try {
+      const res = await axios.get(
+        `${API}/api/cart?userId=${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      console.log("Backend Cart:", res.data);
+
+      // 🔥 IMPORTANT: map backend → your redux format
+      const backendItems = res.data.items || [];
+
+      const formatted = backendItems.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        designs: [
+          {
+            config: {},
+            quantity: item.quantity
+          }
+        ]
+      }));
+
+      dispatch(setCart(formatted));
+
+    } catch (err) {
+      console.error("Failed to fetch cart", err);
+    }
+  };
+
+  fetchCart();
+}, [user, token]);
 
   return (
     <>
