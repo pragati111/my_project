@@ -29,7 +29,10 @@ export const useCart = () => {
           {
             userId: user.id,
             productId: product._id || product.id,
-            quantity: configs.reduce((sum, c) => sum + (c.quantity || 1), 0),
+            configs: configs.map((c) => ({
+              quantity: c.quantity || 1,
+              config: c.config ? c.config : c,
+            })),
           },
           {
             headers: {
@@ -54,6 +57,7 @@ export const useCart = () => {
           {
             userId: user.id,
             productId,
+            designIndex,
           },
           {
             headers: {
@@ -78,6 +82,7 @@ export const useCart = () => {
           {
             userId: user.id,
             productId,
+            designIndex,
             quantity,
           },
           {

@@ -31,46 +31,40 @@ export default function Cart() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchCart = async () => {
-    if (!user?.id) return;
+    const fetchCart = async () => {
+      if (!user?.id) return;
 
-    try {
-      const res = await axios.get(
-        `${API}/api/cart?userId=${user.id}`,
-        {
+      try {
+        const res = await axios.get(`${API}/api/cart?userId=${user.id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      console.log("Backend Cart:", res.data);
+        console.log("Backend Cart:", res.data);
 
-      // 🔥 IMPORTANT: map backend → your redux format
-      const backendItems = res.data.items || [];
+        // 🔥 IMPORTANT: map backend → your redux format
+        const backendItems = res.data.items || [];
 
-      const formatted = backendItems.map(item => ({
-        productId: item.productId,
-        name: item.name,
-        price: item.price,
-        image: item.image,
-        designs: [
-          {
-            config: {},
-            quantity: item.quantity
-          }
-        ]
-      }));
+        const formatted = backendItems.map((item) => ({
+          productId: item.productId.toString(),
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          designs: (item.designs || []).map((d) => ({
+            config: d.config || {},
+            quantity: d.quantity || 1,
+          })),
+        }));
 
-      dispatch(setCart(formatted));
+        dispatch(setCart(formatted));
+      } catch (err) {
+        console.error("Failed to fetch cart", err);
+      }
+    };
 
-    } catch (err) {
-      console.error("Failed to fetch cart", err);
-    }
-  };
-
-  fetchCart();
-}, [user, token]);
+    fetchCart();
+  }, [user, token]);
 
   return (
     <>
@@ -78,14 +72,13 @@ export default function Cart() {
 
       <div className="pt-24 px-4 md:px-10 bg-gray-100 min-h-screen">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
-          
           {/* LEFT SIDE - CART ITEMS */}
           <div className="flex-1 bg-white p-6 rounded shadow">
             <h1 className="text-xl font-semibold mb-4">
-              Your Shopping Cart ({cart.reduce((sum, product) => sum + product.designs.length, 0)} items)
+              Your Shopping Cart (
+              {cart.reduce((sum, product) => sum + product.designs.length, 0)}{" "}
+              items)
             </h1>
-
-          
 
             {/* HEADER */}
             <div className="hidden md:grid grid-cols-5 text-gray-500 text-sm border-b pb-2 mb-4">
@@ -116,28 +109,40 @@ export default function Cart() {
 
                     {Object.entries(d.config).map(
                       ([key, val]) =>
-                        key !== "quantity" && !key.includes("Design") && (
+                        key !== "quantity" &&
+                        !key.includes("Design") && (
                           <p key={key} className="text-gray-500 text-xs">
                             {key}: {String(val)}
                           </p>
-                        )
+                        ),
                     )}
 
                     {/* UPLOADED DESIGNS */}
-                    {Object.entries(d.config).some(([key, val]) => key.includes("Design") && val) && (
+                    {Object.entries(d.config).some(
+                      ([key, val]) => key.includes("Design") && val,
+                    ) && (
                       <div className="mt-2">
-                        <p className="text-xs font-medium text-gray-700">Uploaded Designs:</p>
+                        <p className="text-xs font-medium text-gray-700">
+                          Uploaded Designs:
+                        </p>
                         <div className="flex gap-2 mt-1 overflow-x-auto">
                           {Object.entries(d.config).map(([key, val]) =>
                             key.includes("Design") && val ? (
-                              <div key={key} className="flex-shrink-0 w-12 h-12 border rounded overflow-hidden">
+                              <div
+                                key={key}
+                                className="flex-shrink-0 w-12 h-12 border rounded overflow-hidden"
+                              >
                                 <img
-                                  src={typeof val === "string" ? val : URL.createObjectURL(val)}
+                                  src={
+                                    typeof val === "string"
+                                      ? val
+                                      : URL.createObjectURL(val)
+                                  }
                                   alt={key}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
-                            ) : null
+                            ) : null,
                           )}
                         </div>
                       </div>
@@ -148,11 +153,7 @@ export default function Cart() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() =>
-                        updateQuantity(
-                          product.productId,
-                          index,
-                          d.quantity - 1
-                        )
+                        updateQuantity(product.productId, index, d.quantity - 1)
                       }
                       disabled={d.quantity <= 1}
                       className="border px-2 disabled:opacity-50"
@@ -164,11 +165,7 @@ export default function Cart() {
 
                     <button
                       onClick={() =>
-                        updateQuantity(
-                          product.productId,
-                          index,
-                          d.quantity + 1
-                        )
+                        updateQuantity(product.productId, index, d.quantity + 1)
                       }
                       className="border px-2"
                     >
@@ -186,16 +183,14 @@ export default function Cart() {
                     </span>
 
                     <button
-                      onClick={() =>
-                        removeFromCart(product.productId, index)
-                      }
+                      onClick={() => removeFromCart(product.productId, index)}
                       className="text-red-500"
                     >
                       <X size={18} />
                     </button>
                   </div>
                 </div>
-              ))
+              )),
             )}
           </div>
 
@@ -207,10 +202,13 @@ export default function Cart() {
               <div className="mb-4 bg-gray-50 p-4 rounded-sm">
                 <p className="text-sm font-semibold mb-2">Deliver To</p>
                 <p className="text-sm font-medium">
-                  {addresses.find((addr) => addr.isDefault)?.type || addresses[0]?.type || "Address"}
+                  {addresses.find((addr) => addr.isDefault)?.type ||
+                    addresses[0]?.type ||
+                    "Address"}
                 </p>
                 <p className="text-sm text-gray-700 mt-1">
-                  {addresses.find((addr) => addr.isDefault)?.text || addresses[0]?.text}
+                  {addresses.find((addr) => addr.isDefault)?.text ||
+                    addresses[0]?.text}
                 </p>
                 <button
                   onClick={() => navigate("/manage-address")}
@@ -226,7 +224,8 @@ export default function Cart() {
                   onClick={() => navigate("/manage-address")}
                   className="text-blue-600 font-medium underline decoration-1 underline-offset-2 hover:text-blue-800"
                 >
-                  No saved address found. Add one in Manage Address to see it here.
+                  No saved address found. Add one in Manage Address to see it
+                  here.
                 </button>
               </div>
             )}

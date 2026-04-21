@@ -14,13 +14,15 @@ export const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART: {
       const { product, configs } = action.payload;
-      const existing = state.items.find((p) => p.productId === product.id);
+      const productId = product._id || product.id; // 🔥 FIX
+
+      const existing = state.items.find((p) => p.productId === productId);
 
       if (existing) {
         return {
           ...state,
           items: state.items.map((p) =>
-            p.productId === product.id
+            p.productId === productId
               ? {
                   ...p,
                   designs: [...p.designs, ...configs],
@@ -35,10 +37,10 @@ export const cartReducer = (state = initialState, action) => {
         items: [
           ...state.items,
           {
-            productId: product.id,
+            productId: productId, // 🔥 FIX
             name: product.name,
             price: product.price,
-            image: product.image,
+            image: product.image || product.images?.[0] || "",
             designs: configs,
           },
         ],
