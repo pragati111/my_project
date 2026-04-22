@@ -119,26 +119,25 @@ export default function Cart() {
 
                     {/* UPLOADED DESIGNS */}
                     {Object.entries(d.config).some(
-                      ([key, val]) => key.includes("Design") && val,
+                      ([_, val]) =>
+                        typeof val === "string" && val.startsWith("http"),
                     ) && (
                       <div className="mt-2">
                         <p className="text-xs font-medium text-gray-700">
                           Uploaded Designs:
                         </p>
+
                         <div className="flex gap-2 mt-1 overflow-x-auto">
                           {Object.entries(d.config).map(([key, val]) =>
-                            key.includes("Design") && val ? (
+                            typeof val === "string" &&
+                            val.startsWith("http") ? (
                               <div
                                 key={key}
                                 className="flex-shrink-0 w-12 h-12 border rounded overflow-hidden"
                               >
                                 <img
-                                  src={
-                                    typeof val === "string"
-                                      ? val
-                                      : URL.createObjectURL(val)
-                                  }
-                                  alt={key}
+                                  src={val}
+                                  alt="design"
                                   className="w-full h-full object-cover"
                                 />
                               </div>

@@ -394,12 +394,12 @@ export default function ProductDisplay() {
                                       <input
                                         type="file"
                                         onChange={(e) =>
-                                          handleFileUpload(
-                                            index,
-                                            field.id,
-                                            e.target.files[0],
-                                          )
-                                        }
+  handleFileUpload(
+    index,
+    `${field.id}_front`,
+    e.target.files[0],
+  )
+}
                                       />
 
                                       <p className="text-xs text-gray-500">
@@ -423,12 +423,12 @@ export default function ProductDisplay() {
                                       <input
                                         type="file"
                                         onChange={(e) =>
-                                          handleFileUpload(
-                                            index,
-                                            field.id,
-                                            e.target.files[0],
-                                          )
-                                        }
+  handleFileUpload(
+    index,
+    `${field.id}_back`,
+    e.target.files[0],
+  )
+}
                                       />
 
                                       <p className="text-xs text-gray-500">
