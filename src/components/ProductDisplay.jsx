@@ -20,14 +20,14 @@ export default function ProductDisplay() {
 
   // FETCH PRODUCT
   useEffect(() => {
-  fetch(`/api/product/${id}`)
-    .then((res) => res.json())
-    .then((res) => {
-      console.log("API:", res); // debug once
-      setProduct(res.product || null); // ✅ FIX
-    })
-    .catch((err) => console.error(err));
-}, [id]);
+    fetch(`/api/product/${id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("API:", res); // debug once
+        setProduct(res.product || null); // ✅ FIX
+      })
+      .catch((err) => console.error(err));
+  }, [id]);
 
   useEffect(() => {
     const attachScroll = () => {
@@ -92,11 +92,32 @@ export default function ProductDisplay() {
     setConfigs(updated);
   };
 
-  const handleFileChange = (index, id, file) => {
+  const CLOUDINARY_UPLOAD_PRESET = "market_data";
+  const CLOUDINARY_CLOUD_NAME = "drq4o4qix";
+
+  const handleFileUpload = async (index, id, file) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => handleChange(index, id, e.target.result);
-    reader.readAsDataURL(file);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const data = await res.json();
+
+      // ✅ SAVE CLOUDINARY URL IN CONFIG
+      handleChange(index, id, data.secure_url);
+    } catch (err) {
+      console.error("Upload failed", err);
+    }
   };
 
   const addConfig = () => setConfigs((prev) => [...prev, {}]);
@@ -134,17 +155,17 @@ export default function ProductDisplay() {
                 </button>
 
                 {activeMedia ? (
-  activeMedia.type === "image" ? (
-    <img
-      src={activeMedia.url}
-      className="max-h-full object-contain"
-    />
-  ) : (
-    <video src={activeMedia.url} autoPlay muted loop controls />
-  )
-) : (
-  <div className="text-gray-400">No media available</div>
-)}
+                  activeMedia.type === "image" ? (
+                    <img
+                      src={activeMedia.url}
+                      className="max-h-full object-contain"
+                    />
+                  ) : (
+                    <video src={activeMedia.url} autoPlay muted loop controls />
+                  )
+                ) : (
+                  <div className="text-gray-400">No media available</div>
+                )}
 
                 <button
                   onClick={handleNext}
@@ -300,7 +321,9 @@ export default function ProductDisplay() {
                             >
                               <option>Select</option>
                               {field.options?.map((opt) => (
-                                <option key={opt.label} value={opt.label}>{opt.label}</option>
+                                <option key={opt.label} value={opt.label}>
+                                  {opt.label}
+                                </option>
                               ))}
                             </select>
                           )}
@@ -333,7 +356,7 @@ export default function ProductDisplay() {
                                     <input
                                       type="file"
                                       onChange={(e) =>
-                                        handleFileChange(
+                                        handleFileUpload(
                                           index,
                                           field.id,
                                           e.target.files[0],
@@ -371,9 +394,9 @@ export default function ProductDisplay() {
                                       <input
                                         type="file"
                                         onChange={(e) =>
-                                          handleFileChange(
+                                          handleFileUpload(
                                             index,
-                                            frontKey,
+                                            field.id,
                                             e.target.files[0],
                                           )
                                         }
@@ -400,9 +423,9 @@ export default function ProductDisplay() {
                                       <input
                                         type="file"
                                         onChange={(e) =>
-                                          handleFileChange(
+                                          handleFileUpload(
                                             index,
-                                            backKey,
+                                            field.id,
                                             e.target.files[0],
                                           )
                                         }
@@ -421,7 +444,7 @@ export default function ProductDisplay() {
                                 <input
                                   type="file"
                                   onChange={(e) =>
-                                    handleFileChange(
+                                    handleFileUpload(
                                       index,
                                       field.id,
                                       e.target.files[0],
