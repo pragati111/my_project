@@ -86,16 +86,21 @@ export default function ProductDisplay() {
   const activeMedia = media[activeIndex];
 
   // HANDLERS
-  const handleChange = (index, id, value) => {
-    const updated = [...configs];
-    updated[index][id] = value;
-    setConfigs(updated);
-  };
+  const handleChange = (index, field, value) => {
+  const updated = [...configs];
+
+  // 👇 quantity should still work
+  const key = typeof field === "string" ? field : field.label;
+
+  updated[index][key] = value;
+
+  setConfigs(updated);
+};
 
   const CLOUDINARY_UPLOAD_PRESET = "market_data";
   const CLOUDINARY_CLOUD_NAME = "drq4o4qix";
 
-  const handleFileUpload = async (index, id, file) => {
+  const handleFileUpload = async (index, key, file) => {
     if (!file) return;
 
     try {
@@ -114,7 +119,7 @@ export default function ProductDisplay() {
       const data = await res.json();
 
       // ✅ SAVE CLOUDINARY URL IN CONFIG
-      handleChange(index, id, data.secure_url);
+      handleChange(index, key, data.secure_url);
     } catch (err) {
       console.error("Upload failed", err);
     }
@@ -263,7 +268,7 @@ export default function ProductDisplay() {
                               type="text"
                               className="border p-2 w-full"
                               onChange={(e) =>
-                                handleChange(index, field.id, e.target.value)
+                                handleChange(index, field, e.target.value)
                               }
                             />
                           )}
@@ -273,7 +278,7 @@ export default function ProductDisplay() {
                             <textarea
                               className="border p-2 w-full"
                               onChange={(e) =>
-                                handleChange(index, field.id, e.target.value)
+                                handleChange(index, field, e.target.value)
                               }
                             />
                           )}
@@ -286,7 +291,7 @@ export default function ProductDisplay() {
                                   type="radio"
                                   name={`${field.id}-${index}`}
                                   onChange={() =>
-                                    handleChange(index, field.id, opt.label)
+                                    handleChange(index, field, opt.label)
                                   }
                                 />{" "}
                                 {opt.label}
@@ -300,11 +305,11 @@ export default function ProductDisplay() {
                                 <input
                                   type="checkbox"
                                   onChange={(e) => {
-                                    const prev = config[field.id] || [];
+                                    const prev = config[field.label] || [];
                                     const updated = e.target.checked
                                       ? [...prev, opt.label]
                                       : prev.filter((o) => o !== opt.label);
-                                    handleChange(index, field.id, updated);
+                                    handleChange(index, field, updated);
                                   }}
                                 />{" "}
                                 {opt.label}
@@ -316,7 +321,7 @@ export default function ProductDisplay() {
                             <select
                               className="border p-2 w-full"
                               onChange={(e) =>
-                                handleChange(index, field.id, e.target.value)
+                                handleChange(index, field, e.target.value)
                               }
                             >
                               <option>Select</option>
@@ -340,7 +345,7 @@ export default function ProductDisplay() {
 
                               // SINGLE SIDED
                               if (selectedOption === "Single Sided") {
-                                const value = config[field.id];
+                                const value = config[field.label];
 
                                 return (
                                   <div className="space-y-2">
@@ -358,7 +363,7 @@ export default function ProductDisplay() {
                                       onChange={(e) =>
                                         handleFileUpload(
                                           index,
-                                          field.id,
+                                          field.label,
                                           e.target.files[0],
                                         )
                                       }
@@ -373,8 +378,8 @@ export default function ProductDisplay() {
 
                               // DOUBLE SIDED
                               if (selectedOption === "Double Sided") {
-                                const frontKey = `${field.id}_front`;
-                                const backKey = `${field.id}_back`;
+                                const frontKey = `${field.label}_front`;
+                                const backKey = `${field.label}_back`;
 
                                 return (
                                   <div className="space-y-3">
@@ -394,12 +399,12 @@ export default function ProductDisplay() {
                                       <input
                                         type="file"
                                         onChange={(e) =>
-  handleFileUpload(
-    index,
-    `${field.id}_front`,
-    e.target.files[0],
-  )
-}
+                                          handleFileUpload(
+                                            index,
+                                            `${field.label}_front`,
+                                            e.target.files[0],
+                                          )
+                                        }
                                       />
 
                                       <p className="text-xs text-gray-500">
@@ -423,12 +428,12 @@ export default function ProductDisplay() {
                                       <input
                                         type="file"
                                         onChange={(e) =>
-  handleFileUpload(
-    index,
-    `${field.id}_back`,
-    e.target.files[0],
-  )
-}
+                                          handleFileUpload(
+                                            index,
+                                            `${field.label}_back`,
+                                            e.target.files[0],
+                                          )
+                                        }
                                       />
 
                                       <p className="text-xs text-gray-500">
@@ -446,7 +451,7 @@ export default function ProductDisplay() {
                                   onChange={(e) =>
                                     handleFileUpload(
                                       index,
-                                      field.id,
+                                      field.label,
                                       e.target.files[0],
                                     )
                                   }
