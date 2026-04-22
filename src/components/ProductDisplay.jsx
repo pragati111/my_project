@@ -87,15 +87,15 @@ export default function ProductDisplay() {
 
   // HANDLERS
   const handleChange = (index, field, value) => {
-  const updated = [...configs];
+    const updated = [...configs];
 
-  // 👇 quantity should still work
-  const key = typeof field === "string" ? field : field.label;
+    // 👇 quantity should still work
+    const key = typeof field === "string" ? field : field.label;
 
-  updated[index][key] = value;
+    updated[index][key] = value;
 
-  setConfigs(updated);
-};
+    setConfigs(updated);
+  };
 
   const CLOUDINARY_UPLOAD_PRESET = "market_data";
   const CLOUDINARY_CLOUD_NAME = "drq4o4qix";
@@ -491,7 +491,13 @@ export default function ProductDisplay() {
                       config: c,
                       quantity: c.quantity || 1,
                     }));
-                    addToCart(product, formattedConfigs);
+                    addToCart(
+                      {
+                        ...product,
+                        image: media[0]?.url || "", // ✅ ADD THIS
+                      },
+                      formattedConfigs,
+                    );
                   }}
                   className="bg-black text-white px-6 py-3 w-full"
                 >
@@ -573,7 +579,13 @@ export default function ProductDisplay() {
                 config: c,
                 quantity: c.quantity || 1,
               }));
-              addToCart(product, formattedConfigs);
+              addToCart(
+                {
+                  ...product,
+                  image: media[0]?.url || "", // ✅ ADD THIS
+                },
+                formattedConfigs,
+              );
             }}
             className="bg-black text-white py-3 flex-1 rounded"
           >
