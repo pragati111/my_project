@@ -122,10 +122,22 @@ export default function Cart() {
                   className="grid grid-cols-1 md:grid-cols-5 items-center gap-4 border-b py-4"
                 >
                   {/* IMAGE */}
-                  <div>
+                  <div className="w-20 h-20 relative flex items-center justify-center border rounded overflow-hidden">
+                    {/* LOADING UI */}
+                    {!productImages[product.productId] && !product.image && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-gray-500">
+                        <div className="w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin mb-1"></div>
+                        Loading...
+                      </div>
+                    )}
+
                     <img
                       src={productImages[product.productId] || product.image}
-                      className="w-20 h-20 object-contain"
+                      className="w-full h-full object-contain"
+                      onLoad={(e) => {
+                        e.target.style.opacity = "1";
+                      }}
+                      style={{ opacity: 0, transition: "opacity 0.3s ease" }}
                     />
                   </div>
 
