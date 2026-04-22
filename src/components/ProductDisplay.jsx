@@ -491,6 +491,10 @@ export default function ProductDisplay() {
                       config: c,
                       quantity: c.quantity || 1,
                     }));
+                    console.log("ADDING TO CART:", {
+                      ...product,
+                      image: media[0]?.url,
+                    });
                     addToCart(
                       {
                         ...product,
@@ -576,9 +580,16 @@ export default function ProductDisplay() {
           <button
             onClick={() => {
               const formattedConfigs = configs.map((c) => ({
-                config: c,
+                config: {
+                  ...c,
+                  __productImage: media[0]?.url, // 🔥 backup storage
+                },
                 quantity: c.quantity || 1,
               }));
+              console.log("ADDING TO CART:", {
+                ...product,
+                image: media[0]?.url,
+              });
               addToCart(
                 {
                   ...product,

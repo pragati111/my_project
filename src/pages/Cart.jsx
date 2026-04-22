@@ -14,6 +14,7 @@ const API = "https://my-project-backend-ee4t.onrender.com";
 
 export default function Cart() {
   const { cart, getTotalPrice, removeFromCart, updateQuantity } = useCart();
+  const [productImages, setProductImages] = useState({});
   const { user, token } = useAuth();
   const dispatch = useDispatch();
   const [addresses] = useState(() => {
@@ -50,7 +51,7 @@ export default function Cart() {
           productId: item.productId.toString(),
           name: item.name,
           price: item.price,
-          image: item.image,
+          image: item.image || item.designs?.[0]?.config?.__productImage || "",
           designs: (item.designs || []).map((d) => ({
             config: d.config || {},
             quantity: d.quantity || 1,
@@ -65,6 +66,31 @@ export default function Cart() {
 
     fetchCart();
   }, [user, token]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const map = {};
+
+      for (const product of cart) {
+        try {
+          const res = await axios.get(
+            `${API}/api/product/${product.productId}`,
+          );
+          const data = res.data?.product;
+
+          // pick best image
+          map[product.productId] =
+            data?.media?.[0]?.url || data?.image || data?.images?.[0] || "";
+        } catch (err) {
+          console.error("Image fetch failed", err);
+        }
+      }
+
+      setProductImages(map);
+    };
+
+    if (cart.length > 0) fetchImages();
+  }, [cart]);
 
   return (
     <>
@@ -98,7 +124,7 @@ export default function Cart() {
                   {/* IMAGE */}
                   <div>
                     <img
-                      src={product.image}
+                      src={productImages[product.productId] || product.image}
                       className="w-20 h-20 object-contain"
                     />
                   </div>
