@@ -60,19 +60,6 @@ export default function ProductShimmer() {
           </div>
         </div>
 
-        {/* SPECIFICATIONS */}
-        <div className="mt-8 bg-gray-100 border rounded-lg p-6 space-y-4">
-          <div className="h-5 w-60 bg-gray-300 rounded"></div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map((_, i) => (
-              <div key={i} className="space-y-2">
-                <div className="h-4 w-24 bg-gray-300 rounded"></div>
-                <div className="h-4 w-32 bg-gray-300 rounded"></div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
