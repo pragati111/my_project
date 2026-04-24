@@ -11,6 +11,7 @@ export default function SubcategoryDisplay() {
   const decodedName = decodeURIComponent(subCategoryName);
 
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("");
   const [priceSort, setPriceSort] = useState("");
   const [ratingSort, setRatingSort] = useState("");
@@ -29,7 +30,8 @@ export default function SubcategoryDisplay() {
 
         setProducts(filtered);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }, [decodedName]);
 
   const getImage = (product) => {
@@ -110,14 +112,51 @@ export default function SubcategoryDisplay() {
                 </div>
               </div>
             </div>
+
+            {/* SHIMMER LOADING STATE */}
+            {loading && (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-xl overflow-hidden shadow-md shadow-black/10 border border-gray-100"
+                  >
+                    {/* IMAGE SKELETON */}
+                    <div className="w-full aspect-[4/3] sm:aspect-[4/3] bg-gray-100 overflow-hidden">
+                      <div className="w-full h-full bg-gray-200 animate-pulse"></div>
+                    </div>
+
+                    {/* CONTENT SKELETON */}
+                    <div className="p-2.5 sm:p-3 md:p-4 flex flex-col gap-1.5">
+                      {/* TITLE */}
+                      <div className="h-3 sm:h-4 md:h-5 w-3/4 bg-gray-200 animate-pulse rounded"></div>
+
+                      {/* RATING + TAG */}
+                      <div className="flex items-center gap-1">
+                        <div className="h-4 w-8 bg-gray-200 animate-pulse rounded-full"></div>
+                        <div className="h-4 w-12 bg-gray-200 animate-pulse rounded-full"></div>
+                      </div>
+
+                      {/* DESCRIPTION */}
+                      <div className="hidden sm:block">
+                        <div className="h-2 w-full bg-gray-200 animate-pulse rounded mb-1"></div>
+                        <div className="h-2 w-2/3 bg-gray-200 animate-pulse rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* EMPTY STATE */}
-            {products.length === 0 && (
+            {!loading && products.length === 0 && (
               <p className="text-gray-500">No products found.</p>
             )}
 
             {/* 🔥 PREMIUM PRODUCT GRID */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-              {sortedProducts.map((product) => (
+            {!loading && (
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                {sortedProducts.map((product) => (
                 <div
                   key={product._id}
                   className="bg-white rounded-xl overflow-hidden shadow-md shadow-black/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100"
@@ -167,7 +206,8 @@ export default function SubcategoryDisplay() {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* 🔥 FOOTERS (ALIGNED CORRECTLY) */}

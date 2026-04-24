@@ -89,6 +89,7 @@ const CategoryStack = ({ title, subtitle, items }) => {
 
 const PremiumShowcase = () => {
   const [collections, setCollections] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     fetch("https://my-project-backend-ee4t.onrender.com/api/product")
@@ -144,13 +145,59 @@ const PremiumShowcase = () => {
           },
         ]);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="bg-white min-h-screen py-10 px-4 md:px-8 flex items-center justify-center">
       <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-start">
-        {collections.map((col, index) => (
+        {/* SHIMMER LOADING STATE */}
+        {loading && (
+          <>
+            {[...Array(3)].map((_, colIdx) => (
+              <div
+                key={colIdx}
+                className="flex flex-col w-full h-[370px] md:h-[580px] bg-gray-100 border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl"
+              >
+                {/* Header Section */}
+                <div className="mb-4 md:mb-6 border-b border-gray-200/50 pb-4 flex-shrink-0">
+                  <div className="h-6 w-32 bg-gray-200 animate-pulse rounded"></div>
+                  <div className="h-3 w-24 bg-gray-200 animate-pulse rounded mt-2"></div>
+                </div>
+
+                {/* Scrollable Grid Container */}
+                <div className="flex-grow overflow-y-auto pr-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 pb-4">
+                    {[...Array(4)].map((_, itemIdx) => (
+                      <div
+                        key={itemIdx}
+                        className="relative bg-gray-200 p-[1px] rounded-xl overflow-hidden h-fit"
+                      >
+                        <div className="bg-white p-2 md:p-3 rounded-xl flex flex-row md:flex-col items-center md:items-start">
+                          <div className="w-20 h-14 md:w-full md:h-auto md:aspect-square flex-shrink-0 md:mb-3 overflow-hidden rounded-lg bg-gray-200 animate-pulse"></div>
+
+                          <div className="ml-3 md:ml-0 flex-grow">
+                            <div className="flex gap-0.5 mb-1">
+                              {[...Array(5)].map((_, i) => (
+                                <div key={i} className="w-2 h-2 bg-gray-200 rounded-full animate-pulse"></div>
+                              ))}
+                            </div>
+                            <div className="h-3 w-20 bg-gray-200 animate-pulse rounded mb-1"></div>
+                            <div className="h-2 w-16 bg-gray-200 animate-pulse rounded"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {/* ACTUAL CONTENT */}
+        {!loading && collections.map((col, index) => (
           <CategoryStack key={index} {...col} />
         ))}
       </div>

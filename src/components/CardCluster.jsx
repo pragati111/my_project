@@ -66,6 +66,7 @@ const shuffleArray = (arr) => arr.sort(() => 0.5 - Math.random());
 
 const CardCluster = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -87,6 +88,8 @@ const CardCluster = () => {
         setProducts(selected);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -112,73 +115,182 @@ const CardCluster = () => {
     <div className="w-full bg-white p-4 md:p-10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4">
 
-        {/* Column 1 */}
-        <div className="md:col-span-3 flex flex-col gap-4">
-          <CardContainer className="h-64 md:h-80" variant={0}>
-            {renderCard(0)}
-            {renderCard(1)}
-            {renderCard(2)}
-            {renderCard(3)}
-          </CardContainer>
+        {/* SHIMMER LOADING STATE */}
+        {loading && (
+          <>
+            {/* Column 1 */}
+            <div className="md:col-span-3 flex flex-col gap-4">
+              <CardContainer className="h-64 md:h-80" variant={0}>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md overflow-hidden">
+                    <div className="flex-1 flex items-center justify-center min-h-0">
+                      <div className="h-14 md:h-20 w-full bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                    <div className="mt-1 flex items-center justify-center text-[10px] md:text-xs shrink-0 px-1">
+                      <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </CardContainer>
 
-          <CardContainer className="h-32 md:h-40" variant={1}>
-            {renderCard(4)}
-            {renderCard(5)}
-          </CardContainer>
-        </div>
-
-        {/* Column 2 */}
-        <div className="md:col-span-6 flex flex-col gap-4">
-          <CardContainer
-            className="h-64 md:h-80 flex items-center justify-center"
-            variant={2}
-            noGrid={true}
-          >
-            <div className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full">
-              <h2
-                className="text-2xl md:text-4xl font-semibold leading-tight tracking-wide 
-      bg-gradient-to-r from-[#d4af37] via-[#f5d27a] to-[#c89b3c] 
-      bg-clip-text text-transparent 
-      drop-shadow-[0_2px_6px_rgba(212,175,55,0.4)]"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                Newly Launched
-              </h2>
-
-              <p className="mt-4 text-gray-600 text-xs md:text-sm tracking-wide">
-                Premium Prints • Timeless Designs • Personalized Touch
-              </p>
+              <CardContainer className="h-32 md:h-40" variant={1}>
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md overflow-hidden">
+                    <div className="flex-1 flex items-center justify-center min-h-0">
+                      <div className="h-14 md:h-20 w-full bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                    <div className="mt-1 flex items-center justify-center text-[10px] md:text-xs shrink-0 px-1">
+                      <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </CardContainer>
             </div>
-          </CardContainer>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <CardContainer className="h-32 md:h-40" variant={3}>
-              {renderCard(6)}
-              {renderCard(7)}
-            </CardContainer>
+            {/* Column 2 */}
+            <div className="md:col-span-6 flex flex-col gap-4">
+              <CardContainer
+                className="h-64 md:h-80 flex items-center justify-center"
+                variant={2}
+                noGrid={true}
+              >
+                <div className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full">
+                  <div className="h-8 md:h-12 w-48 mx-auto bg-gray-200 animate-pulse rounded"></div>
+                  <div className="mt-4 h-4 w-64 mx-auto bg-gray-200 animate-pulse rounded"></div>
+                </div>
+              </CardContainer>
 
-            <CardContainer className="h-32 md:h-40" variant={4}>
-              {renderCard(8)}
-              {renderCard(9)}
-            </CardContainer>
-          </div>
-        </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CardContainer className="h-32 md:h-40" variant={3}>
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md overflow-hidden">
+                      <div className="flex-1 flex items-center justify-center min-h-0">
+                        <div className="h-14 md:h-20 w-full bg-gray-200 animate-pulse rounded"></div>
+                      </div>
+                      <div className="mt-1 flex items-center justify-center text-[10px] md:text-xs shrink-0 px-1">
+                        <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContainer>
 
-        {/* Column 3 */}
-        <div className="md:col-span-3 flex flex-col gap-4">
-          <CardContainer className="h-32 md:h-40" variant={1}>
-            {renderCard(10)}
-            {renderCard(11)}
-          </CardContainer>
+                <CardContainer className="h-32 md:h-40" variant={4}>
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md overflow-hidden">
+                      <div className="flex-1 flex items-center justify-center min-h-0">
+                        <div className="h-14 md:h-20 w-full bg-gray-200 animate-pulse rounded"></div>
+                      </div>
+                      <div className="mt-1 flex items-center justify-center text-[10px] md:text-xs shrink-0 px-1">
+                        <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContainer>
+              </div>
+            </div>
 
-          <CardContainer className="h-64 md:h-80" variant={0}>
-            {renderCard(12)}
-            {renderCard(13)}
-            {renderCard(14)}
-            {renderCard(15)}
-          </CardContainer>
-        </div>
+            {/* Column 3 */}
+            <div className="md:col-span-3 flex flex-col gap-4">
+              <CardContainer className="h-32 md:h-40" variant={1}>
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md overflow-hidden">
+                    <div className="flex-1 flex items-center justify-center min-h-0">
+                      <div className="h-14 md:h-20 w-full bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                    <div className="mt-1 flex items-center justify-center text-[10px] md:text-xs shrink-0 px-1">
+                      <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </CardContainer>
 
+              <CardContainer className="h-64 md:h-80" variant={0}>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="bg-white/90 backdrop-blur rounded-2xl p-2 flex flex-col h-full shadow-md overflow-hidden">
+                    <div className="flex-1 flex items-center justify-center min-h-0">
+                      <div className="h-14 md:h-20 w-full bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                    <div className="mt-1 flex items-center justify-center text-[10px] md:text-xs shrink-0 px-1">
+                      <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </CardContainer>
+            </div>
+          </>
+        )}
+
+        {/* ACTUAL CONTENT */}
+        {!loading && (
+          <>
+            {/* Column 1 */}
+            <div className="md:col-span-3 flex flex-col gap-4">
+              <CardContainer className="h-64 md:h-80" variant={0}>
+                {renderCard(0)}
+                {renderCard(1)}
+                {renderCard(2)}
+                {renderCard(3)}
+              </CardContainer>
+
+              <CardContainer className="h-32 md:h-40" variant={1}>
+                {renderCard(4)}
+                {renderCard(5)}
+              </CardContainer>
+            </div>
+
+            {/* Column 2 */}
+            <div className="md:col-span-6 flex flex-col gap-4">
+              <CardContainer
+                className="h-64 md:h-80 flex items-center justify-center"
+                variant={2}
+                noGrid={true}
+              >
+                <div className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full">
+                  <h2
+                    className="text-2xl md:text-4xl font-semibold leading-tight tracking-wide 
+          bg-gradient-to-r from-[#d4af37] via-[#f5d27a] to-[#c89b3c] 
+          bg-clip-text text-transparent 
+          drop-shadow-[0_2px_6px_rgba(212,175,55,0.4)]"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    Newly Launched
+                  </h2>
+
+                  <p className="mt-4 text-gray-600 text-xs md:text-sm tracking-wide">
+                    Premium Prints • Timeless Designs • Personalized Touch
+                  </p>
+                </div>
+              </CardContainer>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CardContainer className="h-32 md:h-40" variant={3}>
+                  {renderCard(6)}
+                  {renderCard(7)}
+                </CardContainer>
+
+                <CardContainer className="h-32 md:h-40" variant={4}>
+                  {renderCard(8)}
+                  {renderCard(9)}
+                </CardContainer>
+              </div>
+            </div>
+
+            {/* Column 3 */}
+            <div className="md:col-span-3 flex flex-col gap-4">
+              <CardContainer className="h-32 md:h-40" variant={1}>
+                {renderCard(10)}
+                {renderCard(11)}
+              </CardContainer>
+
+              <CardContainer className="h-64 md:h-80" variant={0}>
+                {renderCard(12)}
+                {renderCard(13)}
+                {renderCard(14)}
+                {renderCard(15)}
+              </CardContainer>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

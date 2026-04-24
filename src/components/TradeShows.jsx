@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function TradeShows() {
   const [groupedData, setGroupedData] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +27,8 @@ export default function TradeShows() {
 
         setGroupedData(grouped);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
 
   // Helper: get 3 unique images from different products
@@ -69,7 +71,36 @@ export default function TradeShows() {
 
   return (
     <div className="px-4 md:px-8 lg:px-12 pb-10">
-      {Object.entries(groupedData).map(([section, subCats]) => (
+      {/* SHIMMER LOADING STATE */}
+      {loading && (
+        <div className="mb-10">
+          <div className="mb-4">
+            <div className="h-6 w-40 bg-gray-200 animate-pulse rounded"></div>
+            <div className="w-10 h-[2px] bg-gray-200 mt-1"></div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white border border-gray-300 shadow-sm overflow-hidden p-2">
+                <div className="grid grid-cols-2 gap-2 aspect-square sm:aspect-auto sm:h-[190px] md:h-[210px] overflow-hidden">
+                  <div className="flex flex-col gap-2 h-full">
+                    <div className="flex-[1.4] bg-gray-200 animate-pulse rounded"></div>
+                  </div>
+                  <div className="flex flex-col gap-2 h-full">
+                    <div className="flex-1 bg-gray-200 animate-pulse rounded"></div>
+                    <div className="flex-[1.4] bg-gray-200 animate-pulse rounded"></div>
+                  </div>
+                </div>
+                <div className="pt-3 pb-1 text-center">
+                  <div className="h-4 w-3/4 mx-auto bg-gray-200 animate-pulse rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ACTUAL CONTENT */}
+      {!loading && Object.entries(groupedData).map(([section, subCats]) => (
         <div key={section} className="mb-10">
           
           {/* SECTION HEADING */}

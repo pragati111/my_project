@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function WorkspaceBranding() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [visibleItems, setVisibleItems] = useState(4);
   const navigate = useNavigate();
@@ -13,14 +14,14 @@ export default function WorkspaceBranding() {
     const fetchProducts = async () => {
       try {
         const res = await fetch(
-          "https://my-project-backend-ee4t.onrender.com/api/product"
+          "https://my-project-backend-ee4t.onrender.com/api/product",
         );
         const data = await res.json();
 
         if (data?.success) {
-          const featured = data.data.filter((p) =>
-            (p.tags?.includes("featured") ||
-              p.superTags?.includes("featured"))
+          const featured = data.data.filter(
+            (p) =>
+              p.tags?.includes("featured") || p.superTags?.includes("featured"),
           );
 
           const formatted = featured.map((p) => ({
@@ -36,6 +37,8 @@ export default function WorkspaceBranding() {
         }
       } catch (err) {
         console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -86,42 +89,88 @@ export default function WorkspaceBranding() {
       {/* SLIDER */}
       <div className="relative">
         <div className="px-4 md:px-8 lg:px-12">
-          <div className="flex gap-4 overflow-hidden">
-            {products.slice(index, index + visibleItems).map((item, i) => (
+          {/* SHIMMER LOADING STATE */}
+          {loading && (
+            <div className="flex gap-4 overflow-hidden">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] flex-shrink-0"
+                >
+                  <div className="bg-white border border-[#e6d3b8] p-3 shadow-md rounded-md">
+                    <div className="animate-pulse">
+                      {/* TILE GRID SKELETON */}
+                      <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
+                        <div className="col-span-2 row-span-2 bg-gray-200 rounded"></div>
+                        <div className="bg-gray-200 rounded"></div>
+                        <div className="bg-gray-200 rounded"></div>
+                        <div className="bg-gray-200 rounded"></div>
+                        <div className="bg-gray-200 rounded"></div>
+                        <div className="bg-gray-200 rounded"></div>
+                      </div>
+                      {/* TITLE SKELETON */}
+                      <div className="h-4 w-3/4 mx-auto mt-2 bg-gray-200 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ACTUAL PRODUCTS */}
+          {!loading && products.length > 0 && (
+            <div className="flex gap-4 overflow-hidden">
+              {products.slice(index, index + visibleItems).map((item, i) => (
               <div
-  key={i}
-  onClick={() => navigate(`/product/${item._id}`)}
-  className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] flex-shrink-0 cursor-pointer"
->
-  {/* BORDER WRAPPER (stays stable) */}
-  <div className="bg-white border border-[#e6d3b8] p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-out rounded-md">
-    
-    {/* INNER CONTENT (scales smoothly) */}
-    <div className="transition-transform duration-300 ease-out hover:scale-[1.03]">
-      
-      {/* TILE GRID */}
-      <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
-        <img src={item.images?.[0]} className="col-span-2 row-span-2 w-full h-full object-cover" />
-        <img src={item.images?.[1]} className="w-full h-full object-cover" />
-        <img src={item.images?.[2]} className="w-full h-full object-cover" />
-        <img src={item.images?.[3]} className="w-full h-full object-cover" />
-        <img src={item.images?.[4]} className="w-full h-full object-cover" />
-        <img src={item.images?.[5]} className="w-full h-full object-cover" />
-      </div>
+                key={i}
+                onClick={() => navigate(`/product/${item._id}`)}
+                className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] flex-shrink-0 cursor-pointer"
+              >
+                {/* BORDER WRAPPER (stays stable) */}
+                <div className="bg-white border border-[#e6d3b8] p-3 shadow-md hover:shadow-lg transition-all duration-300 ease-out rounded-md">
+                  {/* INNER CONTENT (scales smoothly) */}
+                  <div className="transition-transform duration-300 ease-out hover:scale-[1.03]">
+                    {/* TILE GRID */}
+                    <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
+                      <img
+                        src={item.images?.[0]}
+                        className="col-span-2 row-span-2 w-full h-full object-cover"
+                      />
+                      <img
+                        src={item.images?.[1]}
+                        className="w-full h-full object-cover"
+                      />
+                      <img
+                        src={item.images?.[2]}
+                        className="w-full h-full object-cover"
+                      />
+                      <img
+                        src={item.images?.[3]}
+                        className="w-full h-full object-cover"
+                      />
+                      <img
+                        src={item.images?.[4]}
+                        className="w-full h-full object-cover"
+                      />
+                      <img
+                        src={item.images?.[5]}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
 
-      {/* TITLE */}
-      <p className="text-sm mt-2 text-center font-medium">
-        {item.name}
-      </p>
-
-    </div>
-  </div>
-</div>
+                    {/* TITLE */}
+                    <p className="text-sm mt-2 text-center font-medium">
+                      {item.name}
+                    </p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
+          )}
 
           {/* PREV */}
-          {index > 0 && (
+          {!loading && products.length > 0 && index > 0 && (
             <button
               onClick={prev}
               className="absolute left-2 md:-left-4 top-1/2 -translate-y-1/2 bg-white border p-2 shadow rounded-full"
@@ -131,7 +180,7 @@ export default function WorkspaceBranding() {
           )}
 
           {/* NEXT */}
-          {index + visibleItems < products.length && (
+          {!loading && products.length > 0 && index + visibleItems < products.length && (
             <button
               onClick={next}
               className="absolute right-2 md:-right-4 top-1/2 -translate-y-1/2 bg-white border p-2 shadow rounded-full"
