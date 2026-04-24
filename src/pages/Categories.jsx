@@ -10,139 +10,149 @@ export default function Categories() {
   const containerRef = useRef(null);
   const isManualScroll = useRef(false);
   const [categories, setCategories] = useState([]);
-const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const sidebarRefs = useRef([]);
 
   const scrollToCategory = (index) => {
-  const container = containerRef.current;
-  const target = categoryRefs.current[index];
+    const container = containerRef.current;
+    const target = categoryRefs.current[index];
 
-  if (container && target) {
-    isManualScroll.current = true;
+    if (container && target) {
+      isManualScroll.current = true;
 
-    const containerTop = container.getBoundingClientRect().top;
-    const targetTop = target.getBoundingClientRect().top;
+      const containerTop = container.getBoundingClientRect().top;
+      const targetTop = target.getBoundingClientRect().top;
 
-    const scrollOffset = targetTop - containerTop;
+      const scrollOffset = targetTop - containerTop;
 
-    container.scrollTo({
-      top: container.scrollTop + scrollOffset,
-      behavior: "smooth",
-    });
-
-    setActiveIndex(index);
-
-    setTimeout(() => {
-      isManualScroll.current = false;
-    }, 400);
-  }
-};
-
- useEffect(() => {
-  if (categories.length === 0) return; // 🚨 wait for API data
-
-  const container = containerRef.current;
-  if (!container) return;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (isManualScroll.current) return;
-
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = Number(entry.target.dataset.index);
-          setActiveIndex(index);
-        }
-      });
-    },
-    {
-      root: container,
-      rootMargin: "-30% 0px -50% 0px",
-      threshold: 0.1,
-    }
-  );
-
-  categoryRefs.current.forEach((ref) => {
-    if (ref) observer.observe(ref);
-  });
-
-  return () => observer.disconnect();
-}, [categories]); // ✅ IMPORTANT
-
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const res = await fetch("https://my-project-backend-ee4t.onrender.com/api/product");
-      const json = await res.json();
-
-      const products = json.data;
-
-      // 🔥 Transform API → UI structure
-      const categoryMap = {};
-
-      products.forEach((product) => {
-        const catName = product.category?.name || "Others";
-        const subName = product.subCategory?.name || "General";
-
-        // Create category
-        if (!categoryMap[catName]) {
-          categoryMap[catName] = {
-            name: catName,
-            children: {},
-          };
-        }
-
-        // Create subcategory
-        if (!categoryMap[catName].children[subName]) {
-          categoryMap[catName].children[subName] = {
-            name: subName,
-            items: [],
-          };
-        }
-
-        // Push product
-        categoryMap[catName].children[subName].items.push({
-          id: product._id,
-          name: product.productName,
-          image:
-            product.media?.[0]?.url ||
-  product.images?.[0] ||
-  product.image,
-        });
+      container.scrollTo({
+        top: container.scrollTop + scrollOffset,
+        behavior: "smooth",
       });
 
-      // Convert object → array format
-      const formattedCategories = Object.values(categoryMap).map((cat) => ({
-        name: cat.name,
-        children: Object.values(cat.children),
-      }));
+      setActiveIndex(index);
 
-      setCategories(formattedCategories);
-      setLoading(false);
-    } catch (err) {
-      console.error("API Error:", err);
-      setLoading(false);
+      setTimeout(() => {
+        isManualScroll.current = false;
+      }, 400);
     }
   };
 
-  fetchData();
-}, []);
+  useEffect(() => {
+    if (categories.length === 0) return; // 🚨 wait for API data
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isManualScroll.current) return;
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.dataset.index);
+            setActiveIndex(index);
+          }
+        });
+      },
+      {
+        root: container,
+        rootMargin: "-30% 0px -50% 0px",
+        threshold: 0.1,
+      },
+    );
+
+    categoryRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [categories]); // ✅ IMPORTANT
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          "https://my-project-backend-ee4t.onrender.com/api/product",
+        );
+        const json = await res.json();
+
+        const products = json.data;
+
+        // 🔥 Transform API → UI structure
+        const categoryMap = {};
+
+        products.forEach((product) => {
+          const catName = product.category?.name || "Others";
+          const subName = product.subCategory?.name || "General";
+
+          // Create category
+          if (!categoryMap[catName]) {
+            categoryMap[catName] = {
+              name: catName,
+              children: {},
+            };
+          }
+
+          // Create subcategory
+          if (!categoryMap[catName].children[subName]) {
+            categoryMap[catName].children[subName] = {
+              name: subName,
+              items: [],
+            };
+          }
+
+          // Push product
+          categoryMap[catName].children[subName].items.push({
+            id: product._id,
+            name: product.productName,
+            image:
+              product.media?.[0]?.url || product.images?.[0] || product.image,
+          });
+        });
+
+        // Convert object → array format
+        const formattedCategories = Object.values(categoryMap).map((cat) => ({
+          name: cat.name,
+          children: Object.values(cat.children),
+        }));
+
+        setCategories(formattedCategories);
+        setLoading(false);
+      } catch (err) {
+        console.error("API Error:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const activeItem = sidebarRefs.current[activeIndex];
+
+    if (activeItem) {
+      activeItem.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // 👈 THIS makes it feel premium
+      });
+    }
+  }, [activeIndex]);
 
   if (loading) {
-  return <div className="mt-20 text-center">Loading...</div>;
-}
+    return <div className="mt-20 text-center">Loading...</div>;
+  }
   return (
     <>
       <TopHeader />
 
-      <div className="mt-16 flex h-[calc(100vh-64px)] bg-gray-50">
-        
+      <div className="mt-16 flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden">
         {/* ================= LEFT SIDEBAR ================= */}
-        <div className="w-[20%] min-w-[85px] max-w-[110px] flex-shrink-0 overflow-y-auto bg-white border-r border-gray-200">
-          
-
+        <div className="w-[20%] min-w-[85px] max-w-[110px] flex-shrink-0 h-full min-h-0 overflow-y-auto pb-20 bg-white border-r border-gray-200 no-scrollbar">
           {categories.map((cat, index) => (
             <motion.div
               key={index}
+              ref={(el) => (sidebarRefs.current[index] = el)} // ✅ ADD THIS
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToCategory(index)}
               className={`relative px-1 py-2 cursor-pointer flex flex-col items-center justify-center ${
@@ -160,9 +170,9 @@ useEffect(() => {
               <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100">
                 <img
                   src={
-  cat.children?.[0]?.items?.[0]?.image ||
-  "https://via.placeholder.com/50"
-}
+                    cat.children?.[0]?.items?.[0]?.image ||
+                    "https://via.placeholder.com/50"
+                  }
                   alt="icon"
                   className="w-6 h-6 object-contain"
                 />
@@ -179,15 +189,15 @@ useEffect(() => {
         {/* ================= RIGHT CONTENT ================= */}
         <div
           ref={containerRef}
-          className="w-[80%] overflow-y-auto p-3 space-y-8 pb-40"
+          className="w-[80%] h-full min-h-0 overflow-y-auto p-3 space-y-8 pb-40"
         >
           {categories.map((cat, i) => (
             <div
-  key={i}
-  data-index={i}
-  ref={(el) => (categoryRefs.current[i] = el)}
-  className="scroll-mt-24"
->
+              key={i}
+              data-index={i}
+              ref={(el) => (categoryRefs.current[i] = el)}
+              className="scroll-mt-24"
+            >
               {/* Category Title */}
               <motion.h2
                 initial={{ opacity: 0, y: 15 }}
@@ -200,7 +210,6 @@ useEffect(() => {
               {/* Subcategories */}
               {cat.children.map((sub, idx) => (
                 <div key={idx} className="mb-5">
-                  
                   <p className="text-xs font-semibold text-gray-500 mb-3 uppercase">
                     {sub.name}
                   </p>
@@ -209,27 +218,27 @@ useEffect(() => {
                   <div className="grid grid-cols-3 gap-3">
                     {sub.items.map((item, id) => (
                       <motion.div
-  key={id}
-  whileTap={{ scale: 0.95 }}
-  onClick={() => navigate(`/product/${item.id}`)}
-  className="flex flex-col items-center justify-start"
->
-  {/* IMAGE */}
-  <div className="flex items-center justify-center">
-  <div className="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-    <img
-      src={item.image}
-      alt={item.name}
-      className="w-full h-full object-cover"
-    />
-  </div>
-</div>
+                        key={id}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => navigate(`/product/${item.id}`)}
+                        className="flex flex-col items-center justify-start"
+                      >
+                        {/* IMAGE */}
+                        <div className="flex items-center justify-center">
+                          <div className="w-12 h-12 min-w-[48px] min-h-[48px] rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
 
-  {/* NAME */}
-  <p className="text-[11px] text-gray-700 text-center mt-1 leading-tight line-clamp-2 px-1">
-    {item.name}
-  </p>
-</motion.div>
+                        {/* NAME */}
+                        <p className="text-[11px] text-gray-700 text-center mt-1 leading-tight line-clamp-2 px-1">
+                          {item.name}
+                        </p>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
@@ -237,7 +246,6 @@ useEffect(() => {
             </div>
           ))}
         </div>
-
       </div>
     </>
   );
