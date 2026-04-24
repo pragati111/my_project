@@ -9,37 +9,60 @@ export default function Categories() {
   const categoryRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
+  const isManualScroll = useRef(false);
 
   const scrollToCategory = (index) => {
-    categoryRefs.current[index]?.scrollIntoView({
+  const container = containerRef.current;
+  const target = categoryRefs.current[index];
+
+  if (container && target) {
+    isManualScroll.current = true;
+
+    const containerTop = container.getBoundingClientRect().top;
+    const targetTop = target.getBoundingClientRect().top;
+
+    const scrollOffset = targetTop - containerTop;
+
+    container.scrollTo({
+      top: container.scrollTop + scrollOffset,
       behavior: "smooth",
-      block: "start",
     });
+
     setActiveIndex(index);
-  };
 
-  useEffect(() => {
-    const container = containerRef.current;
+    setTimeout(() => {
+      isManualScroll.current = false;
+    }, 400);
+  }
+};
 
-    const handleScroll = () => {
-      categoryRefs.current.forEach((ref, index) => {
-        if (ref) {
-          const rect = ref.getBoundingClientRect();
-          const containerTop = container.getBoundingClientRect().top;
+ useEffect(() => {
+  const container = containerRef.current;
 
-          if (
-            rect.top - containerTop <= 120 &&
-            rect.bottom - containerTop >= 120
-          ) {
-            setActiveIndex(index);
-          }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (isManualScroll.current) return; // 🚨 ignore during click scroll
+
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = Number(entry.target.dataset.index);
+          setActiveIndex(index);
         }
       });
-    };
+    },
+    {
+      root: container,
+      rootMargin: "-30% 0px -50% 0px",
+      threshold: 0.1,
+    }
+  );
 
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
+  categoryRefs.current.forEach((ref) => {
+    if (ref) observer.observe(ref);
+  });
+
+  return () => observer.disconnect();
+}, []);
 
   return (
     <>
@@ -87,14 +110,15 @@ export default function Categories() {
         {/* ================= RIGHT CONTENT ================= */}
         <div
           ref={containerRef}
-          className="w-[80%] overflow-y-auto p-3 space-y-8"
+          className="w-[80%] overflow-y-auto p-3 space-y-8 pb-40"
         >
           {categories.map((cat, i) => (
             <div
-              key={i}
-              ref={(el) => (categoryRefs.current[i] = el)}
-              className="scroll-mt-24"
-            >
+  key={i}
+  data-index={i}
+  ref={(el) => (categoryRefs.current[i] = el)}
+  className="scroll-mt-24"
+>
               {/* Category Title */}
               <motion.h2
                 initial={{ opacity: 0, y: 15 }}
