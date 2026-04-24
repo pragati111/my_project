@@ -4,6 +4,7 @@ import TopHeader from "./TopHeader";
 import BottomBar from "./BottomBar";
 import { useEffect, useState, useRef } from "react";
 import { useCart } from "../redux/useCart";
+import ProductShimmer from "./ProductShimmer";
 
 export default function ProductDisplay() {
   const { addToCart } = useCart();
@@ -76,7 +77,7 @@ export default function ProductDisplay() {
     currentThumb?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [activeIndex]);
 
-  if (!product) return <div className="p-10">Loading...</div>;
+  if (!product) return <ProductShimmer />;
 
   const media =
     product.media?.length > 0

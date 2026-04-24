@@ -71,18 +71,55 @@ export default function Sidebar() {
   };
 
   if (loading) {
-    return (
-      <div className="hidden lg:flex w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          {/* Spinner */}
-          <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
-
-          {/* Text */}
-          <p className="text-xs text-gray-600">Loading...</p>
-        </div>
+  return (
+    <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs animate-pulse">
+      
+      {/* HOME */}
+      <div className="px-3 py-3 border-b bg-white">
+        <div className="h-3 w-20 bg-gray-300 rounded"></div>
       </div>
-    );
-  }
+
+      {/* CATEGORY LIST */}
+      {[1, 2, 3, 4, 5].map((_, i) => (
+        <div key={i} className="border-b">
+          
+          {/* CATEGORY HEADER */}
+          <div className="px-3 py-3 flex justify-between items-center">
+            <div className="h-3 w-24 bg-gray-300 rounded"></div>
+            <div className="h-3 w-3 bg-gray-300 rounded"></div>
+          </div>
+
+          {/* EXPANDED MOCK */}
+          {i === 0 && (
+            <div className="px-2 py-2 space-y-3 bg-white">
+              
+              {[1, 2].map((_, j) => (
+                <div key={j}>
+                  
+                  {/* SUBCATEGORY NAME */}
+                  <div className="h-3 w-20 bg-gray-300 rounded mb-2"></div>
+
+                  {/* ITEMS GRID */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {[1, 2, 3, 4].map((_, k) => (
+                      <div
+                        key={k}
+                        className="bg-gray-50 p-2 rounded-md"
+                      >
+                        <div className="h-[45px] bg-gray-300 rounded mb-1"></div>
+                        <div className="h-2 bg-gray-300 rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
   return (
     <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs">
