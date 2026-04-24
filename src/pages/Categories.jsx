@@ -200,25 +200,25 @@ export default function Categories() {
             >
               {/* Category Title */}
               <div className="flex items-center mb-4">
-  <div className="flex-1 h-[1px] bg-gray-200"></div>
+                <div className="flex-1 h-[1px] bg-gray-200"></div>
 
-  <motion.p
-    initial={{ opacity: 0, y: 10 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    className="mx-3 text-[11px] tracking-widest text-gray-400 uppercase whitespace-nowrap"
-  >
-    {cat.name}
-  </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  className="mx-3 text-[11px] tracking-widest text-gray-400 uppercase whitespace-nowrap"
+                >
+                  {cat.name}
+                </motion.p>
 
-  <div className="flex-1 h-[1px] bg-gray-200"></div>
-</div>
+                <div className="flex-1 h-[1px] bg-gray-200"></div>
+              </div>
 
               {/* Subcategories */}
               {cat.children.map((sub, idx) => (
                 <div key={idx} className="mb-5">
                   <p className="text-[13px] font-medium text-gray-700 mb-2 capitalize">
-  {sub.name}
-</p>
+                    {sub.name}
+                  </p>
 
                   {/* GRID */}
                   <div className="grid grid-cols-3 gap-3">
