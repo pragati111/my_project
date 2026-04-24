@@ -199,20 +199,26 @@ export default function Categories() {
               className="scroll-mt-24"
             >
               {/* Category Title */}
-              <motion.h2
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                className="text-lg font-semibold mb-4 text-gray-800"
-              >
-                {cat.name}
-              </motion.h2>
+              <div className="flex items-center mb-4">
+  <div className="flex-1 h-[1px] bg-gray-200"></div>
+
+  <motion.p
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    className="mx-3 text-[11px] tracking-widest text-gray-400 uppercase whitespace-nowrap"
+  >
+    {cat.name}
+  </motion.p>
+
+  <div className="flex-1 h-[1px] bg-gray-200"></div>
+</div>
 
               {/* Subcategories */}
               {cat.children.map((sub, idx) => (
                 <div key={idx} className="mb-5">
-                  <p className="text-xs font-semibold text-gray-500 mb-3 uppercase">
-                    {sub.name}
-                  </p>
+                  <p className="text-[13px] font-medium text-gray-700 mb-2 capitalize">
+  {sub.name}
+</p>
 
                   {/* GRID */}
                   <div className="grid grid-cols-3 gap-3">
