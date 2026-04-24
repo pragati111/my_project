@@ -5,6 +5,7 @@ import BottomBar from "./BottomBar";
 import PremiumFooter from "./PremiumFooter";
 import Sidebar from "./SideBar";
 import EcoBackdropBanner from "./EcoBackdropBanner";
+import { useNavigate } from "react-router-dom";
 
 export default function SubcategoryDisplay() {
   const { subCategoryName } = useParams();
@@ -15,6 +16,7 @@ export default function SubcategoryDisplay() {
   const [sortBy, setSortBy] = useState("");
   const [priceSort, setPriceSort] = useState("");
   const [ratingSort, setRatingSort] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("https://my-project-backend-ee4t.onrender.com/api/product")
@@ -159,6 +161,7 @@ export default function SubcategoryDisplay() {
                 {sortedProducts.map((product) => (
                 <div
                   key={product._id}
+                  onClick={() => navigate(`/product/${product._id}`)}
                   className="bg-white rounded-xl overflow-hidden shadow-md shadow-black/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100"
                 >
                   {/* IMAGE */}
