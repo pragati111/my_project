@@ -4,11 +4,12 @@ import HomeContent from "../components/HomeContent";
 
 export default function Home() {
   return (
-    <div className="md:hidden">
+    <div className="md:hidden h-screen overflow-hidden">
       
       <TopHeader />
 
-      <div className="pt-[80px] pb-[80px]">
+      {/* SCROLLABLE AREA */}
+      <div className="pt-[80px] pb-[80px] h-full overflow-y-auto custom-scrollbar">
         <HomeContent />
       </div>
 

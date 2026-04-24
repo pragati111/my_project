@@ -198,7 +198,7 @@ export default function Cart() {
     <>
       <TopHeader />
 
-      <div className="pt-24 px-4 md:px-10 bg-gray-100 min-h-screen">
+      <div className="pt-24 px-4 md:px-10 bg-gray-100 h-[calc(100vh-64px)] overflow-y-auto custom-scrollbar">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
           {/* LEFT SIDE - CART ITEMS */}
           <div className="flex-1 bg-white p-6 rounded shadow">
