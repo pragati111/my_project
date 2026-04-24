@@ -14,6 +14,8 @@ const API = "https://my-project-backend-ee4t.onrender.com";
 
 export default function Cart() {
   const { cart, getTotalPrice, removeFromCart, updateQuantity } = useCart();
+  const [paymentMethod, setPaymentMethod] = useState("ONLINE");
+  const [loading, setLoading] = useState(false);
   const [productImages, setProductImages] = useState({});
   const { user, token } = useAuth();
   const dispatch = useDispatch();
@@ -30,6 +32,106 @@ export default function Cart() {
     }
   });
   const navigate = useNavigate();
+  const createOrder = async () => {
+    try {
+      const items = cart.map((product) => ({
+        product: product.productId,
+        quantity: product.designs.reduce((sum, d) => sum + d.quantity, 0),
+      }));
+
+      const address = addresses.find((addr) => addr.isDefault) || addresses[0];
+
+      const res = await axios.post(
+        `${API}/api/order/create`,
+        {
+          items,
+          shippingAddress: {
+            name: "Customer",
+            phone: "9999999999",
+            line1: address?.text || "Address",
+            city: "City",
+            state: "State",
+            pincode: "000000",
+          },
+          paymentMethod,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      return res.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const createRazorpayOrder = async (orderId) => {
+    const res = await axios.post(
+      `${API}/api/payment/create-order`,
+      { orderId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return res.data;
+  };
+
+  const verifyPayment = async (response, orderId) => {
+    try {
+      await axios.post(
+        `${API}/api/payment/verify`,
+        {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          orderId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      alert("✅ Payment Successful");
+      navigate("/orders"); // optional
+    } catch (err) {
+      console.error(err);
+      alert("❌ Payment Failed");
+    }
+  };
+
+  const openRazorpay = (data, orderId) => {
+    const options = {
+      key: data.key,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Your Brand",
+      description: "Order Payment",
+      order_id: data.razorpayOrderId,
+
+      handler: function (response) {
+        verifyPayment(response, orderId);
+      },
+
+      prefill: {
+        name: "Customer",
+        contact: "9999999999",
+      },
+
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -234,7 +336,6 @@ export default function Cart() {
           {/* RIGHT SIDE - SUMMARY */}
           <div className="w-full lg:w-[300px] bg-white p-6 rounded shadow h-fit">
             <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-
             {addresses.length > 0 ? (
               <div className="mb-4 bg-gray-50 p-4 rounded-sm">
                 <p className="text-sm font-semibold mb-2">Deliver To</p>
@@ -266,26 +367,72 @@ export default function Cart() {
                 </button>
               </div>
             )}
-
             <div className="flex justify-between text-sm mb-2">
               <span>Items</span>
               <span>₹{getTotalPrice()}</span>
             </div>
-
             <div className="flex justify-between text-sm mb-2">
               <span>Shipping</span>
               <span className="text-green-600">Free</span>
             </div>
-
             <div className="border-t my-3"></div>
-
             <div className="flex justify-between font-semibold text-lg">
               <span>Total</span>
               <span>₹{getTotalPrice()}</span>
             </div>
 
-            <button className="mt-4 w-full bg-orange-500 text-white py-3 rounded">
-              Checkout
+            <div className="mb-4">
+              <p className="text-sm font-semibold mb-2">Payment Method</p>
+
+              <label className="block text-sm">
+                <input
+                  type="radio"
+                  value="ONLINE"
+                  checked={paymentMethod === "ONLINE"}
+                  onChange={() => setPaymentMethod("ONLINE")}
+                />{" "}
+                Pay Online (UPI / Card / Netbanking)
+              </label>
+
+              <label className="block text-sm mt-1">
+                <input
+                  type="radio"
+                  value="COD"
+                  checked={paymentMethod === "COD"}
+                  onChange={() => setPaymentMethod("COD")}
+                />{" "}
+                Cash on Delivery
+              </label>
+            </div>
+            <button
+              disabled={loading}
+              onClick={async () => {
+                setLoading(true);
+
+                try {
+                  const orderRes = await createOrder();
+
+                  if (!orderRes?.order) return;
+
+                  const orderId = orderRes.order._id;
+
+                  if (paymentMethod === "COD") {
+                    alert("✅ Order placed successfully (COD)");
+                    navigate("/orders");
+                    return;
+                  }
+
+                  const paymentRes = await createRazorpayOrder(orderId);
+                  openRazorpay(paymentRes, orderId);
+                } catch (err) {
+                  console.error(err);
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="mt-4 w-full bg-orange-500 text-white py-3 rounded disabled:opacity-50"
+            >
+              {loading ? "Processing..." : "Checkout"}
             </button>
           </div>
         </div>
