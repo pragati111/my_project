@@ -189,7 +189,7 @@ export default function Categories() {
         {/* ================= RIGHT CONTENT ================= */}
         <div
           ref={containerRef}
-          className="w-[80%] h-full min-h-0 overflow-y-auto p-3 space-y-8 pb-40"
+          className="w-[80%] h-full min-h-0 overflow-y-auto p-3 space-y-8 pb-40 custom-scrollbar"
         >
           {categories.map((cat, i) => (
             <div
