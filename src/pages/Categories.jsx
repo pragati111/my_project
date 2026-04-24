@@ -1,4 +1,3 @@
-import { categories } from "../data/categories";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import TopHeader from "../components/TopHeader";
@@ -10,6 +9,8 @@ export default function Categories() {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
   const isManualScroll = useRef(false);
+  const [categories, setCategories] = useState([]);
+const [loading, setLoading] = useState(true);
 
   const scrollToCategory = (index) => {
   const container = containerRef.current;
@@ -37,11 +38,14 @@ export default function Categories() {
 };
 
  useEffect(() => {
+  if (categories.length === 0) return; // 🚨 wait for API data
+
   const container = containerRef.current;
+  if (!container) return;
 
   const observer = new IntersectionObserver(
     (entries) => {
-      if (isManualScroll.current) return; // 🚨 ignore during click scroll
+      if (isManualScroll.current) return;
 
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -62,8 +66,70 @@ export default function Categories() {
   });
 
   return () => observer.disconnect();
+}, [categories]); // ✅ IMPORTANT
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await fetch("https://my-project-backend-ee4t.onrender.com/api/product");
+      const json = await res.json();
+
+      const products = json.data;
+
+      // 🔥 Transform API → UI structure
+      const categoryMap = {};
+
+      products.forEach((product) => {
+        const catName = product.category?.name || "Others";
+        const subName = product.subCategory?.name || "General";
+
+        // Create category
+        if (!categoryMap[catName]) {
+          categoryMap[catName] = {
+            name: catName,
+            children: {},
+          };
+        }
+
+        // Create subcategory
+        if (!categoryMap[catName].children[subName]) {
+          categoryMap[catName].children[subName] = {
+            name: subName,
+            items: [],
+          };
+        }
+
+        // Push product
+        categoryMap[catName].children[subName].items.push({
+          id: product._id,
+          name: product.productName,
+          image:
+            product.media?.[0]?.url ||
+  product.images?.[0] ||
+  product.image,
+        });
+      });
+
+      // Convert object → array format
+      const formattedCategories = Object.values(categoryMap).map((cat) => ({
+        name: cat.name,
+        children: Object.values(cat.children),
+      }));
+
+      setCategories(formattedCategories);
+      setLoading(false);
+    } catch (err) {
+      console.error("API Error:", err);
+      setLoading(false);
+    }
+  };
+
+  fetchData();
 }, []);
 
+  if (loading) {
+  return <div className="mt-20 text-center">Loading...</div>;
+}
   return (
     <>
       <TopHeader />
@@ -93,7 +159,10 @@ export default function Categories() {
               {/* Icon */}
               <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100">
                 <img
-                  src={cat.children?.[0]?.items?.[0]?.image}
+                  src={
+  cat.children?.[0]?.items?.[0]?.image ||
+  "https://via.placeholder.com/50"
+}
                   alt="icon"
                   className="w-6 h-6 object-contain"
                 />
