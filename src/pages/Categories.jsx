@@ -147,7 +147,7 @@ export default function Categories() {
       <div className="mt-16 flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden">
         {/* LEFT SIDEBAR SHIMMER */}
         <div className="w-[20%] min-w-[85px] max-w-[110px] h-full bg-white border-r border-gray-200 flex flex-col items-center py-2 space-y-3">
-          {[...Array(8)].map((_, i) => (
+          {[...Array(11)].map((_, i) => (
             <div
               key={i}
               className="flex flex-col items-center space-y-1 animate-pulse"
@@ -275,8 +275,8 @@ export default function Categories() {
                       <motion.div
                         key={id}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate(`/product/${item.id}`)}
-                        className="flex flex-col items-center justify-start"
+                        onClick={() => navigate(`/product/${item.id || item._id}`)}
+                        className="flex flex-col items-center justify-start cursor-pointer"
                       >
                         {/* IMAGE */}
                         <div className="flex items-center justify-center">
