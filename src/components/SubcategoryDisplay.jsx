@@ -36,6 +36,12 @@ export default function SubcategoryDisplay() {
       .finally(() => setLoading(false));
   }, [decodedName]);
 
+  useEffect(() => {
+  if (loading) {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+}, [loading]);
+
   const getImage = (product) => {
     const mediaImg = product.media?.find((m) => m.type === "image" && m.url);
 
