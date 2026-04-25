@@ -21,7 +21,7 @@ export default function ProductDisplay() {
 
   // FETCH PRODUCT
   useEffect(() => {
-    fetch(`/api/product/${id}`)
+    fetch(`https://my-project-backend-ee4t.onrender.com/api/product/${id}`)
       .then((res) => res.json())
       .then((res) => {
         console.log("API:", res); // debug once
