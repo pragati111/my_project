@@ -140,8 +140,57 @@ export default function Categories() {
   }, [activeIndex]);
 
   if (loading) {
-    return <div className="mt-20 text-center">Loading...</div>;
-  }
+  return (
+    <>
+      <TopHeader />
+
+      <div className="mt-16 flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden">
+        {/* LEFT SIDEBAR SHIMMER */}
+        <div className="w-[20%] min-w-[85px] max-w-[110px] h-full bg-white border-r border-gray-200 flex flex-col items-center py-2 space-y-3">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="flex flex-col items-center space-y-1 animate-pulse"
+            >
+              <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+              <div className="w-12 h-2 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+
+        {/* RIGHT CONTENT SHIMMER */}
+        <div className="w-[80%] p-3 space-y-6 overflow-hidden">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              {/* Category title line */}
+              <div className="flex items-center mb-4">
+                <div className="flex-1 h-[1px] bg-gray-200"></div>
+                <div className="mx-3 w-20 h-2 bg-gray-200 rounded"></div>
+                <div className="flex-1 h-[1px] bg-gray-200"></div>
+              </div>
+
+              {/* Subcategory title */}
+              <div className="w-24 h-3 bg-gray-200 rounded mb-3"></div>
+
+              {/* GRID */}
+              <div className="grid grid-cols-3 gap-3">
+                {[...Array(6)].map((_, j) => (
+                  <div
+                    key={j}
+                    className="flex flex-col items-center animate-pulse"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+                    <div className="w-10 h-2 bg-gray-200 rounded mt-2"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
   return (
     <>
       <TopHeader />
