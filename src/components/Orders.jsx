@@ -10,6 +10,14 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getStatusColor = (status) => {
+    if (status === "PLACED") return "text-orange-500";
+    if (status === "SHIPPED") return "text-green-600";
+    if (status === "DELIVERED") return "text-green-800";
+    if (status === "CANCELLED") return "text-red-500";
+    return "text-gray-500"; // fallback (important)
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -48,16 +56,11 @@ export default function Orders() {
           ) : (
             <div className="space-y-6">
               {orders.map((order) => (
-                <div
-                  key={order._id}
-                  className="bg-white rounded shadow p-5"
-                >
+                <div key={order._id} className="bg-white rounded shadow p-5">
                   {/* TOP SECTION */}
-                  <div className="flex justify-between items-center border-b pb-3 mb-4">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-center border-b pb-3 mb-4 gap-2">
                     <div>
-                      <p className="text-sm text-gray-500">
-                        Order ID
-                      </p>
+                      <p className="text-sm text-gray-500">Order ID</p>
                       <p className="font-semibold text-blue-600">
                         #{order._id}
                       </p>
@@ -68,7 +71,9 @@ export default function Orders() {
 
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Status</p>
-                      <p className="font-semibold text-orange-500">
+                      <p
+                        className={`font-semibold ${getStatusColor(order.status)}`}
+                      >
                         {order.status}
                       </p>
                     </div>
@@ -79,7 +84,7 @@ export default function Orders() {
                     {order.items.map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex gap-4 border-b pb-4"
+                        className="flex flex-col md:flex-row gap-4 border-b pb-4"
                       >
                         {/* IMAGE */}
                         <img
@@ -92,9 +97,7 @@ export default function Orders() {
 
                         {/* DETAILS */}
                         <div className="flex-1">
-                          <p className="font-semibold">
-                            {item.name}
-                          </p>
+                          <p className="font-semibold">{item.name}</p>
 
                           <p className="text-sm text-gray-500">
                             Qty: {item.quantity}
@@ -106,7 +109,7 @@ export default function Orders() {
                         </div>
 
                         {/* TOTAL */}
-                        <div className="text-right font-semibold">
+                        <div className="font-semibold md:text-right">
                           ₹{item.lineTotal}
                         </div>
                       </div>
@@ -117,9 +120,7 @@ export default function Orders() {
                   <div className="mt-4 grid md:grid-cols-2 gap-4 text-sm">
                     {/* ADDRESS */}
                     <div>
-                      <p className="font-semibold mb-1">
-                        Delivery Address
-                      </p>
+                      <p className="font-semibold mb-1">Delivery Address</p>
                       <p>{order.shippingAddress.name}</p>
                       <p className="text-gray-600">
                         {order.shippingAddress.line1}
@@ -133,15 +134,9 @@ export default function Orders() {
 
                     {/* PAYMENT */}
                     <div>
-                      <p className="font-semibold mb-1">
-                        Payment
-                      </p>
-                      <p>
-                        Method: {order.payment.method}
-                      </p>
-                      <p>
-                        Status: {order.payment.status}
-                      </p>
+                      <p className="font-semibold mb-1">Payment</p>
+                      <p>Method: {order.payment.method}</p>
+                      <p>Status: {order.payment.status}</p>
                       <p className="mt-2 font-semibold text-lg">
                         Total: ₹{order.totalAmount}
                       </p>
