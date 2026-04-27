@@ -12,6 +12,7 @@ import AccountPage from "./components/AccountPage"; // ✅ add this
 import ManageAddressPage from "./components/ManageAddressPage";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import SubcategoryDisplay from "./components/SubcategoryDisplay"; // ✅ added
+import Orders from "./components/Orders";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
+          <Route path="/orders" element={<Orders />} />
         </Routes>
       </div>
 
@@ -42,6 +44,7 @@ function App() {
           <Route path="/manage-address" element={<ManageAddressPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
+          <Route path="/orders" element={<Orders />} />
         </Routes>
 
         <MobileBottomNav />
