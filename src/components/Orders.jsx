@@ -21,13 +21,13 @@ export default function Orders() {
   };
 
   const getStatusColor = (status) => {
-  if (status === "PLACED") return "text-amber-500";      // softer than yellow
-  if (status === "CONFIRMED") return "text-blue-500";     // stable, trusted
-  if (status === "SHIPPED") return "text-indigo-500";     // in-progress / movement
-  if (status === "DELIVERED") return "text-green-600";    // success
-  if (status === "CANCELLED") return "text-red-500";      // error
-  return "text-gray-500";
-};
+    if (status === "PLACED") return "text-amber-500"; // softer than yellow
+    if (status === "CONFIRMED") return "text-blue-500"; // stable, trusted
+    if (status === "SHIPPED") return "text-indigo-500"; // in-progress / movement
+    if (status === "DELIVERED") return "text-green-600"; // success
+    if (status === "CANCELLED") return "text-red-500"; // error
+    return "text-gray-500";
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -79,32 +79,51 @@ export default function Orders() {
                         {new Date(order.createdAt).toLocaleString()}
                       </p>
                     </div>
+                    <div className="flex flex-col md:items-end items-start gap-2 w-full md:w-auto">
+                      <div className="text-left md:text-right w-full">
+                        <p className="text-xs text-gray-500">Status</p>
+                        <div className="flex items-center gap-2 justify-start md:justify-end">
+                          {/* DOT */}
+                          <span className="relative flex h-2.5 w-2.5">
+                            <span
+                              className={`absolute inline-flex h-full w-full rounded-full animate-ping opacity-75 ${getStatusColor(
+                                order.status,
+                              ).replace("text-", "bg-")}`}
+                            ></span>
+                            <span
+                              className={`relative inline-flex h-2.5 w-2.5 rounded-full ${getStatusColor(
+                                order.status,
+                              ).replace("text-", "bg-")}`}
+                            ></span>
+                          </span>
 
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">Status</p>
-                      <p
-                        className={`font-semibold ${getStatusColor(order.status)}`}
-                      >
-                        {order.status}
-                      </p>
+                          {/* TEXT */}
+                          <p
+                            className={`text-xs font-medium ${getStatusColor(order.status)}`}
+                          >
+                            {order.status}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* BUTTONS */}
+                      <div className="flex gap-2 flex-wrap justify-start md:justify-end w-full">
+                        {/* TRACK BUTTON */}
+                        <button
+                          onClick={() => openTrackingModal(order)}
+                          className="px-3 py-1.5 text-xs  bg-black text-white hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                          Track Delivery
+                        </button>
+
+                        {/* CANCEL BUTTON */}
+                        {order.status === "PLACED" && (
+                          <button className="px-3 py-1.5 text-xs  border border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200 shadow-sm hover:shadow-md">
+                            Cancel
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-3 mb-4">
-                    {/* TRACK BUTTON */}
-                    <button
-                      onClick={() => openTrackingModal(order)}
-                      className="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800 whitespace-nowrap"
-                    >
-                      Track Delivery
-                    </button>
-
-                    {/* CANCEL BUTTON (only if PLACED) */}
-                    {order.status === "PLACED" && (
-                      <button className="px-4 py-2 border border-red-500 text-red-500 text-sm rounded hover:bg-red-50 whitespace-nowrap">
-                        Cancel Order
-                      </button>
-                    )}
                   </div>
 
                   {/* ITEMS */}
