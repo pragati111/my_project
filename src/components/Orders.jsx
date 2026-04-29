@@ -10,13 +10,24 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getStatusColor = (status) => {
-    if (status === "PLACED") return "text-orange-500";
-    if (status === "SHIPPED") return "text-green-600";
-    if (status === "DELIVERED") return "text-green-800";
-    if (status === "CANCELLED") return "text-red-500";
-    return "text-gray-500"; // fallback (important)
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const openTrackingModal = (order) => {
+    setSelectedOrder(order);
   };
+
+  const closeTrackingModal = () => {
+    setSelectedOrder(null);
+  };
+
+  const getStatusColor = (status) => {
+  if (status === "PLACED") return "text-amber-500";      // softer than yellow
+  if (status === "CONFIRMED") return "text-blue-500";     // stable, trusted
+  if (status === "SHIPPED") return "text-indigo-500";     // in-progress / movement
+  if (status === "DELIVERED") return "text-green-600";    // success
+  if (status === "CANCELLED") return "text-red-500";      // error
+  return "text-gray-500";
+};
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -77,6 +88,23 @@ export default function Orders() {
                         {order.status}
                       </p>
                     </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    {/* TRACK BUTTON */}
+                    <button
+                      onClick={() => openTrackingModal(order)}
+                      className="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800 whitespace-nowrap"
+                    >
+                      Track Delivery
+                    </button>
+
+                    {/* CANCEL BUTTON (only if PLACED) */}
+                    {order.status === "PLACED" && (
+                      <button className="px-4 py-2 border border-red-500 text-red-500 text-sm rounded hover:bg-red-50 whitespace-nowrap">
+                        Cancel Order
+                      </button>
+                    )}
                   </div>
 
                   {/* ITEMS */}
@@ -148,6 +176,117 @@ export default function Orders() {
           )}
         </div>
       </div>
+      {selectedOrder && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-lg rounded-xl p-6 relative">
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={closeTrackingModal}
+              className="absolute top-3 right-3 text-gray-500"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-lg font-semibold mb-4">Track Your Order</h2>
+
+            {/* STATUS + STEPPER LOGIC */}
+            {selectedOrder.status === "CANCELLED" && (
+              <div className="mb-4 text-center text-red-500 font-semibold">
+                ❌ Order Cancelled
+              </div>
+            )}
+
+            {selectedOrder.status !== "CANCELLED" &&
+              (() => {
+                const steps = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
+
+                const statusMap = {
+                  PLACED: 0,
+                  CONFIRMED: 1,
+                  SHIPPED: 2,
+                  DISPATCHED: 2,
+                  DELIVERED: 3,
+                };
+
+                const currentIndex = statusMap[selectedOrder.status] ?? 0;
+
+                const latestUpdate =
+                  selectedOrder.trackingUpdates?.[
+                    selectedOrder.trackingUpdates.length - 1
+                  ];
+
+                return (
+                  <div className="flex items-center justify-between mb-6 relative">
+                    {steps.map((step, i) => {
+                      const isActive = i <= currentIndex;
+
+                      return (
+                        <div
+                          key={step}
+                          className="flex-1 flex flex-col items-center relative group"
+                        >
+                          {/* LINE */}
+                          {i !== 0 && (
+                            <div
+                              className={`absolute left-[-50%] top-3 w-full h-1 transition-all duration-500 ${
+                                i <= currentIndex
+                                  ? "bg-green-500"
+                                  : "bg-gray-300"
+                              }`}
+                            />
+                          )}
+
+                          {/* CIRCLE */}
+                          <div
+                            className={`w-7 h-7 rounded-full z-10 flex items-center justify-center text-xs text-white font-bold transition-all duration-500 ${
+                              isActive
+                                ? "bg-green-500 scale-110 shadow-lg"
+                                : "bg-gray-300"
+                            }`}
+                          >
+                            {isActive ? "✓" : ""}
+                          </div>
+
+                          {/* LABEL */}
+                          <p className="text-xs mt-2">{step}</p>
+
+                          {/* TOOLTIP (on SHIPPED hover) */}
+                          {step === "SHIPPED" && latestUpdate && (
+                            <div className="absolute bottom-[-60px] hidden group-hover:block bg-black text-white text-xs px-3 py-2 rounded shadow-lg w-48 text-center">
+                              <p>{latestUpdate.status}</p>
+                              <p className="text-gray-300 text-[10px] mt-1">
+                                {latestUpdate.location}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+
+            {/* TRACKING HISTORY */}
+            <div className="space-y-3 max-h-60 overflow-y-auto">
+              {selectedOrder.trackingUpdates?.length > 0 ? (
+                selectedOrder.trackingUpdates.map((t, idx) => (
+                  <div key={idx} className="border rounded p-3 text-sm">
+                    <p className="font-semibold">{t.status}</p>
+                    <p className="text-gray-500 text-xs">{t.location}</p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      {new Date(t.updatedAt).toLocaleString()}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">
+                  No tracking updates available yet
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
