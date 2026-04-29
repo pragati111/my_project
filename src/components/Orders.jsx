@@ -119,7 +119,7 @@ export default function Orders() {
                         {/* CANCEL BUTTON */}
                         {order.status === "PLACED" && (
                           <button className="px-3 py-1.5 text-xs  border border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200 shadow-sm hover:shadow-md">
-                            Cancel
+                            Cancel Order
                           </button>
                         )}
                       </div>
