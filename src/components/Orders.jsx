@@ -82,40 +82,40 @@ export default function Orders() {
                     <div className="flex flex-col md:items-end items-start gap-2 w-full md:w-auto">
                       <div className="text-left md:text-right w-full">
 
-  <div className="flex justify-start md:justify-end">
-    <div
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border backdrop-blur-sm
-      ${
-        order.status === "PLACED"
-          ? "bg-amber-50 text-amber-700 border-amber-200"
-          : order.status === "CONFIRMED"
-          ? "bg-blue-50 text-blue-700 border-blue-200"
-          : order.status === "SHIPPED"
-          ? "bg-indigo-50 text-indigo-700 border-indigo-200"
-          : order.status === "OUT_FOR_DELIVERY"
-          ? "bg-purple-50 text-purple-700 border-purple-200"
-          : order.status === "DELIVERED"
-          ? "bg-green-50 text-green-700 border-green-200"
-          : "bg-red-50 text-red-700 border-red-200"
-      }`}
-    >
-      {/* ICON */}
-      <span className="text-sm">
-        {order.status === "PLACED" && "🧾"}
-        {order.status === "CONFIRMED" && "✔"}
-        {order.status === "SHIPPED" && "🚚"}
-        {order.status === "OUT_FOR_DELIVERY" && "📦"}
-        {order.status === "DELIVERED" && "✅"}
-        {order.status === "CANCELLED" && "❌"}
-      </span>
+                        <div className="flex justify-start md:justify-end">
+                          <div
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border backdrop-blur-sm
+                            ${
+                              order.status === "PLACED"
+                                ? "bg-amber-50 text-amber-700 border-amber-200"
+                                : order.status === "CONFIRMED"
+                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                : order.status === "SHIPPED"
+                                ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                                : order.status === "OUT_FOR_DELIVERY"
+                                ? "bg-purple-50 text-purple-700 border-purple-200"
+                                : order.status === "DELIVERED"
+                                ? "bg-green-50 text-green-700 border-green-200"
+                                : "bg-red-50 text-red-700 border-red-200"
+                            }`}
+                          >
+                            {/* ICON */}
+                            <span className="text-sm">
+                              {order.status === "PLACED" && "🧾"}
+                              {order.status === "CONFIRMED" && "✔"}
+                              {order.status === "SHIPPED" && "🚚"}
+                              {order.status === "OUT_FOR_DELIVERY" && "📦"}
+                              {order.status === "DELIVERED" && "✅"}
+                              {order.status === "CANCELLED" && "❌"}
+                            </span>
 
-      {/* TEXT */}
-      <span className="tracking-wide">
-        {order.status.replaceAll("_", " ")}
-      </span>
-    </div>
-  </div>
-</div>
+                            {/* TEXT */}
+                            <span className="tracking-wide">
+                              {order.status.replaceAll("_", " ")}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
 
                       {/* BUTTONS */}
                       <div className="flex gap-2 flex-wrap justify-start md:justify-end w-full">
