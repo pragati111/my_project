@@ -81,30 +81,41 @@ export default function Orders() {
                     </div>
                     <div className="flex flex-col md:items-end items-start gap-2 w-full md:w-auto">
                       <div className="text-left md:text-right w-full">
-                        <p className="text-xs text-gray-500">Status</p>
-                        <div className="flex items-center gap-2 justify-start md:justify-end">
-                          {/* DOT */}
-                          <span className="relative flex h-2.5 w-2.5">
-                            <span
-                              className={`absolute inline-flex h-full w-full rounded-full animate-ping opacity-75 ${getStatusColor(
-                                order.status,
-                              ).replace("text-", "bg-")}`}
-                            ></span>
-                            <span
-                              className={`relative inline-flex h-2.5 w-2.5 rounded-full ${getStatusColor(
-                                order.status,
-                              ).replace("text-", "bg-")}`}
-                            ></span>
-                          </span>
 
-                          {/* TEXT */}
-                          <p
-                            className={`text-xs font-medium ${getStatusColor(order.status)}`}
-                          >
-                            {order.status}
-                          </p>
-                        </div>
-                      </div>
+  <div className="flex justify-start md:justify-end">
+    <div
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border backdrop-blur-sm
+      ${
+        order.status === "PLACED"
+          ? "bg-amber-50 text-amber-700 border-amber-200"
+          : order.status === "CONFIRMED"
+          ? "bg-blue-50 text-blue-700 border-blue-200"
+          : order.status === "SHIPPED"
+          ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+          : order.status === "OUT_FOR_DELIVERY"
+          ? "bg-purple-50 text-purple-700 border-purple-200"
+          : order.status === "DELIVERED"
+          ? "bg-green-50 text-green-700 border-green-200"
+          : "bg-red-50 text-red-700 border-red-200"
+      }`}
+    >
+      {/* ICON */}
+      <span className="text-sm">
+        {order.status === "PLACED" && "🧾"}
+        {order.status === "CONFIRMED" && "✔"}
+        {order.status === "SHIPPED" && "🚚"}
+        {order.status === "OUT_FOR_DELIVERY" && "📦"}
+        {order.status === "DELIVERED" && "✅"}
+        {order.status === "CANCELLED" && "❌"}
+      </span>
+
+      {/* TEXT */}
+      <span className="tracking-wide">
+        {order.status.replaceAll("_", " ")}
+      </span>
+    </div>
+  </div>
+</div>
 
                       {/* BUTTONS */}
                       <div className="flex gap-2 flex-wrap justify-start md:justify-end w-full">
@@ -129,91 +140,99 @@ export default function Orders() {
                   {/* ITEMS */}
                   <div className="space-y-4">
                     {order.items.map((item, idx) => (
-  <>
-    {/* PRODUCT MAIN ROW */}
-    <div
-      key={idx}
-      className="flex flex-col md:flex-row gap-4 border-b pb-4"
-    >
-      {/* IMAGE */}
-      <img
-        src={
-          item.product?.media?.[0]?.url ||
-          item.product?.images?.[0]
-        }
-        className="w-20 h-20 object-cover rounded border"
-      />
+                      <>
+                        {/* PRODUCT MAIN ROW */}
+                        <div
+                          key={idx}
+                          className="flex flex-col md:flex-row gap-4 border-b pb-4"
+                        >
+                          {/* IMAGE */}
+                          <img
+                            src={
+                              item.product?.media?.[0]?.url ||
+                              item.product?.images?.[0]
+                            }
+                            className="w-20 h-20 object-cover rounded border"
+                          />
 
-      {/* DETAILS */}
-      <div className="flex-1">
-        <p className="font-semibold">{item.name}</p>
+                          {/* DETAILS */}
+                          <div className="flex-1">
+                            <p className="font-semibold">{item.name}</p>
 
-        <p className="text-sm text-gray-500">
-          Qty: {item.quantity}
-        </p>
+                            <p className="text-sm text-gray-500">
+                              Qty: {item.quantity}
+                            </p>
 
-        <p className="text-sm text-gray-500">
-          ₹{item.sellingPrice} each
-        </p>
+                            <p className="text-sm text-gray-500">
+                              ₹{item.sellingPrice} each
+                            </p>
 
-        {/* 🔥 DESIGNS BELOW DETAILS */}
-        {item.designs?.length > 0 && (
-          <div className="mt-3 space-y-3">
-            {item.designs.map((d, i) => (
-              <div
-                key={i}
-                className="bg-gray-50 border rounded p-3 text-xs"
-              >
-                {/* TEXT FIELDS */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {Object.entries(d.config).map(([key, val]) => {
-                    if (
-                      typeof val === "string" &&
-                      val.startsWith("http")
-                    ) {
-                      return null;
-                    }
+                            {/* 🔥 DESIGNS BELOW DETAILS */}
+                            {item.designs?.length > 0 && (
+                              <div className="mt-3 space-y-3">
+                                {item.designs.map((d, i) => (
+                                  <div
+                                    key={i}
+                                    className="bg-gray-50 border rounded p-3 text-xs"
+                                  >
+                                    {/* TEXT FIELDS */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                      {Object.entries(d.config).map(
+                                        ([key, val]) => {
+                                          if (
+                                            typeof val === "string" &&
+                                            val.startsWith("http")
+                                          ) {
+                                            return null;
+                                          }
 
-                    return (
-                      <p key={key} className="break-words">
-                        <span className="font-medium">{key}:</span>{" "}
-                        {String(val)}
-                      </p>
-                    );
-                  })}
-                </div>
+                                          return (
+                                            <p
+                                              key={key}
+                                              className="break-words"
+                                            >
+                                              <span className="font-medium">
+                                                {key}:
+                                              </span>{" "}
+                                              {String(val)}
+                                            </p>
+                                          );
+                                        },
+                                      )}
+                                    </div>
 
-                {/* IMAGES */}
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {Object.entries(d.config).map(([key, val]) =>
-                    typeof val === "string" &&
-                    val.startsWith("http") ? (
-                      <img
-                        key={key}
-                        src={val}
-                        className="w-14 h-14 object-cover border rounded"
-                      />
-                    ) : null
-                  )}
-                </div>
+                                    {/* IMAGES */}
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                      {Object.entries(d.config).map(
+                                        ([key, val]) =>
+                                          typeof val === "string" &&
+                                          val.startsWith("http") ? (
+                                            <img
+                                              key={key}
+                                              src={val}
+                                              className="w-14 h-14 object-cover border rounded"
+                                            />
+                                          ) : null,
+                                      )}
+                                    </div>
 
-                {/* QUANTITY */}
-                <p className="mt-2 font-medium">
-                  Qty: {d.quantity}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                                    {/* QUANTITY */}
+                                    <p className="mt-2 font-medium">
+                                      Qty: {d.quantity}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
 
-      {/* TOTAL */}
-      <div className="font-semibold md:text-right">
-        ₹{item.lineTotal}
-      </div>
-    </div>
-  </>
-))}
+                          {/* TOTAL */}
+                          <div className="font-semibold md:text-right">
+                            ₹{item.lineTotal}
+                          </div>
+                        </div>
+                      </>
+                    ))}
                   </div>
 
                   {/* FOOTER */}
