@@ -155,6 +155,26 @@ export default function Orders() {
                           </p>
                         </div>
 
+                        {item.designs?.map((d, i) => (
+                          <div key={i} className="mt-2 text-xs text-gray-600">
+                            {Object.entries(d.config).map(([key, val]) =>
+                              typeof val === "string" &&
+                              val.startsWith("http") ? (
+                                <img
+                                  key={key}
+                                  src={val}
+                                  className="w-10 h-10 inline-block mr-2 border"
+                                />
+                              ) : (
+                                <p key={key}>
+                                  {key}: {String(val)}
+                                </p>
+                              ),
+                            )}
+                            <p>Qty: {d.quantity}</p>
+                          </div>
+                        ))}
+
                         {/* TOTAL */}
                         <div className="font-semibold md:text-right">
                           ₹{item.lineTotal}
