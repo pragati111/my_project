@@ -36,7 +36,17 @@ export default function Cart() {
     try {
       const items = cart.map((product) => ({
         product: product.productId,
-        quantity: product.designs.reduce((sum, d) => sum + d.quantity, 0),
+
+        // 👇 send full design data
+        designs: product.designs.map((d) => ({
+          config: d.config,
+          quantity: d.quantity,
+        })),
+
+        // optional but useful
+        name: product.name,
+        price: product.price,
+        image: product.image,
       }));
 
       const address = addresses.find((addr) => addr.isDefault) || addresses[0];
