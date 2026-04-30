@@ -44,7 +44,7 @@ export default function Cart() {
       }));
 
       const address = addresses.find((addr) => addr.isDefault) || addresses[0];
-
+      console.log("ORDER PAYLOAD:", items);
       const res = await axios.post(
         `${API}/api/order/create`,
         {
