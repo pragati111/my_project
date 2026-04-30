@@ -129,58 +129,91 @@ export default function Orders() {
                   {/* ITEMS */}
                   <div className="space-y-4">
                     {order.items.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex flex-col md:flex-row gap-4 border-b pb-4"
-                      >
-                        {/* IMAGE */}
-                        <img
-                          src={
-                            item.product?.media?.[0]?.url ||
-                            item.product?.images?.[0]
-                          }
-                          className="w-20 h-20 object-cover rounded border"
-                        />
+  <>
+    {/* PRODUCT MAIN ROW */}
+    <div
+      key={idx}
+      className="flex flex-col md:flex-row gap-4 border-b pb-4"
+    >
+      {/* IMAGE */}
+      <img
+        src={
+          item.product?.media?.[0]?.url ||
+          item.product?.images?.[0]
+        }
+        className="w-20 h-20 object-cover rounded border"
+      />
 
-                        {/* DETAILS */}
-                        <div className="flex-1">
-                          <p className="font-semibold">{item.name}</p>
+      {/* DETAILS */}
+      <div className="flex-1">
+        <p className="font-semibold">{item.name}</p>
 
-                          <p className="text-sm text-gray-500">
-                            Qty: {item.quantity}
-                          </p>
+        <p className="text-sm text-gray-500">
+          Qty: {item.quantity}
+        </p>
 
-                          <p className="text-sm text-gray-500">
-                            ₹{item.sellingPrice} each
-                          </p>
-                        </div>
+        <p className="text-sm text-gray-500">
+          ₹{item.sellingPrice} each
+        </p>
 
-                        {item.designs?.map((d, i) => (
-                          <div key={i} className="mt-2 text-xs text-gray-600">
-                            {Object.entries(d.config).map(([key, val]) =>
-                              typeof val === "string" &&
-                              val.startsWith("http") ? (
-                                <img
-                                  key={key}
-                                  src={val}
-                                  className="w-10 h-10 inline-block mr-2 border"
-                                />
-                              ) : (
-                                <p key={key}>
-                                  {key}: {String(val)}
-                                </p>
-                              ),
-                            )}
-                            <p>Qty: {d.quantity}</p>
-                          </div>
-                        ))}
+        {/* 🔥 DESIGNS BELOW DETAILS */}
+        {item.designs?.length > 0 && (
+          <div className="mt-3 space-y-3">
+            {item.designs.map((d, i) => (
+              <div
+                key={i}
+                className="bg-gray-50 border rounded p-3 text-xs"
+              >
+                {/* TEXT FIELDS */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {Object.entries(d.config).map(([key, val]) => {
+                    if (
+                      typeof val === "string" &&
+                      val.startsWith("http")
+                    ) {
+                      return null;
+                    }
 
-                        {/* TOTAL */}
-                        <div className="font-semibold md:text-right">
-                          ₹{item.lineTotal}
-                        </div>
-                      </div>
-                    ))}
+                    return (
+                      <p key={key} className="break-words">
+                        <span className="font-medium">{key}:</span>{" "}
+                        {String(val)}
+                      </p>
+                    );
+                  })}
+                </div>
+
+                {/* IMAGES */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {Object.entries(d.config).map(([key, val]) =>
+                    typeof val === "string" &&
+                    val.startsWith("http") ? (
+                      <img
+                        key={key}
+                        src={val}
+                        className="w-14 h-14 object-cover border rounded"
+                      />
+                    ) : null
+                  )}
+                </div>
+
+                {/* QUANTITY */}
+                <p className="mt-2 font-medium">
+                  Qty: {d.quantity}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* TOTAL */}
+      <div className="font-semibold md:text-right">
+        ₹{item.lineTotal}
+      </div>
+    </div>
+  </>
+))}
                   </div>
 
                   {/* FOOTER */}
