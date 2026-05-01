@@ -30,6 +30,7 @@ export default function ManageAddressPage() {
     state: "",
     type: "",
     landmark: "",
+    phone:""
   });
 
   // ✅ ADD ADDRESS (FIXED)
@@ -45,7 +46,7 @@ export default function ManageAddressPage() {
       city: formData.city,
       state: formData.state,
       pincode: formData.pincode,
-      phone: "9999999999", // or take from user input later
+      phone: formData.phone, // or take from user input later
     };
 
     try {
@@ -179,6 +180,7 @@ export default function ManageAddressPage() {
                           pincode: addr.pincode || "",
                           type: addr.label || "",
                           landmark: "",
+                          phone: addr.phone || "",
                         });
 
                         setEditId(addr._id);
@@ -296,6 +298,14 @@ export default function ManageAddressPage() {
                   placeholder="Landmark (optional)"
                   className="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-black outline-none"
                   rows={3}
+                />
+                <input
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  placeholder="Phone Number"
+                  className="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-black outline-none"
                 />
               </div>
 

@@ -43,7 +43,7 @@ export default function Cart() {
           items,
           shippingAddress: {
             name: "Customer",
-            phone: "9999999999",
+            phone: address?.phone,
             line1: address?.street,
             city: address?.city,
             state: address?.state,
@@ -117,7 +117,6 @@ export default function Cart() {
 
       prefill: {
         name: "Customer",
-        contact: "9999999999",
       },
 
       theme: {
