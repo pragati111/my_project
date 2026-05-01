@@ -84,7 +84,7 @@ export default function Orders() {
 
                         <div className="flex justify-start md:justify-end">
                           <div
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border backdrop-blur-sm
+                            className={`flex items-center gap-2 px-3 py-1.5  text-xs font-medium shadow-sm border backdrop-blur-sm
                             ${
                               order.status === "PLACED"
                                 ? "bg-amber-50 text-amber-700 border-amber-200"
