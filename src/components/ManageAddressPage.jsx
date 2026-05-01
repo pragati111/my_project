@@ -2,34 +2,25 @@ import TopHeader from "../components/TopHeader";
 import { ArrowLeft, Trash2, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-const ADDRESS_STORAGE_KEY = "user_addresses";
+import { useAuth } from "./AuthContext";
+import {
+  getAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  setDefaultAddressApi,
+} from "../api/addressApi";
 
 export default function ManageAddressPage() {
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [editId, setEditId] = useState(null);
 
-  const [addresses, setAddresses] = useState(() => {
-    const stored = localStorage.getItem(ADDRESS_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          const hasDefault = parsed.some((addr) => addr.isDefault);
-          return parsed.map((addr, index) => ({
-            ...addr,
-            isDefault: addr.isDefault || (!hasDefault && index === 0),
-          }));
-        }
-      } catch (error) {
-        console.warn("Failed to parse saved addresses", error);
-      }
-    }
-
-    return [];
-  });
+  const [addresses, setAddresses] = useState([]);
 
   const [showAdd, setShowAdd] = useState(false);
+
+
 
   const [formData, setFormData] = useState({
     house: "",
@@ -41,80 +32,76 @@ export default function ManageAddressPage() {
     landmark: "",
   });
 
-  useEffect(() => {
-    localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(addresses));
-  }, [addresses]);
-
   // ✅ ADD ADDRESS (FIXED)
-  const handleAdd = () => {
-  if (!formData.house || !formData.area || !formData.pincode) {
-    alert("Please fill required fields");
-    return;
-  }
+  const handleAdd = async () => {
+    if (!formData.house || !formData.area || !formData.pincode) {
+      alert("Please fill required fields");
+      return;
+    }
 
-  const fullAddress = `${formData.house}, ${formData.area}, ${formData.city}, ${formData.state} - ${formData.pincode}`;
+    const payload = {
+      label: formData.type || "Home", // type → label
+      street: `${formData.house}, ${formData.area}`, // combine house + area
+      city: formData.city,
+      state: formData.state,
+      pincode: formData.pincode,
+      phone: "9999999999", // or take from user input later
+    };
 
-  if (editId) {
-    // ✅ EDIT MODE
-    setAddresses(
-      addresses.map((a) =>
-        a.id === editId
-          ? {
-              ...a,
-              text: fullAddress,
-              type: formData.type,
-            }
-          : a
-      )
-    );
-  } else {
-    // ✅ ADD MODE
-    setAddresses([
-      ...addresses,
-      {
-        id: Date.now(),
-        text: fullAddress,
-        type: formData.type,
-        isDefault: false,
-      },
-    ]);
-  }
+    try {
+      if (editId) {
+        await updateAddress(editId, payload, token);
+      } else {
+        await addAddress(payload, token);
+      }
 
-  // RESET EVERYTHING
-  setFormData({
-    house: "",
-    area: "",
-    pincode: "",
-    city: "",
-    state: "",
-    type: "",
-    landmark: "",
-  });
+      // 🔥 REFRESH LIST
+      const res = await getAddresses(token);
+      setAddresses(res.data.addresses);
 
-  setEditId(null);
-  setShowAdd(false);
-};
+      setShowAdd(false);
+      setEditId(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // DELETE
-  const handleDelete = (id) => {
-    setAddresses((prev) => {
-      const updated = prev.filter((a) => a.id !== id);
-      if (!updated.some((a) => a.isDefault) && updated.length > 0) {
-        updated[0] = { ...updated[0], isDefault: true };
-      }
-      return updated;
-    });
+  const handleDelete = async (id) => {
+    try {
+      await deleteAddress(id, token);
+
+      const res = await getAddresses(token);
+      setAddresses(res.data.addresses);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // SET DEFAULT
-  const setDefault = (id) => {
-    setAddresses(
-      addresses.map((a) => ({
-        ...a,
-        isDefault: a.id === id,
-      }))
-    );
+  const setDefault = async (id) => {
+    try {
+      await setDefaultAddressApi(id, token);
+
+      const res = await getAddresses(token);
+      setAddresses(res.data.addresses);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const res = await getAddresses(token);
+        setAddresses(res.data.addresses || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (token) fetchAddresses();
+  }, [token]);
 
   return (
     <>
@@ -141,14 +128,12 @@ export default function ManageAddressPage() {
         <div className="space-y-4">
           {addresses.length === 0 ? (
             <div className="bg-white rounded-3xl p-10 shadow-md text-center border border-dashed border-gray-300">
-              
-                No Addresses added by you. Add your delivery address
-              
+              No Addresses added by you. Add your delivery address
             </div>
           ) : (
             addresses.map((addr) => (
               <div
-                key={addr.id}
+                key={addr._id}
                 className={`bg-white rounded-2xl p-5 shadow-md hover:shadow-lg transition border ${
                   addr.isDefault ? "border-black" : "border-gray-200"
                 }`}
@@ -158,7 +143,7 @@ export default function ManageAddressPage() {
                     <input
                       type="radio"
                       checked={addr.isDefault}
-                      onChange={() => setDefault(addr.id)}
+                      onChange={() => setDefault(addr._id)}
                     />
 
                     <div>
@@ -168,14 +153,15 @@ export default function ManageAddressPage() {
                         </span>
                       )}
 
-                      {addr.type && (
+                      {addr.label && (
                         <span className="ml-2 text-xs bg-gray-200 px-2 py-0.5 rounded">
-                          {addr.type}
+                          {addr.label}
                         </span>
                       )}
 
                       <p className="text-sm text-gray-700 mt-2 leading-relaxed">
-                        {addr.text}
+                        {addr.street}, {addr.city}, {addr.state} -{" "}
+                        {addr.pincode}
                       </p>
                     </div>
                   </div>
@@ -184,26 +170,25 @@ export default function ManageAddressPage() {
                     <Pencil
                       size={18}
                       onClick={() => {
-                        const addrParts = addr.text.split(", ");
-
+                        const [house = "", area = ""] = (addr.street || "").split(", ");
                         setFormData({
-                          house: addrParts[0] || "",
-                          area: addrParts[1] || "",
-                          city: addrParts[2] || "",
-                          state: addrParts[3]?.split(" - ")[0] || "",
-                          pincode: addrParts[3]?.split(" - ")[1] || "",
-                          type: addr.type || "",
+                          house,
+                          area,
+                          city: addr.city || "",
+                          state: addr.state || "",
+                          pincode: addr.pincode || "",
+                          type: addr.label || "",
                           landmark: "",
                         });
 
-                        setEditId(addr.id);
+                        setEditId(addr._id);
                         setShowAdd(true);
                       }}
                       className="cursor-pointer hover:text-blue-500"
                     />
                     <Trash2
                       size={18}
-                      onClick={() => handleDelete(addr.id)}
+                      onClick={() => handleDelete(addr._id)}
                       className="cursor-pointer hover:text-red-500"
                     />
                   </div>
@@ -217,7 +202,6 @@ export default function ManageAddressPage() {
         {showAdd && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white w-[95%] md:w-[500px] max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl">
-              
               {/* HEADER */}
               <div className="flex items-center gap-3 mb-6">
                 <ArrowLeft
@@ -229,7 +213,6 @@ export default function ManageAddressPage() {
 
               {/* FORM */}
               <div className="space-y-4">
-                
                 <input
                   value={formData.house}
                   onChange={(e) =>
@@ -284,16 +267,15 @@ export default function ManageAddressPage() {
                 {/* ADDRESS TYPE */}
                 <div>
                   <p className="text-sm font-medium mb-2">
-                    Address Type <span className="text-gray-400">(optional)</span>
+                    Address Type{" "}
+                    <span className="text-gray-400">(optional)</span>
                   </p>
 
                   <div className="flex gap-3">
                     {["Home", "Work", "Other"].map((type) => (
                       <button
                         key={type}
-                        onClick={() =>
-                          setFormData({ ...formData, type })
-                        }
+                        onClick={() => setFormData({ ...formData, type })}
                         className={`px-4 py-2 rounded-lg border text-sm transition ${
                           formData.type === type
                             ? "bg-black text-white"

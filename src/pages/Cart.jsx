@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { setCart } from "../redux/cartActions";
 import axios from "axios";
 
-const ADDRESS_STORAGE_KEY = "user_addresses";
 const API = "https://my-project-backend-ee4t.onrender.com";
 
 export default function Cart() {
@@ -19,19 +18,12 @@ export default function Cart() {
   const [productImages, setProductImages] = useState({});
   const { user, token } = useAuth();
   const dispatch = useDispatch();
-  const [addresses] = useState(() => {
-    const stored = localStorage.getItem(ADDRESS_STORAGE_KEY);
-    if (!stored) return [];
-
-    try {
-      const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.warn("Failed to load saved addresses", error);
-      return [];
-    }
-  });
+  const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate();
+  const selected =
+    addresses.length > 0
+      ? addresses.find((addr) => addr.isDefault) || addresses[0]
+      : null;
   const createOrder = async () => {
     try {
       const items = cart.map((product) => ({
@@ -52,10 +44,10 @@ export default function Cart() {
           shippingAddress: {
             name: "Customer",
             phone: "9999999999",
-            line1: address?.text || "Address",
-            city: "City",
-            state: "State",
-            pincode: "000000",
+            line1: address?.street,
+            city: address?.city,
+            state: address?.state,
+            pincode: address?.pincode,
           },
           paymentMethod,
         },
@@ -197,6 +189,24 @@ export default function Cart() {
 
     if (cart.length > 0) fetchImages();
   }, [cart]);
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const res = await axios.get(`${API}/api/user/addresses`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setAddresses(res.data.addresses || []);
+      } catch (err) {
+        console.error("Failed to fetch addresses", err);
+      }
+    };
+
+    if (token) fetchAddresses();
+  }, [token]);
 
   return (
     <>
@@ -344,13 +354,14 @@ export default function Cart() {
               <div className="mb-4 bg-gray-50 p-4 rounded-sm">
                 <p className="text-sm font-semibold mb-2">Deliver To</p>
                 <p className="text-sm font-medium">
-                  {addresses.find((addr) => addr.isDefault)?.type ||
+                  {addresses.find((addr) => addr.isDefault)?.label ||
                     addresses[0]?.type ||
                     "Address"}
                 </p>
                 <p className="text-sm text-gray-700 mt-1">
-                  {addresses.find((addr) => addr.isDefault)?.text ||
-                    addresses[0]?.text}
+                  {selected
+                    ? `${selected.street}, ${selected.city}, ${selected.state} - ${selected.pincode}`
+                    : "No address"}
                 </p>
                 <button
                   onClick={() => navigate("/manage-address")}
