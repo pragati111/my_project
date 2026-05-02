@@ -15,6 +15,42 @@ export default function SearchComponent({ isMobileTrigger = false }) {
 
   const searchRef = useRef();
 
+  const getProductImage = (item) => {
+    // 1️⃣ media array
+    if (item.media && item.media.length > 0) {
+      const img = item.media.find((m) => m.type === "image");
+      if (img?.url) return img.url;
+    }
+
+    // 2️⃣ images array
+    if (item.images && item.images.length > 0) {
+      return item.images[0];
+    }
+
+    // 3️⃣ single image field
+    if (item.image) {
+      return item.image;
+    }
+
+    // ❌ nothing found
+    return null;
+  };
+
+  const getRandomColor = (name = "") => {
+    const colors = [
+      "bg-red-500",
+      "bg-blue-500",
+      "bg-green-500",
+      "bg-purple-500",
+      "bg-pink-500",
+      "bg-indigo-500",
+      "bg-yellow-500",
+    ];
+
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
   // ✅ Fetch once
   useEffect(() => {
     const fetchProducts = async () => {
@@ -125,10 +161,20 @@ export default function SearchComponent({ isMobileTrigger = false }) {
                   }}
                   className="p-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
                 >
-                  <img
-                    src={item.media?.[0]?.url || "/fallback.png"}
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
+                  {getProductImage(item) ? (
+                    <img
+                      src={getProductImage(item)}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-semibold ${getRandomColor(
+                        item.name,
+                      )}`}
+                    >
+                      {item.name?.[0]?.toUpperCase() || "P"}
+                    </div>
+                  )}
 
                   <div>
                     <p className="text-sm font-medium">
@@ -200,12 +246,25 @@ export default function SearchComponent({ isMobileTrigger = false }) {
                       navigate(`/product/${item._id}`);
                       setMobileOpen(false);
                     }}
-                    className="p-3 border-b flex gap-3 cursor-pointer active:bg-gray-100 transition"
+                    className="p-3 border-b flex gap-3 cursor-pointer 
+                            hover:bg-gray-100 
+                            active:bg-gray-100 active:scale-[0.98] 
+                            transition"
                   >
-                    <img
-                      src={item.media?.[0]?.url || "/fallback.png"}
-                      className="w-12 h-12 rounded object-cover"
-                    />
+                    {getProductImage(item) ? (
+                      <img
+                        src={getProductImage(item)}
+                        className="w-12 h-12 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div
+                        className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-semibold ${getRandomColor(
+                          item.name,
+                        )}`}
+                      >
+                        {item.name?.[0]?.toUpperCase() || "P"}
+                      </div>
+                    )}
 
                     <div>
                       <p className="text-sm">{item.name}</p>
