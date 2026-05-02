@@ -78,7 +78,8 @@ export default function Orders() {
                     <div className="flex flex-col">
                       <p className="text-xs text-blue-600">#{order._id}</p>
                       <p className="text-[11px] text-gray-400">
-                       Placed At : {new Date(order.createdAt).toLocaleDateString()}
+                        Placed At :{" "}
+                        {new Date(order.createdAt).toLocaleDateString()}
                       </p>
                     </div>
 
@@ -148,37 +149,66 @@ export default function Orders() {
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* BUTTONS */}
-<div className="mt-auto pt-3 flex gap-2">
-  
-  {/* VIEW DETAILS */}
-  <button
-    onClick={() => setDetailsOrder(order)}
-    className="flex-1 text-xs py-2 rounded-lg border border-gray-300 text-gray-700 
+                  <div className="mt-auto pt-3 flex gap-2">
+                    {/* VIEW DETAILS */}
+                    <button
+                      onClick={() => setDetailsOrder(order)}
+                      className="flex-1 text-xs py-2 rounded-lg border border-gray-300 text-gray-700 
     hover:bg-gray-100 transition-all duration-200"
-  >
-    View Details
-  </button>
+                    >
+                      View Details
+                    </button>
 
-  {/* NEED HELP */}
-  <button
-    className="flex-1 text-xs py-2 rounded-lg bg-gray-100 text-gray-700 
-    hover:bg-gray-200 transition-all duration-200"
-  >
-    Need Help?
-  </button>
+                    {/* ✅ NEED HELP / FEEDBACK (dynamic) */}
+                    <button
+                      className={`flex-1 text-xs py-2 rounded-lg transition-all duration-200
+      ${
+        order.status === "DELIVERED"
+          ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      }
+    `}
+                    >
+                      {order.status === "DELIVERED"
+                        ? "Any Complaint"
+                        : "Need Help?"}
+                    </button>
 
-  {/* TRACK DELIVERY (PRIMARY) */}
-  <button
-    onClick={() => openTrackingModal(order)}
-    className="flex-1 text-xs py-2 rounded-lg bg-black text-white 
-    hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow-md"
-  >
-    Track
-  </button>
-
-</div>
+                    {/* ✅ MAIN ACTION BUTTON */}
+                    {order.status === "PLACED" ? (
+                      <button
+                        className="flex-1 text-xs py-2 rounded-lg bg-red-500 text-white 
+      hover:bg-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
+                      >
+                        ❌ Cancel
+                      </button>
+                    ) : order.status === "CANCELLED" ? (
+                      <button
+                        disabled
+                        className="flex-1 text-xs py-2 rounded-lg bg-gray-200 text-gray-400 cursor-not-allowed"
+                      >
+                        Cancelled
+                      </button>
+                    ) : order.status === "DELIVERED" ? (
+                      <button
+                        disabled
+                        className="flex-1 text-xs py-2 rounded-lg bg-green-500 text-white 
+      cursor-not-allowed shadow-sm"
+                      >
+                        ✅ Delivered
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => openTrackingModal(order)}
+                        className="flex-1 text-xs py-2 rounded-lg bg-black text-white 
+      hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow-md"
+                      >
+                        🚚 Track
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
