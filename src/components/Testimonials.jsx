@@ -3,16 +3,19 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import { Star } from "lucide-react";
 import axios from "axios";
+import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
 
 const API = "https://my-project-backend-ee4t.onrender.com";
 
+
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
   const fetchTestimonials = async () => {
     try {
@@ -48,7 +51,13 @@ const Testimonials = () => {
         </div>
 
         <Swiper
-          modules={[Pagination]}
+        autoplay={{
+  delay: 0, // continuous flow
+  disableOnInteraction: false,
+}}
+speed={4000} // controls smoothness (higher = slower, smoother)
+loop={true}
+          modules={[Pagination, Autoplay]}
           spaceBetween={20}
           slidesPerView={1}
           pagination={{ clickable: true }}
