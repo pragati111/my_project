@@ -13,6 +13,17 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailsOrder, setDetailsOrder] = useState(null);
 
+  const [complaintOrder, setComplaintOrder] = useState(null);
+  const [complaintData, setComplaintData] = useState({
+  title: "",
+  description: "",
+  category: "Product Quality",
+  priority: "Medium",
+  complainantName: "",
+  complainantEmail: "",
+  complainantPhone: "",
+});
+
   const openTrackingModal = (order) => {
     setSelectedOrder(order);
   };
@@ -29,6 +40,36 @@ export default function Orders() {
     if (status === "CANCELLED") return "text-red-500"; // error
     return "text-gray-500";
   };
+
+  const handleSubmitComplaint = async () => {
+  try {
+    await axios.post(
+  `${API}/api/complaint`,
+  {
+    ...complaintData,
+    orderId: complaintOrder._id,
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
+
+    alert("Complaint submitted successfully");
+
+    setComplaintOrder(null);
+    setComplaintData({
+      title: "",
+      description: "",
+      category: "Product Quality",
+      priority: "Medium",
+    });
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit complaint");
+  }
+};
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -49,6 +90,7 @@ export default function Orders() {
 
     if (token) fetchOrders();
   }, [token]);
+
 
   return (
     <>
@@ -163,13 +205,13 @@ export default function Orders() {
 
                     {/* ✅ NEED HELP / FEEDBACK (dynamic) */}
                     <button
+                      onClick={() => setComplaintOrder(order)}
                       className={`flex-1 text-xs py-2 rounded-lg transition-all duration-200
-      ${
-        order.status === "DELIVERED"
-          ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-      }
-    `}
+  ${
+    order.status === "DELIVERED"
+      ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
+      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+  }`}
                     >
                       {order.status === "DELIVERED"
                         ? "Any Complaint"
@@ -410,6 +452,130 @@ export default function Orders() {
           </div>
         </div>
       )}
+      {complaintOrder && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white w-full max-w-lg rounded-2xl p-6 relative shadow-xl">
+
+      {/* CLOSE */}
+      <button
+        onClick={() => setComplaintOrder(null)}
+        className="absolute top-3 right-3 text-gray-500"
+      >
+        ✕
+      </button>
+
+      <h2 className="text-lg font-semibold mb-4">
+        Raise a Complaint
+      </h2>
+
+      {/* ORDER INFO */}
+      <div className="text-xs text-gray-500 mb-4">
+        Order ID: #{complaintOrder._id}
+      </div>
+
+      {/* FORM */}
+      <div className="space-y-3">
+        <input
+  type="text"
+  placeholder="Your Name"
+  value={complaintData.complainantName}
+  onChange={(e) =>
+    setComplaintData({ ...complaintData, complainantName: e.target.value })
+  }
+  className="w-full border rounded-lg px-3 py-2 text-sm"
+/>
+
+<input
+  type="email"
+  placeholder="Your Email"
+  value={complaintData.complainantEmail}
+  onChange={(e) =>
+    setComplaintData({ ...complaintData, complainantEmail: e.target.value })
+  }
+  className="w-full border rounded-lg px-3 py-2 text-sm"
+/>
+
+<input
+  type="text"
+  placeholder="Your Phone"
+  value={complaintData.complainantPhone}
+  onChange={(e) =>
+    setComplaintData({ ...complaintData, complainantPhone: e.target.value })
+  }
+  className="w-full border rounded-lg px-3 py-2 text-sm"
+/>
+
+        {/* TITLE */}
+        <input
+          type="text"
+          placeholder="Title"
+          value={complaintData.title}
+          onChange={(e) =>
+            setComplaintData({ ...complaintData, title: e.target.value })
+          }
+          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+        />
+
+        {/* DESCRIPTION */}
+        <textarea
+          placeholder="Describe your issue..."
+          value={complaintData.description}
+          onChange={(e) =>
+            setComplaintData({
+              ...complaintData,
+              description: e.target.value,
+            })
+          }
+          className="w-full border rounded-lg px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-2 focus:ring-black"
+        />
+
+        {/* CATEGORY */}
+        <select
+          value={complaintData.category}
+          onChange={(e) =>
+            setComplaintData({
+              ...complaintData,
+              category: e.target.value,
+            })
+          }
+          className="w-full border rounded-lg px-3 py-2 text-sm"
+        >
+          <option>Product Quality</option>
+          <option>Delivery Issue</option>
+          <option>Customer Service</option>
+          <option>Billing / Payment</option>
+          <option>Technical Issue</option>
+          <option>Other</option>
+        </select>
+
+        {/* PRIORITY */}
+        <select
+          value={complaintData.priority}
+          onChange={(e) =>
+            setComplaintData({
+              ...complaintData,
+              priority: e.target.value,
+            })
+          }
+          className="w-full border rounded-lg px-3 py-2 text-sm"
+        >
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+          <option>Urgent</option>
+        </select>
+
+        {/* SUBMIT */}
+        <button
+          onClick={handleSubmitComplaint}
+          className="w-full py-2 rounded-lg bg-black text-white hover:bg-gray-800 transition"
+        >
+          Submit Complaint
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 }
