@@ -15,14 +15,14 @@ export default function Orders() {
 
   const [complaintOrder, setComplaintOrder] = useState(null);
   const [complaintData, setComplaintData] = useState({
-  title: "",
-  description: "",
-  category: "Product Quality",
-  priority: "Medium",
-  complainantName: "",
-  complainantEmail: "",
-  complainantPhone: "",
-});
+    title: "",
+    description: "",
+    category: "Product Quality",
+    priority: "Medium",
+    complainantName: "",
+    complainantEmail: "",
+    complainantPhone: "",
+  });
 
   const openTrackingModal = (order) => {
     setSelectedOrder(order);
@@ -42,34 +42,61 @@ export default function Orders() {
   };
 
   const handleSubmitComplaint = async () => {
-  try {
-    await axios.post(
-  `${API}/api/complaint`,
-  {
-    ...complaintData,
-    orderId: complaintOrder._id,
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
+    try {
+      await axios.post(
+        `${API}/api/complaint`,
+        {
+          ...complaintData,
+          orderId: complaintOrder._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-    alert("Complaint submitted successfully");
+      toast.success("Complaint submitted successfully");
 
-    setComplaintOrder(null);
-    setComplaintData({
-      title: "",
-      description: "",
-      category: "Product Quality",
-      priority: "Medium",
-    });
-  } catch (err) {
-    console.error(err);
-    alert("Failed to submit complaint");
-  }
-};
+      setComplaintOrder(null);
+      setComplaintData({
+        title: "",
+        description: "",
+        category: "Product Quality",
+        priority: "Medium",
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit complaint");
+    }
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    try {
+      await axios.put(
+        `${API}/api/order/cancel/${orderId}`,
+        {}, // no body needed usually
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      // ✅ Update UI instantly (VERY IMPORTANT)
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === orderId ? { ...o, status: "CANCELLED" } : o,
+        ),
+      );
+
+      // ✅ Snackbar / alert
+      toast.success("Order cancelled successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to cancel order");
+    }
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -90,7 +117,6 @@ export default function Orders() {
 
     if (token) fetchOrders();
   }, [token]);
-
 
   return (
     <>
@@ -220,12 +246,17 @@ export default function Orders() {
 
                     {/* ✅ MAIN ACTION BUTTON */}
                     {order.status === "PLACED" ? (
-                      <button
-                        className="flex-1 text-xs py-2 rounded-lg bg-red-500 text-white 
-      hover:bg-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
-                      >
-                        ❌ Cancel
-                      </button>
+  <button
+    onClick={() => {
+  if (window.confirm("Are you sure you want to cancel this order?")) {
+    handleCancelOrder(order._id);
+  }
+}}
+    className="flex-1 text-xs py-2 rounded-lg bg-red-500 text-white 
+    hover:bg-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
+  >
+    ❌ Cancel
+  </button>
                     ) : order.status === "CANCELLED" ? (
                       <button
                         disabled
@@ -453,129 +484,135 @@ export default function Orders() {
         </div>
       )}
       {complaintOrder && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div className="bg-white w-full max-w-lg rounded-2xl p-6 relative shadow-xl">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-lg rounded-2xl p-6 relative shadow-xl">
+            {/* CLOSE */}
+            <button
+              onClick={() => setComplaintOrder(null)}
+              className="absolute top-3 right-3 text-gray-500"
+            >
+              ✕
+            </button>
 
-      {/* CLOSE */}
-      <button
-        onClick={() => setComplaintOrder(null)}
-        className="absolute top-3 right-3 text-gray-500"
-      >
-        ✕
-      </button>
+            <h2 className="text-lg font-semibold mb-4">Raise a Complaint</h2>
 
-      <h2 className="text-lg font-semibold mb-4">
-        Raise a Complaint
-      </h2>
+            {/* ORDER INFO */}
+            <div className="text-xs text-gray-500 mb-4">
+              Order ID: #{complaintOrder._id}
+            </div>
 
-      {/* ORDER INFO */}
-      <div className="text-xs text-gray-500 mb-4">
-        Order ID: #{complaintOrder._id}
-      </div>
+            {/* FORM */}
+            <div className="space-y-3">
+              <input
+                type="text"
+                placeholder="Your Name"
+                value={complaintData.complainantName}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    complainantName: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+              />
 
-      {/* FORM */}
-      <div className="space-y-3">
-        <input
-  type="text"
-  placeholder="Your Name"
-  value={complaintData.complainantName}
-  onChange={(e) =>
-    setComplaintData({ ...complaintData, complainantName: e.target.value })
-  }
-  className="w-full border rounded-lg px-3 py-2 text-sm"
-/>
+              <input
+                type="email"
+                placeholder="Your Email"
+                value={complaintData.complainantEmail}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    complainantEmail: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+              />
 
-<input
-  type="email"
-  placeholder="Your Email"
-  value={complaintData.complainantEmail}
-  onChange={(e) =>
-    setComplaintData({ ...complaintData, complainantEmail: e.target.value })
-  }
-  className="w-full border rounded-lg px-3 py-2 text-sm"
-/>
+              <input
+                type="text"
+                placeholder="Your Phone"
+                value={complaintData.complainantPhone}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    complainantPhone: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+              />
 
-<input
-  type="text"
-  placeholder="Your Phone"
-  value={complaintData.complainantPhone}
-  onChange={(e) =>
-    setComplaintData({ ...complaintData, complainantPhone: e.target.value })
-  }
-  className="w-full border rounded-lg px-3 py-2 text-sm"
-/>
+              {/* TITLE */}
+              <input
+                type="text"
+                placeholder="Title"
+                value={complaintData.title}
+                onChange={(e) =>
+                  setComplaintData({ ...complaintData, title: e.target.value })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+              />
 
-        {/* TITLE */}
-        <input
-          type="text"
-          placeholder="Title"
-          value={complaintData.title}
-          onChange={(e) =>
-            setComplaintData({ ...complaintData, title: e.target.value })
-          }
-          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-        />
+              {/* DESCRIPTION */}
+              <textarea
+                placeholder="Describe your issue..."
+                value={complaintData.description}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    description: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-2 focus:ring-black"
+              />
 
-        {/* DESCRIPTION */}
-        <textarea
-          placeholder="Describe your issue..."
-          value={complaintData.description}
-          onChange={(e) =>
-            setComplaintData({
-              ...complaintData,
-              description: e.target.value,
-            })
-          }
-          className="w-full border rounded-lg px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-2 focus:ring-black"
-        />
+              {/* CATEGORY */}
+              <select
+                value={complaintData.category}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    category: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+              >
+                <option>Product Quality</option>
+                <option>Delivery Issue</option>
+                <option>Customer Service</option>
+                <option>Billing / Payment</option>
+                <option>Technical Issue</option>
+                <option>Other</option>
+              </select>
 
-        {/* CATEGORY */}
-        <select
-          value={complaintData.category}
-          onChange={(e) =>
-            setComplaintData({
-              ...complaintData,
-              category: e.target.value,
-            })
-          }
-          className="w-full border rounded-lg px-3 py-2 text-sm"
-        >
-          <option>Product Quality</option>
-          <option>Delivery Issue</option>
-          <option>Customer Service</option>
-          <option>Billing / Payment</option>
-          <option>Technical Issue</option>
-          <option>Other</option>
-        </select>
+              {/* PRIORITY */}
+              <select
+                value={complaintData.priority}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    priority: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+              >
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Urgent</option>
+              </select>
 
-        {/* PRIORITY */}
-        <select
-          value={complaintData.priority}
-          onChange={(e) =>
-            setComplaintData({
-              ...complaintData,
-              priority: e.target.value,
-            })
-          }
-          className="w-full border rounded-lg px-3 py-2 text-sm"
-        >
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-          <option>Urgent</option>
-        </select>
-
-        {/* SUBMIT */}
-        <button
-          onClick={handleSubmitComplaint}
-          className="w-full py-2 rounded-lg bg-black text-white hover:bg-gray-800 transition"
-        >
-          Submit Complaint
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+              {/* SUBMIT */}
+              <button
+                onClick={handleSubmitComplaint}
+                className="w-full py-2 rounded-lg bg-black text-white hover:bg-gray-800 transition"
+              >
+                Submit Complaint
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

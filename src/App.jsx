@@ -13,10 +13,14 @@ import ManageAddressPage from "./components/ManageAddressPage";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import SubcategoryDisplay from "./components/SubcategoryDisplay"; // ✅ added
 import Orders from "./components/Orders";
+import { Toaster } from "react-hot-toast";
+
+
 
 function App() {
   return (
     <>
+      <Toaster position="top-right" />
       {/* ✅ DESKTOP ROUTES */}
       <div className="hidden md:block">
         <Routes>
