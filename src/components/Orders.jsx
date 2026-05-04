@@ -2,26 +2,32 @@ import TopHeader from "../components/TopHeader";
 import { useAuth } from "../components/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const API = "https://my-project-backend-ee4t.onrender.com";
 
 export default function Orders() {
   const { token } = useAuth();
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailsOrder, setDetailsOrder] = useState(null);
+  const [cancelOrder, setCancelOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [complainedOrders, setComplainedOrders] = useState([]);
 
   const [complaintOrder, setComplaintOrder] = useState(null);
   const [complaintData, setComplaintData] = useState({
+    orderId: "", // ✅ ADD THIS
     title: "",
     description: "",
     category: "Product Quality",
     priority: "Medium",
-    complainantName: "",
-    complainantEmail: "",
-    complainantPhone: "",
+    complainantName: user?.name || "",
+    complainantEmail: user?.email || "",
+    complainantPhone: user?.phone || "",
   });
 
   const openTrackingModal = (order) => {
@@ -43,27 +49,24 @@ export default function Orders() {
 
   const handleSubmitComplaint = async () => {
     try {
-      await axios.post(
-        `${API}/api/complaint`,
-        {
-          ...complaintData,
-          orderId: complaintOrder._id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      await axios.post(`${API}/api/complaint`, complaintData);
 
       toast.success("Complaint submitted successfully");
-
+      setComplainedOrders((prev) =>
+        prev.includes(complaintData.orderId)
+          ? prev
+          : [...prev, complaintData.orderId],
+      );
       setComplaintOrder(null);
       setComplaintData({
+        orderId: "",
         title: "",
         description: "",
         category: "Product Quality",
         priority: "Medium",
+        complainantName: user?.name || "",
+        complainantEmail: user?.email || "",
+        complainantPhone: user?.phone || "",
       });
     } catch (err) {
       console.error(err);
@@ -71,11 +74,13 @@ export default function Orders() {
     }
   };
 
-  const handleCancelOrder = async (orderId) => {
+  const handleCancelOrder = async () => {
     try {
-      await axios.put(
-        `${API}/api/order/cancel/${orderId}`,
-        {}, // no body needed usually
+      await axios.patch(
+        `${API}/api/order/${cancelOrder._id}/cancel`,
+        {
+          reason: cancelReason, // ✅ IMPORTANT
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -83,18 +88,19 @@ export default function Orders() {
         },
       );
 
-      // ✅ Update UI instantly (VERY IMPORTANT)
       setOrders((prev) =>
         prev.map((o) =>
-          o._id === orderId ? { ...o, status: "CANCELLED" } : o,
+          o._id === cancelOrder._id ? { ...o, status: "CANCELLED" } : o,
         ),
       );
 
-      // ✅ Snackbar / alert
       toast.success("Order cancelled successfully");
+
+      setCancelOrder(null);
+      setCancelReason("");
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to cancel order");
+      console.error(err?.response?.data || err);
+      toast.error(err?.response?.data?.message || "Failed to cancel order");
     }
   };
 
@@ -118,13 +124,49 @@ export default function Orders() {
     if (token) fetchOrders();
   }, [token]);
 
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchComplaints = async () => {
+      try {
+        const res = await axios.get(`${API}/api/complaint`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const complaints = res.data?.data || [];
+
+        const orderIds = complaints.map((c) => c._id);
+
+        setComplainedOrders(orderIds);
+      } catch (err) {
+        console.error("Failed to fetch complaints", err);
+      }
+    };
+
+    fetchComplaints();
+  }, [token]);
+
   return (
     <>
       <TopHeader />
 
       <div className="pt-24 px-4 md:px-10 bg-gray-100 min-h-screen">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl font-semibold mb-2">My Orders</h1>
+          {/* HEADER ROW */}
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-2xl font-semibold">My Orders</h1>
+
+            <button
+              onClick={() => setComplaintOrder({})} // no specific order
+              className="px-4 py-2 text-sm rounded-lg border border-gray-300 
+      hover:bg-gray-100 transition"
+            >
+              Any Complaint?
+            </button>
+          </div>
+
           <p className="text-gray-500 text-sm mb-6">
             View and track all your orders
           </p>
@@ -229,34 +271,23 @@ export default function Orders() {
                       View Details
                     </button>
 
-                    {/* ✅ NEED HELP / FEEDBACK (dynamic) */}
-                    <button
-                      onClick={() => setComplaintOrder(order)}
-                      className={`flex-1 text-xs py-2 rounded-lg transition-all duration-200
-  ${
-    order.status === "DELIVERED"
-      ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
-      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-  }`}
-                    >
-                      {order.status === "DELIVERED"
-                        ? "Any Complaint"
-                        : "Need Help?"}
-                    </button>
-
                     {/* ✅ MAIN ACTION BUTTON */}
                     {order.status === "PLACED" ? (
-  <button
-    onClick={() => {
-  if (window.confirm("Are you sure you want to cancel this order?")) {
-    handleCancelOrder(order._id);
-  }
-}}
-    className="flex-1 text-xs py-2 rounded-lg bg-red-500 text-white 
+                      <button
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you want to cancel this order?",
+                            )
+                          ) {
+                            setCancelOrder(order);
+                          }
+                        }}
+                        className="flex-1 text-xs py-2 rounded-lg bg-red-500 text-white 
     hover:bg-red-600 transition-all duration-200 shadow-sm hover:shadow-md"
-  >
-    ❌ Cancel
-  </button>
+                      >
+                        ❌ Cancel
+                      </button>
                     ) : order.status === "CANCELLED" ? (
                       <button
                         disabled
@@ -497,12 +528,30 @@ export default function Orders() {
             <h2 className="text-lg font-semibold mb-4">Raise a Complaint</h2>
 
             {/* ORDER INFO */}
-            <div className="text-xs text-gray-500 mb-4">
-              Order ID: #{complaintOrder._id}
-            </div>
+            {complaintOrder?._id && (
+              <div className="text-xs text-gray-500 mb-4">
+                Order ID: #{complaintOrder._id}
+              </div>
+            )}
 
             {/* FORM */}
             <div className="space-y-3">
+              <select
+                value={complaintData.orderId}
+                onChange={(e) =>
+                  setComplaintData({
+                    ...complaintData,
+                    orderId: e.target.value,
+                  })
+                }
+              >
+                <option value="">Select Order</option>
+                {orders.map((o) => (
+                  <option key={o._id} value={o._id}>
+                    {o._id}
+                  </option>
+                ))}
+              </select>
               <input
                 type="text"
                 placeholder="Your Name"
@@ -608,6 +657,52 @@ export default function Orders() {
                 className="w-full py-2 rounded-lg bg-black text-white hover:bg-gray-800 transition"
               >
                 Submit Complaint
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {cancelOrder && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-xl">
+            {/* CLOSE */}
+            <button
+              onClick={() => setCancelOrder(null)}
+              className="absolute top-3 right-3 text-gray-500"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-lg font-semibold mb-4">Cancel Order</h2>
+
+            <p className="text-xs text-gray-500 mb-3">
+              Order ID: #{cancelOrder._id}
+            </p>
+
+            {/* REASON INPUT */}
+            <textarea
+              placeholder="Please tell us why you're cancelling..."
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm h-24 resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+
+            {/* ACTIONS */}
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setCancelOrder(null)}
+                className="flex-1 py-2 rounded-lg border text-gray-600 hover:bg-gray-100"
+              >
+                Keep Order
+              </button>
+
+              <button
+                onClick={handleCancelOrder}
+                disabled={!cancelReason.trim()}
+                className="flex-1 py-2 rounded-lg bg-red-500 text-white 
+          hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Confirm Cancel
               </button>
             </div>
           </div>
