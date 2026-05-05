@@ -235,6 +235,81 @@ export default function ProductDisplay() {
                 {product.description}
               </p>
 
+              {/* OFFERS SECTION */}
+              {product.offers?.filter((o) => o.active).length > 0 && (
+                <div className="mt-5">
+                  <h2 className="text-sm font-semibold text-gray-700 mb-3">
+                    Active Offers
+                  </h2>
+
+                  <div className="flex gap-3 flex-wrap">
+                    {product.offers
+                      .filter((offer) => offer.active)
+                      .map((offer, i) => (
+                        <div
+                          key={offer._id}
+                          className="relative w-[200px] rounded-xl px-3 py-4 text-center
+                       bg-[#eaf7ef] border border-green-300 shadow-md"
+                        >
+                          {/* BADGE */}
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                            <span className="bg-black text-white text-[10px] font-semibold px-3 py-[3px] rounded-md shadow">
+                              {i === 0
+                                ? "MOST POPULAR"
+                                : i === 1
+                                  ? "BEST VALUE"
+                                  : "TOP OFFER"}
+                            </span>
+                          </div>
+
+                          {/* TITLE */}
+                          <p className="mt-2 text-gray-800 text-sm font-medium">
+                            {offer.title}
+                          </p>
+
+                          {/* DIVIDER */}
+                          <div className="my-2 h-[1px] bg-green-200 w-[80%] mx-auto"></div>
+
+                          {/* DISCOUNT */}
+                          {offer.discountPercent > 0 && (
+                            <p className="text-green-600 text-sm font-semibold">
+                              Get {offer.discountPercent}% Off
+                            </p>
+                          )}
+
+                          {/* CODE */}
+                          <p className="mt-1 text-xs text-center">
+                            {/* CODE LABEL */}
+                            <span className="block text-green-600 font-bold">
+                              Code:
+                            </span>
+
+                            {/* CODE VALUE */}
+                            <span className="block text-gray-700 font-medium uppercase">
+                              {offer.code}
+                            </span>
+
+                            {/* EXPIRY */}
+                            {offer.expiryDate && (
+                              <span className="block text-[11px] text-gray-500 mt-1">
+                                Offer Valid till:{" "}
+                                {new Date(offer.expiryDate).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
               {/* CUSTOMIZATION */}
               <div>
                 <h2 className="text-lg font-semibold mb-3">Customize</h2>
