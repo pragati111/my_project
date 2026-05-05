@@ -13,6 +13,7 @@ export default function ProductDisplay() {
   const [product, setProduct] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [configs, setConfigs] = useState([{}]);
+  const [showAllOffers, setShowAllOffers] = useState(false);
 
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
@@ -78,6 +79,7 @@ export default function ProductDisplay() {
   }, [activeIndex]);
 
   if (!product) return <ProductShimmer />;
+  const activeOffers = product?.offers?.filter((o) => o.active) || [];
 
   const media =
     product.media?.length > 0
@@ -236,79 +238,83 @@ export default function ProductDisplay() {
               </p>
 
               {/* OFFERS SECTION */}
-              {product.offers?.filter((o) => o.active).length > 0 && (
-                <div className="mt-5">
-                  <h2 className="text-sm font-semibold text-gray-700 mb-3">
-                    Active Offers
-                  </h2>
+              <div className="w-full overflow-x-auto no-scrollbar">
+                <div className="flex gap-3">
+                  {(activeOffers.length > 3
+                    ? activeOffers.slice(0, 2)
+                    : activeOffers
+                  ).map((offer, i) => (
+                    <div
+                      key={offer._id}
+                      className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-xl px-3 py-4 text-center bg-[#eaf7ef] border border-green-300 shadow-md my-3 mx-2 first:ml-1"
+                    >
+                      {/* BADGE */}
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <span className="bg-black text-white text-[10px] font-semibold px-3 py-[3px] rounded-md shadow">
+                          {i === 0
+                            ? "MOST POPULAR"
+                            : i === 1
+                              ? "BEST VALUE"
+                              : "TOP OFFER"}
+                        </span>
+                      </div>
 
-                  <div className="flex gap-3 flex-wrap">
-                    {product.offers
-                      .filter((offer) => offer.active)
-                      .map((offer, i) => (
-                        <div
-                          key={offer._id}
-                          className="relative w-[200px] rounded-xl px-3 py-4 text-center
-                       bg-[#eaf7ef] border border-green-300 shadow-md"
-                        >
-                          {/* BADGE */}
-                          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                            <span className="bg-black text-white text-[10px] font-semibold px-3 py-[3px] rounded-md shadow">
-                              {i === 0
-                                ? "MOST POPULAR"
-                                : i === 1
-                                  ? "BEST VALUE"
-                                  : "TOP OFFER"}
-                            </span>
-                          </div>
+                      {/* TITLE */}
+                      <p className="mt-2 text-gray-800 text-sm font-medium truncate">
+                        {offer.title}
+                      </p>
 
-                          {/* TITLE */}
-                          <p className="mt-2 text-gray-800 text-sm font-medium">
-                            {offer.title}
-                          </p>
+                      {/* DIVIDER */}
+                      <div className="my-2 h-[1px] bg-green-200 w-[80%] mx-auto"></div>
 
-                          {/* DIVIDER */}
-                          <div className="my-2 h-[1px] bg-green-200 w-[80%] mx-auto"></div>
+                      {/* DISCOUNT */}
+                      {offer.discountPercent > 0 && (
+                        <p className="text-gray-600 text-sm font-semibold">
+                          Get {offer.discountPercent}% Off
+                        </p>
+                      )}
 
-                          {/* DISCOUNT */}
-                          {offer.discountPercent > 0 && (
-                            <p className="text-green-600 text-sm font-semibold">
-                              Get {offer.discountPercent}% Off
-                            </p>
-                          )}
+                      {/* CODE */}
+                      <p className="mt-1 text-xs text-center">
+                        <span className="block text-green-600 font-bold">
+                          Code:
+                        </span>
 
-                          {/* CODE */}
-                          <p className="mt-1 text-xs text-center">
-                            {/* CODE LABEL */}
-                            <span className="block text-green-600 font-bold">
-                              Code:
-                            </span>
+                        <span className="block text-gray-700 font-medium uppercase">
+                          {offer.code}
+                        </span>
 
-                            {/* CODE VALUE */}
-                            <span className="block text-gray-700 font-medium uppercase">
-                              {offer.code}
-                            </span>
-
-                            {/* EXPIRY */}
-                            {offer.expiryDate && (
-                              <span className="block text-[11px] text-gray-500 mt-1">
-                                Offer Valid till:{" "}
-                                {new Date(offer.expiryDate).toLocaleDateString(
-                                  "en-IN",
-                                  {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  },
-                                )}
-                              </span>
+                        {offer.expiryDate && (
+                          <span className="block text-[11px] text-gray-500 mt-1">
+                            Offer Valid till:{" "}
+                            {new Date(offer.expiryDate).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
                             )}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  ))}
+
+                  {/* ✅ VIEW MORE CARD (OUTSIDE MAP) */}
+                  {activeOffers.length > 3 && (
+                    <div
+                      onClick={() => setShowAllOffers(true)}
+                      className="flex-shrink-0 flex items-center justify-center cursor-pointer
+           w-[220px] sm:w-[200px]
+           rounded-xl border-2 border-dashed border-green-300
+           text-green-600 font-semibold mx-2 my-3 px-3 py-4 text-center"
+                    >
+                      View More →
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               {/* CUSTOMIZATION */}
               <div>
@@ -684,6 +690,97 @@ export default function ProductDisplay() {
           </button>
         </div>
       </div>
+      {showAllOffers && (
+  <div className="fixed inset-0 z-50 bg-black/50 flex items-end lg:items-center justify-center">
+
+    {/* MODAL CONTAINER */}
+    <div className="
+      bg-white w-full 
+      h-[85vh] lg:h-auto 
+      lg:max-w-3xl 
+      rounded-t-2xl lg:rounded-xl 
+      p-4 relative 
+      overflow-hidden
+    ">
+
+      {/* DRAG HANDLE (mobile premium feel) */}
+      <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3 lg:hidden"></div>
+
+      {/* CLOSE BUTTON */}
+      <button
+        onClick={() => setShowAllOffers(false)}
+        className="absolute top-3 right-3 text-lg font-bold"
+      >
+        ✕
+      </button>
+
+      <h2 className="text-lg font-semibold mb-4 text-center lg:text-left">
+        All Offers
+      </h2>
+
+      {/* SCROLL AREA */}
+      <div className="overflow-y-auto h-[75vh] lg:h-auto pr-1 no-scrollbar">
+
+        {/* MOBILE = SINGLE COLUMN */}
+        {/* DESKTOP = GRID */}
+        <div className="flex flex-col gap-3 lg:grid lg:grid-cols-3">
+
+          {activeOffers.map((offer, i) => (
+            <div
+              key={offer._id}
+              className="relative rounded-xl px-3 py-4 text-center
+                         bg-[#eaf7ef] border border-green-300 shadow-md"
+            >
+              {/* BADGE */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="bg-black text-white text-[10px] font-semibold px-3 py-[3px] rounded-md shadow">
+                  {i === 0
+                    ? "MOST POPULAR"
+                    : i === 1
+                    ? "BEST VALUE"
+                    : "TOP OFFER"}
+                </span>
+              </div>
+
+              {/* TITLE */}
+              <p className="mt-2 text-gray-800 text-sm font-medium">
+                {offer.title}
+              </p>
+
+              <div className="my-2 h-[1px] bg-green-200 w-[80%] mx-auto"></div>
+
+              {offer.discountPercent > 0 && (
+                <p className="text-gray-600 text-sm font-semibold">
+                  Get {offer.discountPercent}% Off
+                </p>
+              )}
+
+              <p className="mt-1 text-xs text-center">
+                <span className="block text-green-600 font-bold">Code:</span>
+
+                <span className="block text-gray-700 font-medium uppercase">
+                  {offer.code}
+                </span>
+
+                {offer.expiryDate && (
+                  <span className="block text-[11px] text-gray-500 mt-1">
+                    Offer Valid till{" "}
+                    {new Date(offer.expiryDate).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
+                )}
+              </p>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
