@@ -238,7 +238,11 @@ export default function ProductDisplay() {
               </p>
 
               {/* OFFERS SECTION */}
+              <h3 className="text-lg  font-semibold">
+                All Offers
+              </h3>
               <div className="w-full overflow-x-auto no-scrollbar">
+                
                 <div className="flex gap-3">
                   {(activeOffers.length > 3
                     ? activeOffers.slice(0, 2)
@@ -248,16 +252,7 @@ export default function ProductDisplay() {
                       key={offer._id}
                       className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-xl px-3 py-4 text-center bg-[#eaf7ef] border border-green-300 shadow-md my-3 mx-2 first:ml-1"
                     >
-                      {/* BADGE */}
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="bg-black text-white text-[10px] font-semibold px-3 py-[3px] rounded-md shadow">
-                          {i === 0
-                            ? "MOST POPULAR"
-                            : i === 1
-                              ? "BEST VALUE"
-                              : "TOP OFFER"}
-                        </span>
-                      </div>
+                     
 
                       {/* TITLE */}
                       <p className="mt-2 text-gray-800 text-sm font-medium truncate">
@@ -695,13 +690,13 @@ export default function ProductDisplay() {
 
     {/* MODAL CONTAINER */}
     <div className="
-      bg-white w-full 
-      h-[85vh] lg:h-auto 
-      lg:max-w-3xl 
-      rounded-t-2xl lg:rounded-xl 
-      p-4 relative 
-      overflow-hidden
-    ">
+  bg-white w-full 
+  max-h-[calc(100vh-80px)] flex flex-col lg:h-auto 
+  lg:max-w-3xl 
+  rounded-t-2xl lg:rounded-xl 
+  p-5 relative 
+  overflow-visible
+">
 
       {/* DRAG HANDLE (mobile premium feel) */}
       <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3 lg:hidden"></div>
@@ -731,16 +726,6 @@ export default function ProductDisplay() {
               className="relative rounded-xl px-3 py-4 text-center
                          bg-[#eaf7ef] border border-green-300 shadow-md"
             >
-              {/* BADGE */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bg-black text-white text-[10px] font-semibold px-3 py-[3px] rounded-md shadow">
-                  {i === 0
-                    ? "MOST POPULAR"
-                    : i === 1
-                    ? "BEST VALUE"
-                    : "TOP OFFER"}
-                </span>
-              </div>
 
               {/* TITLE */}
               <p className="mt-2 text-gray-800 text-sm font-medium">
