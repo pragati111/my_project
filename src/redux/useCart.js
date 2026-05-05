@@ -14,6 +14,28 @@ export const useCart = () => {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart.items);
 
+  const getAdjustment = (product, config) => {
+  let extra = 0;
+
+  product.customizations?.forEach((field) => {
+    const selected = config[field.label];
+
+    if (!selected) return;
+
+    if (Array.isArray(selected)) {
+      selected.forEach((val) => {
+        const opt = field.options?.find((o) => o.label === val);
+        extra += opt?.priceAdjustment || 0;
+      });
+    } else {
+      const opt = field.options?.find((o) => o.label === selected);
+      extra += opt?.priceAdjustment || 0;
+    }
+  });
+
+  return extra;
+};
+
   return {
     cart: items,
     addToCart: async (product, configs) => {
@@ -104,14 +126,18 @@ export const useCart = () => {
         0,
       ),
     getTotalPrice: () =>
-      items.reduce(
-        (total, product) =>
-          total +
-          product.designs.reduce(
-            (sum, d) => sum + Number(d.quantity || 0) * product.price,
-            0,
-          ),
-        0,
-      ),
+  items.reduce((total, product) => {
+    return (
+      total +
+      product.designs.reduce((sum, d) => {
+        const adjustment = getAdjustment(product, d.config);
+        return (
+          sum +
+          (Number(product.price) + adjustment) *
+            Number(d.quantity || 0)
+        );
+      }, 0)
+    );
+  }, 0),
   };
 };

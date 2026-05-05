@@ -24,6 +24,27 @@ export default function Cart() {
     addresses.length > 0
       ? addresses.find((addr) => addr.isDefault) || addresses[0]
       : null;
+  const getAdjustment = (product, config) => {
+  let extra = 0;
+
+  product.customizations?.forEach((field) => {
+    const selected = config[field.label];
+
+    if (!selected) return;
+
+    if (Array.isArray(selected)) {
+      selected.forEach((val) => {
+        const opt = field.options?.find((o) => o.label === val);
+        extra += opt?.priceAdjustment || 0;
+      });
+    } else {
+      const opt = field.options?.find((o) => o.label === selected);
+      extra += opt?.priceAdjustment || 0;
+    }
+  });
+
+  return extra;
+};
   const createOrder = async () => {
     try {
       const items = cart.map((product) => ({
@@ -145,15 +166,16 @@ export default function Cart() {
         const backendItems = res.data.items || [];
 
         const formatted = backendItems.map((item) => ({
-          productId: item.productId.toString(),
-          name: item.name,
-          price: item.price,
-          image: item.image || item.designs?.[0]?.config?.__productImage || "",
-          designs: (item.designs || []).map((d) => ({
-            config: d.config || {},
-            quantity: d.quantity || 1,
-          })),
-        }));
+  productId: item.productId.toString(),
+  name: item.name,
+  price: item.price,
+  image: item.image || item.designs?.[0]?.config?.__productImage || "",
+  customizations: item.customizations || [], // 🔥 ADD THIS
+  designs: (item.designs || []).map((d) => ({
+    config: d.config || {},
+    quantity: d.quantity || 1,
+  })),
+}));
 
         dispatch(setCart(formatted));
       } catch (err) {
@@ -326,12 +348,12 @@ export default function Cart() {
                   </div>
 
                   {/* PRICE */}
-                  <div>₹{product.price}</div>
+                  ₹{product.price + getAdjustment(product, d.config)}
 
                   {/* TOTAL + REMOVE */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">
-                      ₹{product.price * d.quantity}
+                      ₹{(product.price + getAdjustment(product, d.config)) * d.quantity}
                     </span>
 
                     <button

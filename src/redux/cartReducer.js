@@ -37,10 +37,11 @@ export const cartReducer = (state = initialState, action) => {
         items: [
           ...state.items,
           {
-            productId: productId, // 🔥 FIX
-            name: product.name,
+            productId: productId,
+            name: product.productName || product.name,
             price: product.price,
             image: product.image || product.images?.[0] || "",
+            customizations: product.customizations || [], // 🔥 ADD THIS
             designs: configs,
           },
         ],

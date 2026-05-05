@@ -15,10 +15,52 @@ export default function ProductDisplay() {
   const [configs, setConfigs] = useState([{}]);
   const [showAllOffers, setShowAllOffers] = useState(false);
 
+  
+
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
+
+
+
   const getPreviewSrc = (value) =>
     typeof value === "string" ? value : URL.createObjectURL(value);
+
+  const getAdjustment = (config) => {
+  let extra = 0;
+
+  product.customizations?.forEach((field) => {
+    const selected = config[field.label];
+
+    if (!selected) return;
+
+    // MULTI (checkbox)
+    if (Array.isArray(selected)) {
+      selected.forEach((val) => {
+        const opt = field.options?.find((o) => o.label === val);
+        extra += opt?.priceAdjustment || 0;
+      });
+    } 
+    // SINGLE (dropdown/radio)
+    else {
+      const opt = field.options?.find((o) => o.label === selected);
+      extra += opt?.priceAdjustment || 0;
+    }
+  });
+
+  return extra;
+};
+
+const getTotalPrice = () => {
+  if (!product) return 0;
+
+  return configs.reduce((total, config) => {
+    const base = product.discountedMRP;
+    const adjustment = getAdjustment(config);
+    const quantity = config.quantity || 1;
+
+    return total + (base + adjustment) * quantity;
+  }, 0);
+};
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -217,6 +259,9 @@ export default function ProductDisplay() {
                 <p className="text-green-600 text-2xl lg:text-3xl font-bold">
                   ₹{product.discountedMRP}
                 </p>
+                <p className="text-lg font-semibold text-gray-800">
+  Total Price: ₹{getTotalPrice()}
+</p>
 
                 {/* Original Price */}
                 {product.originalPrice && (
@@ -343,6 +388,11 @@ export default function ProductDisplay() {
                           ✕
                         </button>
                       </div>
+                      <p className="text-sm text-gray-600">
+  Price: ₹
+  {(product.discountedMRP + getAdjustment(config)) *
+    (config.quantity || 1)}
+</p>
 
                       {product.customizations?.map((field) => (
                         <div key={field.id}>
@@ -679,12 +729,14 @@ export default function ProductDisplay() {
                 image: media[0]?.url,
               });
               addToCart(
-                {
-                  ...product,
-                  image: media[0]?.url || "", // ✅ ADD THIS
-                },
-                formattedConfigs,
-              );
+  {
+    ...product,
+    price: product.discountedMRP, // 🔥 FIX
+    image: media[0]?.url || "",
+    customizations: product.customizations // 🔥 IMPORTANT
+  },
+  formattedConfigs
+);
             }}
             className="bg-black text-white py-3 flex-1 rounded"
           >
