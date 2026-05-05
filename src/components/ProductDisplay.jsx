@@ -15,52 +15,48 @@ export default function ProductDisplay() {
   const [configs, setConfigs] = useState([{}]);
   const [showAllOffers, setShowAllOffers] = useState(false);
 
-  
-
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
-
-
 
   const getPreviewSrc = (value) =>
     typeof value === "string" ? value : URL.createObjectURL(value);
 
   const getAdjustment = (config) => {
-  let extra = 0;
+    let extra = 0;
 
-  product.customizations?.forEach((field) => {
-    const selected = config[field.label];
+    product.customizations?.forEach((field) => {
+      const selected = config[field.label];
 
-    if (!selected) return;
+      if (!selected) return;
 
-    // MULTI (checkbox)
-    if (Array.isArray(selected)) {
-      selected.forEach((val) => {
-        const opt = field.options?.find((o) => o.label === val);
+      // MULTI (checkbox)
+      if (Array.isArray(selected)) {
+        selected.forEach((val) => {
+          const opt = field.options?.find((o) => o.label === val);
+          extra += opt?.priceAdjustment || 0;
+        });
+      }
+      // SINGLE (dropdown/radio)
+      else {
+        const opt = field.options?.find((o) => o.label === selected);
         extra += opt?.priceAdjustment || 0;
-      });
-    } 
-    // SINGLE (dropdown/radio)
-    else {
-      const opt = field.options?.find((o) => o.label === selected);
-      extra += opt?.priceAdjustment || 0;
-    }
-  });
+      }
+    });
 
-  return extra;
-};
+    return extra;
+  };
 
-const getTotalPrice = () => {
-  if (!product) return 0;
+  const getTotalPrice = () => {
+    if (!product) return 0;
 
-  return configs.reduce((total, config) => {
-    const base = product.discountedMRP;
-    const adjustment = getAdjustment(config);
-    const quantity = config.quantity || 1;
+    return configs.reduce((total, config) => {
+      const base = product.discountedMRP;
+      const adjustment = getAdjustment(config);
+      const quantity = config.quantity || 1;
 
-    return total + (base + adjustment) * quantity;
-  }, 0);
-};
+      return total + (base + adjustment) * quantity;
+    }, 0);
+  };
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -260,8 +256,8 @@ const getTotalPrice = () => {
                   ₹{product.discountedMRP}
                 </p>
                 <p className="text-lg font-semibold text-gray-800">
-  Total Price: ₹{getTotalPrice()}
-</p>
+                  Total Price: ₹{getTotalPrice()}
+                </p>
 
                 {/* Original Price */}
                 {product.originalPrice && (
@@ -389,10 +385,10 @@ const getTotalPrice = () => {
                         </button>
                       </div>
                       <p className="text-sm text-gray-600">
-  Price: ₹
-  {(product.discountedMRP + getAdjustment(config)) *
-    (config.quantity || 1)}
-</p>
+                        Price: ₹
+                        {(product.discountedMRP + getAdjustment(config)) *
+                          (config.quantity || 1)}
+                      </p>
 
                       {product.customizations?.map((field) => (
                         <div key={field.id}>
@@ -729,14 +725,14 @@ const getTotalPrice = () => {
                 image: media[0]?.url,
               });
               addToCart(
-  {
-    ...product,
-    price: product.discountedMRP, // 🔥 FIX
-    image: media[0]?.url || "",
-    customizations: product.customizations // 🔥 IMPORTANT
-  },
-  formattedConfigs
-);
+                {
+                  ...product,
+                  price: product.discountedMRP, // 🔥 FIX
+                  image: media[0]?.url || "",
+                  customizations: product.customizations, // 🔥 IMPORTANT
+                },
+                formattedConfigs,
+              );
             }}
             className="bg-black text-white py-3 flex-1 rounded"
           >
@@ -753,13 +749,13 @@ const getTotalPrice = () => {
           {/* MODAL CONTAINER */}
           <div
             className="
-  bg-white w-full 
-  max-h-[calc(100vh-80px)] flex flex-col lg:h-auto 
-  lg:max-w-3xl 
-  rounded-t-2xl lg:rounded-xl 
-  p-5 relative 
-  overflow-visible
-"
+              bg-white w-full 
+              max-h-[calc(100vh-80px)] flex flex-col lg:h-auto 
+              lg:max-w-3xl 
+              rounded-t-2xl lg:rounded-xl 
+              p-5 relative 
+              overflow-visible
+            "
           >
             {/* DRAG HANDLE (mobile premium feel) */}
             <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3 lg:hidden"></div>

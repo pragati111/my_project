@@ -15,26 +15,26 @@ export const useCart = () => {
   const items = useSelector((state) => state.cart.items);
 
   const getAdjustment = (product, config) => {
-  let extra = 0;
+    let extra = 0;
 
-  product.customizations?.forEach((field) => {
-    const selected = config[field.label];
+    product.customizations?.forEach((field) => {
+      const selected = config[field.label];
 
-    if (!selected) return;
+      if (!selected) return;
 
-    if (Array.isArray(selected)) {
-      selected.forEach((val) => {
-        const opt = field.options?.find((o) => o.label === val);
+      if (Array.isArray(selected)) {
+        selected.forEach((val) => {
+          const opt = field.options?.find((o) => o.label === val);
+          extra += opt?.priceAdjustment || 0;
+        });
+      } else {
+        const opt = field.options?.find((o) => o.label === selected);
         extra += opt?.priceAdjustment || 0;
-      });
-    } else {
-      const opt = field.options?.find((o) => o.label === selected);
-      extra += opt?.priceAdjustment || 0;
-    }
-  });
+      }
+    });
 
-  return extra;
-};
+    return extra;
+  };
 
   return {
     cart: items,
@@ -126,18 +126,17 @@ export const useCart = () => {
         0,
       ),
     getTotalPrice: () =>
-  items.reduce((total, product) => {
-    return (
-      total +
-      product.designs.reduce((sum, d) => {
-        const adjustment = getAdjustment(product, d.config);
+      items.reduce((total, product) => {
         return (
-          sum +
-          (Number(product.price) + adjustment) *
-            Number(d.quantity || 0)
+          total +
+          product.designs.reduce((sum, d) => {
+            const adjustment = getAdjustment(product, d.config);
+            return (
+              sum +
+              (Number(product.price) + adjustment) * Number(d.quantity || 0)
+            );
+          }, 0)
         );
-      }, 0)
-    );
-  }, 0),
+      }, 0),
   };
 };
