@@ -238,50 +238,60 @@ export default function ProductDisplay() {
               </p>
 
               {/* OFFERS SECTION */}
-              <h3 className="text-lg  font-semibold">
-                All Offers
-              </h3>
+              <h3 className="text-lg  font-semibold">All Offers</h3>
               <div className="w-full overflow-x-auto no-scrollbar">
-                
-                <div className="flex gap-3">
+                <div className="flex gap-4 p-2">
                   {(activeOffers.length > 3
                     ? activeOffers.slice(0, 2)
                     : activeOffers
                   ).map((offer, i) => (
                     <div
                       key={offer._id}
-                      className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-xl px-3 py-4 text-center bg-[#eaf7ef] border border-green-300 shadow-md my-3 mx-2 first:ml-1"
+                      className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2 first:ml-1"
                     >
-                     
+                      {/* Subtle decorative gradient line at the top */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
 
                       {/* TITLE */}
-                      <p className="mt-2 text-gray-800 text-sm font-medium truncate">
+                      <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
                         {offer.title}
                       </p>
 
                       {/* DIVIDER */}
-                      <div className="my-2 h-[1px] bg-green-200 w-[80%] mx-auto"></div>
+                      <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
 
                       {/* DISCOUNT */}
                       {offer.discountPercent > 0 && (
-                        <p className="text-gray-600 text-sm font-semibold">
+                        <p className="text-indigo-600 text-base font-black">
                           Get {offer.discountPercent}% Off
                         </p>
                       )}
 
-                      {/* CODE */}
-                      <p className="mt-1 text-xs text-center">
-                        <span className="block text-green-600 font-bold">
-                          Code:
+                      {/* CODE & VALIDITY */}
+                      <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2">
+                        <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
+                          Promo Code
                         </span>
-
-                        <span className="block text-gray-700 font-medium uppercase">
+                        <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
                           {offer.code}
                         </span>
 
                         {offer.expiryDate && (
-                          <span className="block text-[11px] text-gray-500 mt-1">
-                            Offer Valid till:{" "}
+                          <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2}
+                              stroke="currentColor"
+                              className="w-3.5 h-3.5 text-indigo-500"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 12h.008v.008H9.75V12Zm0 2.25h.008v.008H9.75V14.25Zm0 2.25h.008v.008H9.75v-.008ZM7.5 12h.008v.008H7.5V12Zm0 2.25h.008v.008H7.5V14.25Z"
+                              />
+                            </svg>
                             {new Date(offer.expiryDate).toLocaleDateString(
                               "en-IN",
                               {
@@ -292,20 +302,20 @@ export default function ProductDisplay() {
                             )}
                           </span>
                         )}
-                      </p>
+                      </div>
                     </div>
                   ))}
 
-                  {/* ✅ VIEW MORE CARD (OUTSIDE MAP) */}
+                  {/* ✅ VIEW MORE CARD */}
                   {activeOffers.length > 3 && (
                     <div
                       onClick={() => setShowAllOffers(true)}
-                      className="flex-shrink-0 flex items-center justify-center cursor-pointer
-           w-[220px] sm:w-[200px]
-           rounded-xl border-2 border-dashed border-green-300
-           text-green-600 font-semibold mx-2 my-3 px-3 py-4 text-center"
+                      className="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer w-[220px] sm:w-[200px] rounded-2xl border-2 border-dashed border-indigo-300 bg-white/40 hover:bg-white/70 text-indigo-600 font-bold mx-2 my-3 px-4 py-6 text-center transition-all duration-300 hover:border-indigo-400"
                     >
-                      View More →
+                      <div className="w-10 h-10 mb-3 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
+                        +
+                      </div>
+                      <span>View More →</span>
                     </div>
                   )}
                 </div>
@@ -686,86 +696,102 @@ export default function ProductDisplay() {
         </div>
       </div>
       {showAllOffers && (
-  <div className="fixed inset-0 z-50 bg-black/50 flex items-end lg:items-center justify-center">
-
-    {/* MODAL CONTAINER */}
-    <div className="
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end lg:items-center justify-center">
+          {/* MODAL CONTAINER */}
+          <div
+            className="
   bg-white w-full 
   max-h-[calc(100vh-80px)] flex flex-col lg:h-auto 
   lg:max-w-3xl 
   rounded-t-2xl lg:rounded-xl 
   p-5 relative 
   overflow-visible
-">
+"
+          >
+            {/* DRAG HANDLE (mobile premium feel) */}
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3 lg:hidden"></div>
 
-      {/* DRAG HANDLE (mobile premium feel) */}
-      <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-3 lg:hidden"></div>
-
-      {/* CLOSE BUTTON */}
-      <button
-        onClick={() => setShowAllOffers(false)}
-        className="absolute top-3 right-3 text-lg font-bold"
-      >
-        ✕
-      </button>
-
-      <h2 className="text-lg font-semibold mb-4 text-center lg:text-left">
-        All Offers
-      </h2>
-
-      {/* SCROLL AREA */}
-      <div className="overflow-y-auto h-[75vh] lg:h-auto pr-1 no-scrollbar">
-
-        {/* MOBILE = SINGLE COLUMN */}
-        {/* DESKTOP = GRID */}
-        <div className="flex flex-col gap-3 lg:grid lg:grid-cols-3">
-
-          {activeOffers.map((offer, i) => (
-            <div
-              key={offer._id}
-              className="relative rounded-xl px-3 py-4 text-center
-                         bg-[#eaf7ef] border border-green-300 shadow-md"
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={() => setShowAllOffers(false)}
+              className="absolute top-3 right-3 text-lg font-bold"
             >
+              ✕
+            </button>
 
-              {/* TITLE */}
-              <p className="mt-2 text-gray-800 text-sm font-medium">
-                {offer.title}
-              </p>
+            <h2 className="text-lg font-semibold mb-4 text-center lg:text-left">
+              All Offers
+            </h2>
 
-              <div className="my-2 h-[1px] bg-green-200 w-[80%] mx-auto"></div>
+            <div className="overflow-y-auto h-[75vh] lg:h-auto pr-1 pb-8 no-scrollbar flex justify-center lg:block">
+              <div className="flex flex-col items-center gap-3 sm:flex-row sm:overflow-x-auto sm:justify-start lg:grid lg:grid-cols-3 no-scrollbar w-full max-w-lg lg:max-w-none px-2 pb-4">
+                {activeOffers.map((offer, i) => (
+                  <div
+                    key={offer._id}
+                    className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2"
+                  >
+                    {/* Subtle decorative gradient line at the top */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
 
-              {offer.discountPercent > 0 && (
-                <p className="text-gray-600 text-sm font-semibold">
-                  Get {offer.discountPercent}% Off
-                </p>
-              )}
+                    {/* TITLE */}
+                    <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
+                      {offer.title}
+                    </p>
 
-              <p className="mt-1 text-xs text-center">
-                <span className="block text-green-600 font-bold">Code:</span>
+                    {/* DIVIDER */}
+                    <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
 
-                <span className="block text-gray-700 font-medium uppercase">
-                  {offer.code}
-                </span>
+                    {/* DISCOUNT */}
+                    {offer.discountPercent > 0 && (
+                      <p className="text-indigo-600 text-base font-black">
+                        Get {offer.discountPercent}% Off
+                      </p>
+                    )}
 
-                {offer.expiryDate && (
-                  <span className="block text-[11px] text-gray-500 mt-1">
-                    Offer Valid till{" "}
-                    {new Date(offer.expiryDate).toLocaleDateString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
-                )}
-              </p>
+                    {/* CODE & VALIDITY CONTAINER */}
+                    <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2 mb-10">
+                      <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
+                        Promo Code
+                      </span>
+
+                      <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
+                        {offer.code}
+                      </span>
+
+                      {offer.expiryDate && (
+                        <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-3.5 h-3.5 text-indigo-500"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 12h.008v.008H9.75V12Zm0 2.25h.008v.008H9.75V14.25Zm0 2.25h.008v.008H9.75v-.008ZM7.5 12h.008v.008H7.5V12Zm0 2.25h.008v.008H7.5V14.25Z"
+                            />
+                          </svg>
+                          {new Date(offer.expiryDate).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 }
