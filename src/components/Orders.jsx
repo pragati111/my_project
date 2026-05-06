@@ -473,40 +473,46 @@ export default function Orders() {
                 {/* CUSTOMIZATION SECTION */}
                 {item.designs?.map((d, i) => (
                   <div key={i} className="mt-3 border-t pt-3 text-xs space-y-2">
-                    {Object.entries(d.config).map(([key, val]) => {
-                      // 👉 IMAGE CASE
-                      if (typeof val === "string" && val.startsWith("http")) {
-                        return (
-                          <div key={key}>
-                            <p className="text-gray-500 mb-1">{key}</p>
-                            <img
-                              src={val}
-                              className="w-20 h-20 object-cover rounded border"
-                            />
-                          </div>
-                        );
-                      }
+                    <p>
+                      <span className="text-gray-500">Quantity:</span>{" "}
+                      <span className="font-medium">{d.quantity}</span>
+                    </p>
+                    {Object.entries(d.config)
+                      .filter(([key]) => key !== "quantity") // ❌ remove inner quantity
+                      .map(([key, val]) => {
+                        // 👉 IMAGE CASE
+                        if (typeof val === "string" && val.startsWith("http")) {
+                          return (
+                            <div key={key}>
+                              <p className="text-gray-500 mb-1">{key}</p>
+                              <img
+                                src={val}
+                                className="w-20 h-20 object-cover rounded border"
+                              />
+                            </div>
+                          );
+                        }
 
-                      // 👉 ARRAY CASE
-                      if (Array.isArray(val)) {
+                        // 👉 ARRAY CASE
+                        if (Array.isArray(val)) {
+                          return (
+                            <p key={key}>
+                              <span className="text-gray-500">{key}:</span>{" "}
+                              <span className="font-medium">
+                                {val.join(", ")}
+                              </span>
+                            </p>
+                          );
+                        }
+
+                        // 👉 NORMAL TEXT
                         return (
                           <p key={key}>
                             <span className="text-gray-500">{key}:</span>{" "}
-                            <span className="font-medium">
-                              {val.join(", ")}
-                            </span>
+                            <span className="font-medium">{String(val)}</span>
                           </p>
                         );
-                      }
-
-                      // 👉 NORMAL TEXT
-                      return (
-                        <p key={key}>
-                          <span className="text-gray-500">{key}:</span>{" "}
-                          <span className="font-medium">{String(val)}</span>
-                        </p>
-                      );
-                    })}
+                      })}
                   </div>
                 ))}
               </div>

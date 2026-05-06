@@ -22,6 +22,28 @@ export default function Cart() {
   const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate();
 
+  const getAdjustment = (product, config) => {
+  let extra = 0;
+
+  product.customizations?.forEach((field) => {
+    const selected = config[field.label];
+
+    if (!selected) return;
+
+    if (Array.isArray(selected)) {
+      selected.forEach((val) => {
+        const opt = field.options?.find((o) => o.label === val);
+        extra += opt?.priceAdjustment || 0;
+      });
+    } else {
+      const opt = field.options?.find((o) => o.label === selected);
+      extra += opt?.priceAdjustment || 0;
+    }
+  });
+
+  return extra;
+};
+
   const selected =
     addresses.length > 0
       ? addresses.find((addr) => addr.isDefault) || addresses[0]
