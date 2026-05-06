@@ -17,9 +17,17 @@ export default function ProductDisplay() {
 
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
+  const [appliedOffers, setAppliedOffers] = useState([]);
 
   const getPreviewSrc = (value) =>
     typeof value === "string" ? value : URL.createObjectURL(value);
+
+  const handleApplyOffer = (offer) => {
+  setAppliedOffers((prev) => {
+    if (prev.find(o => o._id === offer._id)) return prev;
+    return [...prev, offer];
+  });
+};
 
   const getAdjustment = (config) => {
     let extra = 0;
@@ -54,7 +62,15 @@ export default function ProductDisplay() {
       const adjustment = getAdjustment(config);
       const quantity = config.quantity || 1;
 
-      return total + (base + adjustment) * quantity;
+      let price = base + adjustment;
+
+appliedOffers.forEach((offer) => {
+  if (offer.discountPercent) {
+    price = price - (price * offer.discountPercent) / 100;
+  }
+});
+
+return total + price * quantity;
     }, 0);
   };
 
@@ -285,68 +301,84 @@ export default function ProductDisplay() {
                   {(activeOffers.length > 3
                     ? activeOffers.slice(0, 2)
                     : activeOffers
-                  ).map((offer, i) => (
-                    <div
-                      key={offer._id}
-                      className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2 first:ml-1"
-                    >
-                      {/* Subtle decorative gradient line at the top */}
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
+                  ).map((offer) => {
+                    const isApplied = appliedOffers.some(
+                      (o) => o._id === offer._id,
+                    );
 
-                      {/* TITLE */}
-                      <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
-                        {offer.title}
-                      </p>
+                    return (
+                      <div
+                        key={offer._id}
+                        onClick={() => !isApplied && handleApplyOffer(offer)}
+                        className={`relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2 first:ml-1 cursor-pointer 
+        ${isApplied ? "opacity-50 pointer-events-none" : ""}
+      `}
+                      >
+                        {/* TOP LINE */}
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
 
-                      {/* DIVIDER */}
-                      <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
-
-                      {/* DISCOUNT */}
-                      {offer.discountPercent > 0 && (
-                        <p className="text-indigo-600 text-base font-black">
-                          Get {offer.discountPercent}% Off
-                        </p>
-                      )}
-
-                      {/* CODE & VALIDITY */}
-                      <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2">
-                        <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
-                          Promo Code
-                        </span>
-                        <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
-                          {offer.code}
-                        </span>
-
-                        {offer.expiryDate && (
-                          <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={2}
-                              stroke="currentColor"
-                              className="w-3.5 h-3.5 text-indigo-500"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 12h.008v.008H9.75V12Zm0 2.25h.008v.008H9.75V14.25Zm0 2.25h.008v.008H9.75v-.008ZM7.5 12h.008v.008H7.5V12Zm0 2.25h.008v.008H7.5V14.25Z"
-                              />
-                            </svg>
-                            Valid till--
-                            {new Date(offer.expiryDate).toLocaleDateString(
-                              "en-IN",
-                              {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              },
-                            )}
-                          </span>
+                        {/* MESSAGE */}
+                        {isApplied && (
+                          <p className="text-black text-xs mt-2 font-semibold">
+                            Offer applied. Check the Cart to see it
+                          </p>
                         )}
+
+                        {/* TITLE */}
+                        <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
+                          {offer.title}
+                        </p>
+
+                        {/* DIVIDER */}
+                        <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
+
+                        {/* DISCOUNT */}
+                        {offer.discountPercent > 0 && (
+                          <p className="text-indigo-600 text-base font-black">
+                            Get {offer.discountPercent}% Off
+                          </p>
+                        )}
+
+                        {/* CODE & VALIDITY */}
+                        <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2">
+                          <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
+                            Promo Code
+                          </span>
+                          <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
+                            {offer.code}
+                          </span>
+
+                          {offer.expiryDate && (
+                            <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-3.5 h-3.5 text-indigo-500"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 12h.008v.008H9.75V12Zm0 2.25h.008v.008H9.75V14.25Zm0 2.25h.008v.008H9.75v-.008ZM7.5 12h.008v.008H7.5V12Zm0 2.25h.008v.008H7.5V14.25Z"
+                                />
+                              </svg>
+                              Valid till--
+                              {new Date(offer.expiryDate).toLocaleDateString(
+                                "en-IN",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
 
                   {/* ✅ VIEW MORE CARD */}
                   {activeOffers.length > 3 && (
@@ -630,12 +662,15 @@ export default function ProductDisplay() {
                       image: media[0]?.url,
                     });
                     addToCart(
-                      {
-                        ...product,
-                        image: media[0]?.url || "", // ✅ ADD THIS
-                      },
-                      formattedConfigs,
-                    );
+  {
+    ...product,
+    price: product.discountedMRP,   // ✅ FIX
+    image: media[0]?.url || "",
+    customizations: product.customizations,
+  },
+  formattedConfigs,
+  appliedOffers,
+);
                   }}
                   className="bg-black text-white px-6 py-3 w-full"
                 >
@@ -732,6 +767,7 @@ export default function ProductDisplay() {
                   customizations: product.customizations, // 🔥 IMPORTANT
                 },
                 formattedConfigs,
+                appliedOffers, // 🔥 ADD THIS
               );
             }}
             className="bg-black text-white py-3 flex-1 rounded"

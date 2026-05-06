@@ -38,9 +38,9 @@ export const useCart = () => {
 
   return {
     cart: items,
-    addToCart: async (product, configs) => {
+    addToCart: async (product, configs,offers = []) => {
       // 1️⃣ Redux update (instant UI)
-      dispatch(addToCart(product, configs));
+      dispatch(addToCart(product, configs, offers));
 
       // 2️⃣ Backend call
       if (!user?.id) return;
@@ -55,6 +55,7 @@ export const useCart = () => {
               quantity: c.quantity || 1,
               config: c.config ? c.config : c,
             })),
+            offers: offers
           },
           {
             headers: {
@@ -126,17 +127,26 @@ export const useCart = () => {
         0,
       ),
     getTotalPrice: () =>
-      items.reduce((total, product) => {
-        return (
-          total +
-          product.designs.reduce((sum, d) => {
-            const adjustment = getAdjustment(product, d.config);
-            return (
-              sum +
-              (Number(product.price) + adjustment) * Number(d.quantity || 0)
-            );
-          }, 0)
-        );
-      }, 0),
+  items.reduce((total, product) => {
+    return (
+      total +
+      product.designs.reduce((sum, d) => {
+        const adjustment = getAdjustment(product, d.config);
+
+        // 🔥 STEP 1: base price
+        let price = Number(product.price) + adjustment;
+
+        // 🔥 STEP 2: apply offers (FIXED ✅)
+        (d.offers || []).forEach((offer) => {
+          if (offer.discountPercent) {
+            price = price - (price * offer.discountPercent) / 100;
+          }
+        });
+
+        // 🔥 STEP 3: multiply by quantity
+        return sum + price * Number(d.quantity || 0);
+      }, 0)
+    );
+  }, 0),
   };
 };

@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { setCart } from "../redux/cartActions";
 import axios from "axios";
 
-
 const API = "https://my-project-backend-ee4t.onrender.com";
 
 export default function Cart() {
@@ -23,26 +22,26 @@ export default function Cart() {
   const navigate = useNavigate();
 
   const getAdjustment = (product, config) => {
-  let extra = 0;
+    let extra = 0;
 
-  product.customizations?.forEach((field) => {
-    const selected = config[field.label];
+    product.customizations?.forEach((field) => {
+      const selected = config[field.label];
 
-    if (!selected) return;
+      if (!selected) return;
 
-    if (Array.isArray(selected)) {
-      selected.forEach((val) => {
-        const opt = field.options?.find((o) => o.label === val);
+      if (Array.isArray(selected)) {
+        selected.forEach((val) => {
+          const opt = field.options?.find((o) => o.label === val);
+          extra += opt?.priceAdjustment || 0;
+        });
+      } else {
+        const opt = field.options?.find((o) => o.label === selected);
         extra += opt?.priceAdjustment || 0;
-      });
-    } else {
-      const opt = field.options?.find((o) => o.label === selected);
-      extra += opt?.priceAdjustment || 0;
-    }
-  });
+      }
+    });
 
-  return extra;
-};
+    return extra;
+  };
 
   const selected =
     addresses.length > 0
@@ -170,17 +169,18 @@ export default function Cart() {
         const backendItems = res.data.items || [];
 
         const formatted = backendItems.map((item) => ({
-  productId: item.productId.toString(),
-  name: item.name,
-  price: item.price,
-  image: item.image || item.designs?.[0]?.config?.__productImage || "",
-  customizations: item.customizations || [], // 🔥 ADD THIS
-  designs: (item.designs || []).map((d) => ({
-    _id: d._id, // ✅ ADD THIS
-    config: d.config || {},
-    quantity: d.quantity || 1,
-  })),
-}));
+          productId: item.productId.toString(),
+          name: item.name,
+          price: item.price,
+          image: item.image || item.designs?.[0]?.config?.__productImage || "",
+          customizations: item.customizations || [], // 🔥 ADD THIS
+          designs: (item.designs || []).map((d) => ({
+            _id: d._id, // ✅ ADD THIS
+            config: d.config || {},
+            quantity: d.quantity || 1,
+            offers: d.offers || [], // 🔥 ADD THIS
+          })),
+        }));
 
         dispatch(setCart(formatted));
       } catch (err) {
@@ -274,7 +274,11 @@ export default function Cart() {
                     )}
 
                     <img
-                      src={productImages[product.productId] || product.image || "/fallback.png"}
+                      src={
+                        productImages[product.productId] ||
+                        product.image ||
+                        "/fallback.png"
+                      }
                       className="w-full h-full object-contain"
                       onLoad={(e) => {
                         e.target.style.opacity = "1";
@@ -282,7 +286,6 @@ export default function Cart() {
                       style={{ opacity: 0, transition: "opacity 0.3s ease" }}
                     />
                   </div>
-
                   {/* DETAILS */}
                   <div className="text-sm">
                     <p className="font-semibold">{product.name}</p>
@@ -327,7 +330,6 @@ export default function Cart() {
                       </div>
                     )}
                   </div>
-
                   {/* QUANTITY CONTROL */}
                   <div className="flex items-center gap-2">
                     <button
@@ -351,14 +353,16 @@ export default function Cart() {
                       +
                     </button>
                   </div>
-
                   {/* PRICE */}
-                  ₹{product.price + getAdjustment(product, d.config)}
-
+                  <span>
+  ₹{product.price + getAdjustment(product, d.config)}
+</span>
                   {/* TOTAL + REMOVE */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">
-                      ₹{(product.price + getAdjustment(product, d.config)) * d.quantity}
+                      ₹
+                      {(product.price + getAdjustment(product, d.config)) *
+                        d.quantity}
                     </span>
 
                     <button
@@ -374,6 +378,23 @@ export default function Cart() {
           </div>
 
           {/* RIGHT SIDE - SUMMARY */}
+          {cart.some((p) =>
+  p.designs.some((d) => d.offers?.length > 0)
+) && (
+  <div className="mb-4 bg-green-50 p-4 rounded">
+    <p className="font-semibold text-sm mb-2">Applied Offers</p>
+
+    {cart.map((product) =>
+      product.designs.map((d) =>
+        d.offers?.map((offer) => (
+          <div key={offer._id} className="text-xs text-green-700">
+            {offer.title} ({offer.code})
+          </div>
+        ))
+      )
+    )}
+  </div>
+)}
           <div className="w-full lg:w-[300px] bg-white p-6 rounded shadow h-fit">
             <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
             {addresses.length > 0 ? (

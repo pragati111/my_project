@@ -13,7 +13,7 @@ const initialState = {
 export const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART: {
-      const { product, configs } = action.payload;
+      const { product, configs, offers } = action.payload;
       const productId = product._id || product.id; // 🔥 FIX
 
       const existing = state.items.find((p) => p.productId === productId);
@@ -25,9 +25,16 @@ export const cartReducer = (state = initialState, action) => {
             p.productId === productId
               ? {
                   ...p,
-                  designs: [...p.designs, ...configs].filter(
+                  designs: [
+  ...p.designs,
+  ...configs.map((c) => ({
+    ...c,
+    offers: offers || [],
+  })),
+].filter(
   (d, i, arr) => arr.findIndex(x => x._id === d._id) === i
 ),
+                  offers: [...(p.offers || []), ...offers], // 🔥 ADD THIS
                 }
               : p,
           ),
@@ -44,7 +51,10 @@ export const cartReducer = (state = initialState, action) => {
             price: product.price,
             image: product.image || product.images?.[0] || "",
             customizations: product.customizations || [], // 🔥 ADD THIS
-            designs: configs,
+            designs: configs.map((c) => ({
+  ...c,
+  offers: offers || [],   // ✅ attach here
+})),
           },
         ],
       };

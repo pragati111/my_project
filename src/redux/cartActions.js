@@ -5,9 +5,9 @@ export const CLEAR_CART = "CLEAR_CART";
 export const UPDATE_QUANTITY = "UPDATE_QUANTITY";
 export const SET_CART = "SET_CART";
 
-export const addToCart = (product, configs) => ({
+export const addToCart = (product, configs, offers) => ({
   type: ADD_TO_CART,
-  payload: { product, configs }
+  payload: { product, configs, offers }
 });
 
 export const removeFromCart = (productId, designId) => ({
