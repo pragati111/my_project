@@ -233,7 +233,19 @@ export default function Cart() {
 
     if (token) fetchAddresses();
   }, [token]);
+  const uniqueOffers = [];
 
+  {
+    cart.forEach((product) => {
+      product.designs.forEach((d) => {
+        (d.offers || []).forEach((offer) => {
+          if (!uniqueOffers.find((o) => o._id === offer._id)) {
+            uniqueOffers.push(offer);
+          }
+        });
+      });
+    });
+  }
   return (
     <>
       <TopHeader />
@@ -355,8 +367,8 @@ export default function Cart() {
                   </div>
                   {/* PRICE */}
                   <span>
-  ₹{product.price + getAdjustment(product, d.config)}
-</span>
+                    ₹{product.price + getAdjustment(product, d.config)}
+                  </span>
                   {/* TOTAL + REMOVE */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">
@@ -378,23 +390,19 @@ export default function Cart() {
           </div>
 
           {/* RIGHT SIDE - SUMMARY */}
-          {cart.some((p) =>
-  p.designs.some((d) => d.offers?.length > 0)
-) && (
-  <div className="mb-4 bg-green-50 p-4 rounded">
-    <p className="font-semibold text-sm mb-2">Applied Offers</p>
 
-    {cart.map((product) =>
-      product.designs.map((d) =>
-        d.offers?.map((offer) => (
-          <div key={offer._id} className="text-xs text-green-700">
-            {offer.title} ({offer.code})
-          </div>
-        ))
-      )
-    )}
-  </div>
-)}
+          {uniqueOffers.length > 0 && (
+            <div className="mb-4 bg-green-50 p-4 rounded">
+              <p className="font-semibold text-sm mb-2">Applied Offers</p>
+
+              {uniqueOffers.map((offer) => (
+                <div key={offer._id} className="text-xs text-green-700">
+                  {offer.title} ({offer.code} - {offer.discountPercent}% off)
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="w-full lg:w-[300px] bg-white p-6 rounded shadow h-fit">
             <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
             {addresses.length > 0 ? (
