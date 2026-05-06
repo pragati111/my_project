@@ -25,7 +25,9 @@ export const cartReducer = (state = initialState, action) => {
             p.productId === productId
               ? {
                   ...p,
-                  designs: [...p.designs, ...configs],
+                  designs: [...p.designs, ...configs].filter(
+  (d, i, arr) => arr.findIndex(x => x._id === d._id) === i
+),
                 }
               : p,
           ),
@@ -49,42 +51,43 @@ export const cartReducer = (state = initialState, action) => {
     }
 
     case REMOVE_FROM_CART: {
-      const payload = action.payload || {};
-      const productId = payload.productId ?? payload;
-      const designIndex = payload.designIndex;
+  const { productId, designId } = action.payload;
 
-      return {
-        ...state,
-        items: state.items
-          .map((p) =>
-            p.productId === productId
-              ? {
-                  ...p,
-                  designs: p.designs.filter((_, idx) => idx !== designIndex),
-                }
-              : p,
-          )
-          .filter((p) => p.designs.length > 0),
-      };
-    }
+  return {
+    ...state,
+    items: state.items
+      .map((p) =>
+        p.productId === productId
+          ? {
+              ...p,
+              designs: p.designs.filter((d) => d._id !== designId),
+            }
+          : p
+      )
+      .filter((p) => p.designs.length > 0),
+  };
+}
 
     case UPDATE_QUANTITY: {
-      const { productId, designIndex, quantity } = action.payload;
-      const nextQuantity = Math.max(1, Number(quantity) || 1);
-      return {
-        ...state,
-        items: state.items.map((p) =>
-          p.productId === productId
-            ? {
-                ...p,
-                designs: p.designs.map((d, idx) =>
-                  idx === designIndex ? { ...d, quantity: nextQuantity } : d,
-                ),
-              }
-            : p,
-        ),
-      };
-    }
+  const { productId, designId, quantity } = action.payload;
+  const nextQuantity = Math.max(1, Number(quantity) || 1);
+
+  return {
+    ...state,
+    items: state.items.map((p) =>
+      p.productId === productId
+        ? {
+            ...p,
+            designs: p.designs.map((d) =>
+              d._id === designId
+                ? { ...d, quantity: nextQuantity }
+                : d
+            ),
+          }
+        : p
+    ),
+  };
+}
     case SET_CART:
       return {
         ...state,

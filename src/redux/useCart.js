@@ -66,9 +66,9 @@ export const useCart = () => {
         console.error("Backend add to cart failed", err);
       }
     },
-    removeFromCart: async (productId, designIndex) => {
+    removeFromCart: async (productId, designId) => {
       // 1️⃣ Redux update (instant UI)
-      dispatch(removeFromCart(productId, designIndex));
+      dispatch(removeFromCart(productId, designId));
 
       // 2️⃣ Backend call
       if (!user?.id) return;
@@ -79,7 +79,7 @@ export const useCart = () => {
           {
             userId: user.id,
             productId,
-            designIndex,
+            designId,
           },
           {
             headers: {
@@ -91,9 +91,9 @@ export const useCart = () => {
         console.error("Backend remove failed", err);
       }
     },
-    updateQuantity: async (productId, designIndex, quantity) => {
+    updateQuantity: async (productId, designId, quantity) => {
       // 1️⃣ Redux update (instant UI)
-      dispatch(updateQuantity(productId, designIndex, quantity));
+      dispatch(updateQuantity(productId, designId, quantity));
 
       // 2️⃣ Backend call
       if (!user?.id) return;
@@ -104,7 +104,7 @@ export const useCart = () => {
           {
             userId: user.id,
             productId,
-            designIndex,
+            designId,
             quantity,
           },
           {
