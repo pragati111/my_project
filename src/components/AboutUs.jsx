@@ -53,7 +53,7 @@ export default function AboutUs() {
   <>
     <TopHeader />
 
-    <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[80px] bg-[#f8fafc] min-h-screen overflow-hidden">
+    <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[20px] bg-[#f8fafc] min-h-screen overflow-hidden">
       
       <Sidebar />
 
