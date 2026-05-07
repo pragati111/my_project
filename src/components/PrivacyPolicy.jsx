@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TopHeader from "../components/TopHeader";
 import Sidebar from "../components/SideBar";
 import BottomBar from "../components/BottomBar";
 import PremiumFooter from "../components/PremiumFooter";
-
+import { useNavigate } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
 // 👉 Add this import at the top of your global CSS or index.html for premium font:
 // <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 export default function PrivacyPolicy() {
+  const navigate = useNavigate();
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   return (
+    
     <>
     <TopHeader />
-    <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[120px] bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#fdf2f8] min-h-screen font-[Inter]">
+    <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[60px] bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#fdf2f8] min-h-screen font-[Inter]">
       {/* Sidebar */}
       <Sidebar />
       
@@ -23,12 +29,15 @@ export default function PrivacyPolicy() {
         <main className="px-6 md:px-12 py-10 max-w-6xl mx-auto w-full">
           {/* Header */}
           <div className="mb-10">
-            <button
-              onClick={() => window.history.back()}
-              className="text-sm text-blue-600 hover:text-blue-800 transition mb-4"
-            >
-              ← Back
-            </button>
+            <div className="flex justify-start relative z-10 mb-5">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition font-medium"
+              >
+                <ChevronLeft size={20} />
+                Back
+              </button>
+            </div>
 
             <h1 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-tight font-[Playfair_Display]">
               Privacy Policy

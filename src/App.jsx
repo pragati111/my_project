@@ -15,6 +15,7 @@ import SubcategoryDisplay from "./components/SubcategoryDisplay"; // ✅ added
 import Orders from "./components/Orders";
 import { Toaster } from "react-hot-toast";
 import FAQPage from "./components/FAQPage";
+import AboutUs from "./components/AboutUs";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/faqs" element={<FAQPage />} />
+          <Route path="/about" element={<AboutUs />} />
         </Routes>
       </div>
 
@@ -51,6 +53,7 @@ function App() {
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/faqs" element={<FAQPage />} />
+          <Route path="/about" element={<AboutUs />} />
         </Routes>
 
         <MobileBottomNav />
