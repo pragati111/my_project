@@ -14,7 +14,7 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import SubcategoryDisplay from "./components/SubcategoryDisplay"; // ✅ added
 import Orders from "./components/Orders";
 import { Toaster } from "react-hot-toast";
-
+import FAQPage from "./components/FAQPage";
 
 
 function App() {
@@ -33,6 +33,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/faqs" element={<FAQPage />} />
         </Routes>
       </div>
 
@@ -49,6 +50,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/faqs" element={<FAQPage />} />
         </Routes>
 
         <MobileBottomNav />

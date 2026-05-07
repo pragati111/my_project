@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronLeft, Search, Languages } from "lucide-react";
 import TopHeader from "../components/TopHeader";
+import { useNavigate } from "react-router-dom";
 
 const content = {
   en: {
@@ -77,7 +78,8 @@ const FAQItem = ({ question, answer }) => {
   );
 };
 
-export default function FAQPage({ onBack }) {
+export default function FAQPage() {
+  const navigate = useNavigate();
   const [lang, setLang] = useState("en");
 
   useEffect(() => {
@@ -101,7 +103,7 @@ export default function FAQPage({ onBack }) {
   {/* Back Button - Kept at the top left for standard navigation */}
   <div className="flex justify-start relative z-10 mb-8">
     <button 
-      onClick={onBack}
+      onClick={() => navigate(-1)}
       className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition font-medium"
     >
       <ChevronLeft size={20} />
