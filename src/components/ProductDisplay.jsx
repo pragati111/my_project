@@ -23,11 +23,11 @@ export default function ProductDisplay() {
     typeof value === "string" ? value : URL.createObjectURL(value);
 
   const handleApplyOffer = (offer) => {
-  setAppliedOffers((prev) => {
-    if (prev.find(o => o._id === offer._id)) return prev;
-    return [...prev, offer];
-  });
-};
+    setAppliedOffers((prev) => {
+      if (prev.find((o) => o._id === offer._id)) return prev;
+      return [...prev, offer];
+    });
+  };
 
   const getAdjustment = (config) => {
     let extra = 0;
@@ -64,13 +64,13 @@ export default function ProductDisplay() {
 
       let price = base + adjustment;
 
-appliedOffers.forEach((offer) => {
-  if (offer.discountPercent) {
-    price = price - (price * offer.discountPercent) / 100;
-  }
-});
+      appliedOffers.forEach((offer) => {
+        if (offer.discountPercent) {
+          price = price - (price * offer.discountPercent) / 100;
+        }
+      });
 
-return total + price * quantity;
+      return total + price * quantity;
     }, 0);
   };
 
@@ -204,7 +204,7 @@ return total + price * quantity;
           <Sidebar />
         </div>
 
-        <div className="w-full lg:ml-[240px] pt-[100px] px-4 lg:px-6">
+        <div className="w-full lg:ml-[240px] pt-[100px] px-4 lg:px-6 pb-[80px] lg:pb-0">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* LEFT */}
             <div id="left-section" className="w-full lg:w-[420px]">
@@ -662,15 +662,15 @@ return total + price * quantity;
                       image: media[0]?.url,
                     });
                     addToCart(
-  {
-    ...product,
-    price: product.discountedMRP,   // ✅ FIX
-    image: media[0]?.url || "",
-    customizations: product.customizations,
-  },
-  formattedConfigs,
-  appliedOffers,
-);
+                      {
+                        ...product,
+                        price: product.discountedMRP, // ✅ FIX
+                        image: media[0]?.url || "",
+                        customizations: product.customizations,
+                      },
+                      formattedConfigs,
+                      appliedOffers,
+                    );
                   }}
                   className="bg-black text-white px-6 py-3 w-full"
                 >
@@ -684,7 +684,7 @@ return total + price * quantity;
             </div>
           </div>
           {/* PRODUCT SPECIFICATIONS */}
-          <div className="mt-8 bg-gray-50 border rounded-lg p-6">
+          <div className="mb-20 mt-8 bg-gray-50 border rounded-lg p-6">
             <h2 className="text-xl font-semibold mb-4">
               Product <span className="font-bold">Specifications</span>
             </h2>
@@ -878,6 +878,9 @@ return total + price * quantity;
           </div>
         </div>
       )}
+      <div className="hidden md:block">
+              <BottomBar />
+            </div>
     </div>
   );
 }

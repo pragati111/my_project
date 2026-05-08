@@ -75,7 +75,7 @@ export default function Sidebar() {
     <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs animate-pulse">
       
       {/* HOME */}
-      <div className="px-3 py-3 border-b bg-white">
+      <div className="mt-2 px-3 py-3 border-b bg-white">
         <div className="h-3 w-20 bg-gray-300 rounded"></div>
       </div>
 
@@ -124,7 +124,7 @@ export default function Sidebar() {
   return (
     <div className="hidden lg:block w-[240px] fixed top-[72px] left-0 h-[calc(100vh-72px)] bg-gray-100 border-r overflow-y-auto text-xs">
       <div
-        className="px-3 py-2 border-b font-medium bg-white cursor-pointer hover:bg-gray-50"
+        className="mt-2 px-3 py-2 border-b font-medium bg-white cursor-pointer hover:bg-gray-50"
         onClick={() => navigate("/")}
       >
         🏠 Home

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import TopHeader from "../components/TopHeader";
 import { motion } from "framer-motion";
+import BottomBar from "../components/BottomBar";
 
 export default function Categories() {
   const navigate = useNavigate();
@@ -140,57 +141,57 @@ export default function Categories() {
   }, [activeIndex]);
 
   if (loading) {
-  return (
-    <>
-      <TopHeader />
+    return (
+      <>
+        <TopHeader />
 
-      <div className="mt-16 md:mt-20 flex h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] bg-gray-50 overflow-hidden">
-        {/* LEFT SIDEBAR SHIMMER */}
-        <div className="w-[20%] min-w-[85px] max-w-[110px] h-full bg-white border-r border-gray-200 flex flex-col items-center py-2 space-y-3">
-          {[...Array(11)].map((_, i) => (
-            <div
-              key={i}
-              className="flex flex-col items-center space-y-1 animate-pulse"
-            >
-              <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-              <div className="w-12 h-2 bg-gray-200 rounded"></div>
-            </div>
-          ))}
-        </div>
-
-        {/* RIGHT CONTENT SHIMMER */}
-        <div className="w-[80%] p-3 space-y-6 overflow-hidden">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="animate-pulse">
-              {/* Category title line */}
-              <div className="flex items-center mb-4">
-                <div className="flex-1 h-[1px] bg-gray-200"></div>
-                <div className="mx-3 w-20 h-2 bg-gray-200 rounded"></div>
-                <div className="flex-1 h-[1px] bg-gray-200"></div>
+        <div className="mt-16 md:mt-20 flex h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] bg-gray-50 overflow-hidden">
+          {/* LEFT SIDEBAR SHIMMER */}
+          <div className="w-[20%] min-w-[85px] max-w-[110px] h-full bg-white border-r border-gray-200 flex flex-col items-center py-2 space-y-3">
+            {[...Array(11)].map((_, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center space-y-1 animate-pulse"
+              >
+                <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+                <div className="w-12 h-2 bg-gray-200 rounded"></div>
               </div>
+            ))}
+          </div>
 
-              {/* Subcategory title */}
-              <div className="w-24 h-3 bg-gray-200 rounded mb-3"></div>
+          {/* RIGHT CONTENT SHIMMER */}
+          <div className="w-[80%] p-3 space-y-6 overflow-hidden">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                {/* Category title line */}
+                <div className="flex items-center mb-4">
+                  <div className="flex-1 h-[1px] bg-gray-200"></div>
+                  <div className="mx-3 w-20 h-2 bg-gray-200 rounded"></div>
+                  <div className="flex-1 h-[1px] bg-gray-200"></div>
+                </div>
 
-              {/* GRID */}
-              <div className="grid grid-cols-3 gap-3">
-                {[...Array(6)].map((_, j) => (
-                  <div
-                    key={j}
-                    className="flex flex-col items-center animate-pulse"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-                    <div className="w-10 h-2 bg-gray-200 rounded mt-2"></div>
-                  </div>
-                ))}
+                {/* Subcategory title */}
+                <div className="w-24 h-3 bg-gray-200 rounded mb-3"></div>
+
+                {/* GRID */}
+                <div className="grid grid-cols-3 gap-3">
+                  {[...Array(6)].map((_, j) => (
+                    <div
+                      key={j}
+                      className="flex flex-col items-center animate-pulse"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+                      <div className="w-10 h-2 bg-gray-200 rounded mt-2"></div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </>
-  );
-}
+      </>
+    );
+  }
   return (
     <>
       <TopHeader />
@@ -275,7 +276,9 @@ export default function Categories() {
                       <motion.div
                         key={id}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate(`/product/${item.id || item._id}`)}
+                        onClick={() =>
+                          navigate(`/product/${item.id || item._id}`)
+                        }
                         className="flex flex-col items-center justify-start cursor-pointer"
                       >
                         {/* IMAGE */}
@@ -301,6 +304,9 @@ export default function Categories() {
             </div>
           ))}
         </div>
+      </div>
+      <div className="hidden md:block">
+        <BottomBar />
       </div>
     </>
   );
