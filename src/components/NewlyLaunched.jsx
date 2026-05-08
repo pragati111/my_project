@@ -13,6 +13,9 @@ export default function NewlyLaunched() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
+  const [priceSort, setPriceSort] = useState("");
+const [ratingSort, setRatingSort] = useState("");
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -52,6 +55,28 @@ export default function NewlyLaunched() {
 
     return "https://via.placeholder.com/400";
   };
+
+  const sortedProducts = [...products]
+  .sort((a, b) => {
+    // PRICE SORT
+    if (priceSort === "lowHigh") {
+      return (a.discountedMRP || a.price) - (b.discountedMRP || b.price);
+    }
+
+    if (priceSort === "highLow") {
+      return (b.discountedMRP || b.price) - (a.discountedMRP || a.price);
+    }
+
+    return 0;
+  })
+  .sort((a, b) => {
+    // RATING SORT
+    if (ratingSort === "highLow") {
+      return (b.rating || 0) - (a.rating || 0);
+    }
+
+    return 0;
+  });
   return (
     <div className="font-sans">
       <TopHeader />
@@ -61,22 +86,54 @@ export default function NewlyLaunched() {
 
         <div className="w-full lg:w-[calc(100%-240px)] lg:ml-[240px] pt-[90px] md:pt-[110px]">
           <div className="px-4 md:px-8 lg:px-12 pb-10">
-            {/* TITLE */}
-            <div className="mb-6">
-              <h1
-                className="text-2xl md:text-4xl font-semibold leading-tight tracking-wide 
-                bg-gradient-to-r from-[#d4af37] via-[#f5d27a] to-[#c89b3c] 
-                bg-clip-text text-transparent 
-                drop-shadow-[0_2px_6px_rgba(212,175,55,0.4)]"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                Newly Launched
-              </h1>
+            {/* TITLE + FILTERS */}
+<div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
-              <p className="mt-2 text-gray-500 text-sm md:text-base">
-                Premium Prints • Timeless Designs • Personalized Touch
-              </p>
-            </div>
+  {/* LEFT */}
+<h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
+  Newly Launched List{" "}
+  <span className="text-gray-400 font-normal text-sm sm:text-base md:text-lg">
+    ({products.length})
+  </span>
+</h1>
+
+  {/* RIGHT FILTERS */}
+  <div className="flex gap-2 overflow-x-auto no-scrollbar sm:justify-end">
+
+    {/* PRICE */}
+    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md shrink-0">
+      <span className="text-[10px] sm:text-xs text-gray-600">
+        Price:
+      </span>
+
+      <select
+        value={priceSort}
+        onChange={(e) => setPriceSort(e.target.value)}
+        className="text-[10px] sm:text-xs bg-transparent focus:outline-none"
+      >
+        <option value="">None</option>
+        <option value="lowHigh">Low → High</option>
+        <option value="highLow">High → Low</option>
+      </select>
+    </div>
+
+    {/* RATING */}
+    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md shrink-0">
+      <span className="text-[10px] sm:text-xs text-gray-600">
+        Rating:
+      </span>
+
+      <select
+        value={ratingSort}
+        onChange={(e) => setRatingSort(e.target.value)}
+        className="text-[10px] sm:text-xs bg-transparent focus:outline-none"
+      >
+        <option value="">None</option>
+        <option value="highLow">High → Low</option>
+      </select>
+    </div>
+  </div>
+</div>
 
             {/* SHIMMER */}
             {loading && (
@@ -101,7 +158,7 @@ export default function NewlyLaunched() {
             {/* PRODUCTS */}
             {!loading && (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                {products.map((product) => (
+                {sortedProducts.map((product) => (
                   <div
                     key={product._id}
                     onClick={() => navigate(`/product/${product._id}`)}
