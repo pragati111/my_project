@@ -16,6 +16,7 @@ import Orders from "./components/Orders";
 import { Toaster } from "react-hot-toast";
 import FAQPage from "./components/FAQPage";
 import AboutUs from "./components/AboutUs";
+import ContactUs from "./components/ContactUs";
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/faqs" element={<FAQPage />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
         </Routes>
       </div>
 
@@ -55,6 +57,7 @@ function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/faqs" element={<FAQPage />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
         </Routes>
 
         <MobileBottomNav />

@@ -1,6 +1,8 @@
 import React from "react";
 import ImageCarousel from "./ImageCarousel";
+import { useNavigate } from "react-router-dom";
 export default function HeroSection() {
+  const navigate = useNavigate();
   return (
     <div className="w-full flex justify-center px-3 md:px-6 lg:px-10 py-6">
       <div
@@ -43,18 +45,27 @@ export default function HeroSection() {
           </div>
 
           <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-5">
-            <button className="bg-red-500 text-white px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition">
+            <button
+              onClick={() => navigate("/categories")}
+              className="bg-red-500 text-white px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition"
+            >
               Explore Products
             </button>
 
-            <button className="bg-white/70 backdrop-blur-md text-gray-700 px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition">
+            <button
+              onClick={() => navigate("/contact")}
+              className="bg-white/70 backdrop-blur-md text-gray-700 px-4 md:px-5 py-1.5 md:py-2 rounded-full text-xs md:text-sm shadow-sm hover:scale-105 transition"
+            >
               Contact Us
             </button>
           </div>
 
           <div className="mt-5 text-xs md:text-sm text-gray-600 text-center md:text-left">
             <span className="font-medium">Fast Delivery</span>
-            <span className="ml-2 text-[10px] md:text-xs text-gray-400">
+            <span
+              onClick={() => navigate("/about")}
+              className="ml-2 text-[10px] md:text-xs text-gray-400 cursor-pointer  transition"
+            >
               Premium Quality Prints →
             </span>
           </div>
