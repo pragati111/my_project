@@ -144,7 +144,7 @@ export default function Categories() {
     <>
       <TopHeader />
 
-      <div className="mt-16 flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden">
+      <div className="mt-16 md:mt-20 flex h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] bg-gray-50 overflow-hidden">
         {/* LEFT SIDEBAR SHIMMER */}
         <div className="w-[20%] min-w-[85px] max-w-[110px] h-full bg-white border-r border-gray-200 flex flex-col items-center py-2 space-y-3">
           {[...Array(11)].map((_, i) => (
