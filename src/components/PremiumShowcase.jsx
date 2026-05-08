@@ -68,7 +68,7 @@ const CategoryStack = ({ title, subtitle, items }) => {
       </div>
 
       {/* Global CSS for the Premium Scrollbar */}
-      <style jsx>{`
+      <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }

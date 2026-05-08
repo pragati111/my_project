@@ -129,7 +129,7 @@ loop={true}
         </Swiper>
       </div>
 
-      <style jsx global>{`
+      <style>{`
         .swiper-pagination-bullet {
           width: 6px;
           height: 6px;

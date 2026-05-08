@@ -452,7 +452,10 @@ export default function ProductDisplay() {
                           {/* RADIO */}
                           {field.type === "radio" &&
                             field.options?.map((opt) => (
-                              <label key={opt.label} className="block">
+                              <label
+                                key={`${field.id}-${opt.label}`}
+                                className="block"
+                              >
                                 <input
                                   type="radio"
                                   name={`${field.id}-${index}`}
@@ -467,14 +470,19 @@ export default function ProductDisplay() {
                           {/* CHECKBOX */}
                           {field.type === "checkbox" &&
                             field.options?.map((opt) => (
-                              <label key={opt} className="block">
+                              <label
+                                key={`${field.id}-${opt.label}`}
+                                className="block"
+                              >
                                 <input
                                   type="checkbox"
                                   onChange={(e) => {
                                     const prev = config[field.label] || [];
+
                                     const updated = e.target.checked
                                       ? [...prev, opt.label]
                                       : prev.filter((o) => o !== opt.label);
+
                                     handleChange(index, field, updated);
                                   }}
                                 />{" "}
@@ -879,8 +887,8 @@ export default function ProductDisplay() {
         </div>
       )}
       <div className="hidden md:block">
-              <BottomBar />
-            </div>
+        <BottomBar />
+      </div>
     </div>
   );
 }

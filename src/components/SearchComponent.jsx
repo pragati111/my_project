@@ -12,7 +12,7 @@ export default function SearchComponent({ isMobileTrigger = false }) {
   const [allProducts, setAllProducts] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const searchRef = useRef();
 
   const getProductImage = (item) => {
@@ -55,11 +55,16 @@ export default function SearchComponent({ isMobileTrigger = false }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoadingProducts(true);
+
         const res = await fetch(API);
         const data = await res.json();
+
         setAllProducts(data?.data || []);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoadingProducts(false);
       }
     };
 
@@ -68,6 +73,7 @@ export default function SearchComponent({ isMobileTrigger = false }) {
 
   // ✅ Search logic
   const handleSearch = (value) => {
+    if (loadingProducts) return;
     const q = value.toLowerCase();
 
     if (!q.trim()) {
@@ -89,12 +95,14 @@ export default function SearchComponent({ isMobileTrigger = false }) {
 
   // ✅ Debounce
   useEffect(() => {
-    const delay = setTimeout(() => {
-      handleSearch(query);
-    }, 300);
+  if (loadingProducts) return;
 
-    return () => clearTimeout(delay);
-  }, [query]);
+  const delay = setTimeout(() => {
+    handleSearch(query);
+  }, 300);
+
+  return () => clearTimeout(delay);
+}, [query, loadingProducts]);
 
   // ✅ Close on outside click
   useEffect(() => {
@@ -151,7 +159,11 @@ export default function SearchComponent({ isMobileTrigger = false }) {
         {/* RESULTS */}
         {showResults && (
           <div className="absolute top-12 w-full bg-white shadow-xl rounded-xl max-h-80 overflow-y-auto z-50">
-            {results.length > 0 ? (
+            {loadingProducts ? (
+              <div className="p-6 text-center text-gray-400 text-sm">
+                Loading products...
+              </div>
+            ) : results.length > 0 ? (
               results.map((item) => (
                 <div
                   key={item._id}
@@ -238,45 +250,51 @@ export default function SearchComponent({ isMobileTrigger = false }) {
 
           {/* RESULTS */}
           <div className="mt-4">
-            {results.length > 0
-              ? results.map((item) => (
-                  <div
-                    key={item._id}
-                    onClick={() => {
-                      navigate(`/product/${item._id}`);
-                      setMobileOpen(false);
-                    }}
-                    className="p-3 border-b flex gap-3 cursor-pointer 
+            {loadingProducts ? (
+              <div className="text-center text-gray-400 mt-6">
+                Loading products...
+              </div>
+            ) : results.length > 0 ? (
+              results.map((item) => (
+                <div
+                  key={item._id}
+                  onClick={() => {
+                    navigate(`/product/${item._id}`);
+                    setMobileOpen(false);
+                  }}
+                  className="p-3 border-b flex gap-3 cursor-pointer 
                             hover:bg-gray-100 
                             active:bg-gray-100 active:scale-[0.98] 
                             transition"
-                  >
-                    {getProductImage(item) ? (
-                      <img
-                        src={getProductImage(item)}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-semibold ${getRandomColor(
-                          item.name,
-                        )}`}
-                      >
-                        {item.name?.[0]?.toUpperCase() || "P"}
-                      </div>
-                    )}
-
-                    <div>
-                      <p className="text-sm">{item.name}</p>
-                      <p className="text-xs text-gray-500">₹{item.price}</p>
+                >
+                  {getProductImage(item) ? (
+                    <img
+                      src={getProductImage(item)}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-semibold ${getRandomColor(
+                        item.name,
+                      )}`}
+                    >
+                      {item.name?.[0]?.toUpperCase() || "P"}
                     </div>
+                  )}
+
+                  <div>
+                    <p className="text-sm">{item.name}</p>
+                    <p className="text-xs text-gray-500">₹{item.price}</p>
                   </div>
-                ))
-              : query && (
-                  <div className="text-center text-gray-400 mt-6">
-                    No products found 😕
-                  </div>
-                )}
+                </div>
+              ))
+            ) : (
+              query && (
+                <div className="text-center text-gray-400 mt-6">
+                  No products found 😕
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
