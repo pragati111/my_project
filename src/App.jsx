@@ -26,6 +26,7 @@ function App() {
       <div className="hidden md:block">
         <Routes>
           <Route path="/" element={<DesktopHome />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/product/:id" element={<ProductDisplay />} />
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />

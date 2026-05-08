@@ -195,9 +195,9 @@ export default function Categories() {
     <>
       <TopHeader />
 
-      <div className="mt-16 flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden">
+      <div className="mt-16 md:mt-20 flex h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] bg-gray-50 overflow-hidden">
         {/* ================= LEFT SIDEBAR ================= */}
-        <div className="w-[20%] min-w-[85px] max-w-[110px] flex-shrink-0 h-full min-h-0 overflow-y-auto pb-20 bg-white border-r border-gray-200 no-scrollbar">
+        <div className="mt-0.2 w-[20%] min-w-[85px] max-w-[110px] flex-shrink-0 h-full min-h-0 overflow-y-auto pb-20 bg-white border-r border-gray-200 no-scrollbar">
           {categories.map((cat, index) => (
             <motion.div
               key={index}
@@ -238,7 +238,7 @@ export default function Categories() {
         {/* ================= RIGHT CONTENT ================= */}
         <div
           ref={containerRef}
-          className="w-[80%] h-full min-h-0 overflow-y-auto p-3 space-y-8 pb-40 custom-scrollbar"
+          className="w-[80%] h-full min-h-0 overflow-y-auto p-3 space-y-8 pb-40 no-scrollbar"
         >
           {categories.map((cat, i) => (
             <div
