@@ -10,7 +10,6 @@ const gradients = [
   "bg-gradient-to-br from-[#e6f4f1] to-[#d1e7dd]",
   "bg-gradient-to-br from-[#fff4e6] to-[#fde2c4]",
 ];
-
 // 🔥 Product Card (unchanged)
 const ProductCard = ({ img, name, onClick }) => (
   <div
@@ -154,7 +153,7 @@ const CardCluster = () => {
                 variant={2}
                 noGrid={true}
               >
-                <div className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full">
+                <div  className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full">
                   <div className="h-8 md:h-12 w-48 mx-auto bg-gray-200 animate-pulse rounded"></div>
                   <div className="mt-4 h-4 w-64 mx-auto bg-gray-200 animate-pulse rounded"></div>
                 </div>
@@ -241,26 +240,29 @@ const CardCluster = () => {
             {/* Column 2 */}
             <div className="md:col-span-6 flex flex-col gap-4">
               <CardContainer
-                className="h-64 md:h-80 flex items-center justify-center"
-                variant={2}
-                noGrid={true}
-              >
-                <div className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full">
-                  <h2
-                    className="text-2xl md:text-4xl font-semibold leading-tight tracking-wide 
-          bg-gradient-to-r from-[#d4af37] via-[#f5d27a] to-[#c89b3c] 
-          bg-clip-text text-transparent 
-          drop-shadow-[0_2px_6px_rgba(212,175,55,0.4)]"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    Newly Launched
-                  </h2>
+  className="h-64 md:h-80 flex items-center justify-center cursor-pointer"
+  variant={2}
+  noGrid={true}
+>
+  <div
+    onClick={() => navigate("/newly-launched")}
+    className="bg-white/90 backdrop-blur-md rounded-full px-8 md:px-12 py-6 md:py-8 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border border-gray-100 text-center max-w-lg w-full cursor-pointer"
+  >
+    <h2
+      className="text-2xl md:text-4xl font-semibold leading-tight tracking-wide 
+      bg-gradient-to-r from-[#d4af37] via-[#f5d27a] to-[#c89b3c] 
+      bg-clip-text text-transparent 
+      drop-shadow-[0_2px_6px_rgba(212,175,55,0.4)]"
+      style={{ fontFamily: "'Playfair Display', serif" }}
+    >
+      Newly Launched
+    </h2>
 
-                  <p className="mt-4 text-gray-600 text-xs md:text-sm tracking-wide">
-                    Premium Prints • Timeless Designs • Personalized Touch
-                  </p>
-                </div>
-              </CardContainer>
+    <p className="mt-4 text-gray-600 text-xs md:text-sm tracking-wide">
+      Premium Prints • Timeless Designs • Personalized Touch
+    </p>
+  </div>
+</CardContainer>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <CardContainer className="h-32 md:h-40" variant={3}>

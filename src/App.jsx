@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import FAQPage from "./components/FAQPage";
 import AboutUs from "./components/AboutUs";
 import ContactUs from "./components/ContactUs";
+import NewlyLaunched from "./components/NewlyLaunched";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route path="/faqs" element={<FAQPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/newly-launched" element={<NewlyLaunched />} />
         </Routes>
       </div>
 
@@ -58,6 +60,7 @@ function App() {
           <Route path="/faqs" element={<FAQPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/newly-launched" element={<NewlyLaunched />} />
         </Routes>
 
         <MobileBottomNav />
