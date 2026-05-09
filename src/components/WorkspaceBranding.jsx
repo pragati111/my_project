@@ -131,7 +131,7 @@ export default function WorkspaceBranding() {
                   {/* INNER CONTENT (scales smoothly) */}
                   <div className="transition-transform duration-300 ease-out hover:scale-[1.03]">
                     {/* TILE GRID */}
-                    <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
+                    <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[250px] sm:h-[250px]">
                       <img
                         src={item.images?.[0]}
                         className="col-span-2 row-span-2 w-full h-full object-cover"

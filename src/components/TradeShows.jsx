@@ -81,7 +81,7 @@ export default function TradeShows() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="bg-white border border-gray-300 shadow-sm overflow-hidden p-2">
-                <div className="grid grid-cols-2 gap-2 aspect-square sm:aspect-auto sm:h-[190px] md:h-[210px] overflow-hidden">
+                <div className="grid grid-cols-2 gap-2 aspect-[1/0.9] sm:aspect-auto sm:h-[190px] md:h-[210px] overflow-hidden">
                   <div className="flex flex-col gap-2 h-full">
                     <div className="flex-[1.4] bg-gray-200 animate-pulse rounded"></div>
                   </div>
@@ -126,7 +126,7 @@ export default function TradeShows() {
                   <div onClick={() => navigate(`/subcategory/${encodeURIComponent(subCatName)}`)} className="bg-white border border-gray-300 shadow-sm overflow-hidden p-2 transition duration-300 group-hover:shadow-lg">
 
                     {/* MOSAIC */}
-                    <div className="grid grid-cols-2 gap-2 aspect-square sm:aspect-auto sm:h-[190px] md:h-[210px] overflow-hidden">
+                    <div className="grid grid-cols-2 gap-2 aspect-[1/0.9] sm:aspect-auto sm:h-[190px] md:h-[210px] overflow-hidden">
                       
                       {/* LEFT */}
                       <div className="flex flex-col gap-2 h-full">
