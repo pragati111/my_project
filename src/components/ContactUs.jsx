@@ -96,7 +96,7 @@ export default function ContactUs() {
                         </p>
 
                         <p className="text-gray-500 text-sm md:text-base mt-1">
-                          support@yourbrand.com
+                          support@printsy.com
                         </p>
                       </div>
                     </div>

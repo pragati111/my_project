@@ -100,7 +100,7 @@ export default function WorkspaceBranding() {
                   <div className="bg-white border border-[#e6d3b8] p-3 shadow-md rounded-md">
                     <div className="animate-pulse">
                       {/* TILE GRID SKELETON */}
-                      <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[220px] sm:h-[240px]">
+                      <div className="grid grid-cols-3 grid-rows-3 gap-1.5 h-[250px] sm:h-[250px]">
                         <div className="col-span-2 row-span-2 bg-gray-200 rounded"></div>
                         <div className="bg-gray-200 rounded"></div>
                         <div className="bg-gray-200 rounded"></div>
