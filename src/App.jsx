@@ -1,23 +1,26 @@
-import DesktopHome from "./components/DesktopHome";
-import ProductDisplay from "./components/ProductDisplay";
+
 import MobileBottomNav from "./components/MobileBottomNav";
-
 import { Routes, Route } from "react-router-dom";
-
-import Home from "./pages/Home";
-import Categories from "./pages/Categories";
-import Cart from "./pages/Cart";
-import AuthPage from "./components/AuthPage"; // ✅ added
-import AccountPage from "./components/AccountPage"; // ✅ add this
-import ManageAddressPage from "./components/ManageAddressPage";
-import PrivacyPolicy from "./components/PrivacyPolicy";
-import SubcategoryDisplay from "./components/SubcategoryDisplay"; // ✅ added
-import Orders from "./components/Orders";
+import { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import FAQPage from "./components/FAQPage";
-import AboutUs from "./components/AboutUs";
-import ContactUs from "./components/ContactUs";
-import NewlyLaunched from "./components/NewlyLaunched";
+
+const DesktopHome = lazy(() => import("./components/DesktopHome"));
+const ProductDisplay = lazy(() => import("./components/ProductDisplay"));
+
+const Home = lazy(() => import("./pages/Home"));
+const Categories = lazy(() => import("./pages/Categories"));
+const Cart = lazy(() => import("./pages/Cart"));
+
+const AuthPage = lazy(() => import("./components/AuthPage"));
+const AccountPage = lazy(() => import("./components/AccountPage"));
+const ManageAddressPage = lazy(() => import("./components/ManageAddressPage"));
+const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
+const SubcategoryDisplay = lazy(() => import("./components/SubcategoryDisplay"));
+const Orders = lazy(() => import("./components/Orders"));
+const FAQPage = lazy(() => import("./components/FAQPage"));
+const AboutUs = lazy(() => import("./components/AboutUs"));
+const ContactUs = lazy(() => import("./components/ContactUs"));
+const NewlyLaunched = lazy(() => import("./components/NewlyLaunched"));
 
 
 function App() {
@@ -26,6 +29,7 @@ function App() {
       <Toaster position="top-right" />
       {/* ✅ DESKTOP ROUTES */}
       <div className="hidden md:block">
+        <Suspense fallback={<div className="p-4">Loading...</div>}>
         <Routes>
           <Route path="/" element={<DesktopHome />} />
           <Route path="/categories" element={<Categories />} />
@@ -42,10 +46,12 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/newly-launched" element={<NewlyLaunched />} />
         </Routes>
-      </div>
+  </Suspense>
+</div>
 
       {/* ✅ MOBILE ROUTES */}
       <div className="block md:hidden">
+        <Suspense fallback={<div className="p-4">Loading...</div>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
@@ -64,6 +70,7 @@ function App() {
         </Routes>
 
         <MobileBottomNav />
+        </Suspense>
       </div>
     </>
   );
