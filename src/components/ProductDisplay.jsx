@@ -30,44 +30,43 @@ export default function ProductDisplay() {
   };
 
   const handleApplyOffer = (offer) => {
-  // already applied
-  if (appliedOffers.find((o) => o._id === offer._id)) return;
+    // already applied
+    if (appliedOffers.find((o) => o._id === offer._id)) return;
 
-  const title = offer.title?.toLowerCase() || "";
+    const title = offer.title?.toLowerCase() || "";
 
-  // match: Buy 2 or more
-  const match = title.match(/buy\s+(\d+)\s+or\s+more/i);
+    // match: Buy 2 or more
+    const match = title.match(/buy\s+(\d+)\s+or\s+more/i);
 
-  // IF OFFER HAS BUY CONDITION
-  if (match) {
-    const requiredQty = Number(match[1]);
+    // IF OFFER HAS BUY CONDITION
+    if (match) {
+      const requiredQty = Number(match[1]);
 
-    const totalQty = getTotalQuantity();
+      const totalQty = getTotalQuantity();
 
-    if (totalQty < requiredQty) {
-      toast.error(`Minimum quantity ${requiredQty} required for this offer`);
+      if (totalQty < requiredQty) {
+        toast.error(`Minimum quantity ${requiredQty} required for this offer`);
+        return;
+      }
+
+      // 🔥 REMOVE OLD "BUY X OR MORE" OFFERS
+      setAppliedOffers((prev) => {
+        const filtered = prev.filter((existingOffer) => {
+          const existingTitle = existingOffer.title?.toLowerCase() || "";
+
+          // remove old buy-x offers
+          return !existingTitle.match(/buy\s+(\d+)\s+or\s+more/i);
+        });
+
+        return [...filtered, offer];
+      });
+
       return;
     }
 
-    // 🔥 REMOVE OLD "BUY X OR MORE" OFFERS
-    setAppliedOffers((prev) => {
-      const filtered = prev.filter((existingOffer) => {
-        const existingTitle =
-          existingOffer.title?.toLowerCase() || "";
-
-        // remove old buy-x offers
-        return !existingTitle.match(/buy\s+(\d+)\s+or\s+more/i);
-      });
-
-      return [...filtered, offer];
-    });
-
-    return;
-  }
-
-  // NORMAL OFFERS
-  setAppliedOffers((prev) => [...prev, offer]);
-};
+    // NORMAL OFFERS
+    setAppliedOffers((prev) => [...prev, offer]);
+  };
 
   const getAdjustment = (config) => {
     let extra = 0;
@@ -115,35 +114,35 @@ export default function ProductDisplay() {
   };
 
   // AUTO REMOVE INVALID BUY-X OFFERS
-useEffect(() => {
-  const totalQty = getTotalQuantity();
+  useEffect(() => {
+    const totalQty = getTotalQuantity();
 
-  setAppliedOffers((prev) => {
-    const updatedOffers = prev.filter((offer) => {
-      const title = offer.title?.toLowerCase() || "";
+    setAppliedOffers((prev) => {
+      const updatedOffers = prev.filter((offer) => {
+        const title = offer.title?.toLowerCase() || "";
 
-      const match = title.match(/buy\s+(\d+)\s+or\s+more/i);
+        const match = title.match(/buy\s+(\d+)\s+or\s+more/i);
 
-      // normal offers stay applied
-      if (!match) return true;
+        // normal offers stay applied
+        if (!match) return true;
 
-      const requiredQty = Number(match[1]);
+        const requiredQty = Number(match[1]);
 
-      // REMOVE if quantity became invalid
-      if (totalQty < requiredQty) {
-        toast.error(
-          `Offer removed because quantity was reduced to ${totalQty}`,
-        );
+        // REMOVE if quantity became invalid
+        if (totalQty < requiredQty) {
+          toast.error(
+            `Offer removed because quantity was reduced to ${totalQty}`,
+          );
 
-        return false;
-      }
+          return false;
+        }
 
-      return true;
+        return true;
+      });
+
+      return updatedOffers;
     });
-
-    return updatedOffers;
-  });
-}, [configs]);
+  }, [configs]);
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -205,7 +204,24 @@ useEffect(() => {
   }, [activeIndex]);
 
   if (!product) return <ProductShimmer />;
-  const activeOffers = product?.offers?.filter((o) => o.active) || [];
+  const activeOffers =
+  product?.offers?.filter((o) => {
+    // must be active
+    if (!o.active) return false;
+
+    // if no expiry date → still show
+    if (!o.expiryDate) return true;
+
+    // compare dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const expiry = new Date(o.expiryDate);
+    expiry.setHours(23, 59, 59, 999);
+
+    // show only if not expired
+    return expiry >= today;
+  }) || [];
 
   const media =
     product.media?.length > 0
@@ -382,86 +398,120 @@ useEffect(() => {
                       <div
                         key={offer._id}
                         onClick={() => !isApplied && handleApplyOffer(offer)}
-                        className={`relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2 first:ml-1 cursor-pointer 
-        ${isApplied ? "opacity-50 pointer-events-none" : ""}
-      `}
-                      >
-                        {/* TOP LINE */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
+                        className={`
+    relative flex-shrink-0 
+    w-[170px]
+    rounded-2xl
+    px-4 py-4
+    bg-white/80 backdrop-blur-xl
+    border border-gray-100
+    shadow-sm
+    hover:shadow-md
+    transition-all duration-300
+    cursor-pointer
+    overflow-hidden
 
-                        {/* MESSAGE */}
+    ${isApplied ? "opacity-60 pointer-events-none" : "hover:-translate-y-1"}
+  `}
+                      >
+                        {/* SOFT TOP ACCENT */}
+                        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-pink-400 via-violet-500 to-indigo-500"></div>
+
+                        {/* APPLIED BADGE */}
                         {isApplied && (
-                          <p className="text-black text-xs mt-2 font-semibold">
-                            Offer applied. Check the Cart to see it
-                          </p>
+                          <div className="absolute top-2 right-2 text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">
+                            Applied
+                          </div>
                         )}
 
-                        {/* TITLE */}
-                        <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
+                        {/* OFFER TITLE */}
+                        <p className="mt-3 text-sm font-semibold text-gray-800 leading-snug line-clamp-2">
                           {offer.title}
                         </p>
 
-                        {/* DIVIDER */}
-                        <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
-
                         {/* DISCOUNT */}
                         {offer.discountPercent > 0 && (
-                          <p className="text-indigo-600 text-base font-black">
-                            Get {offer.discountPercent}% Off
-                          </p>
+                          <div className="mt-4">
+                            <p className="text-[26px] font-black bg-gradient-to-r from-violet-600 to-pink-500 bg-clip-text text-transparent leading-none">
+                              {offer.discountPercent}%
+                            </p>
+
+                            {offer.expiryDate && (
+                              <p className="text-[10px] text-gray-400 mt-1 tracking-wide">
+                                Valid till{" "}
+                                {new Date(offer.expiryDate).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    day: "numeric",
+                                    month: "short",
+                                  },
+                                )}
+                              </p>
+                            )}
+                          </div>
                         )}
 
-                        {/* CODE & VALIDITY */}
-                        <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2">
-                          <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
-                            Promo Code
-                          </span>
-                          <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
-                            {offer.code}
-                          </span>
-
-                          {offer.expiryDate && (
-                            <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                                className="w-3.5 h-3.5 text-indigo-500"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 12h.008v.008H9.75V12Zm0 2.25h.008v.008H9.75V14.25Zm0 2.25h.008v.008H9.75v-.008ZM7.5 12h.008v.008H7.5V12Zm0 2.25h.008v.008H7.5V14.25Z"
-                                />
-                              </svg>
-                              Valid till--
-                              {new Date(offer.expiryDate).toLocaleDateString(
-                                "en-IN",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                },
-                              )}
-                            </span>
-                          )}
+                        {/* MINI BOTTOM DECOR */}
+                        <div className="mt-4 flex items-center gap-1">
+                          <div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
                         </div>
                       </div>
                     );
                   })}
 
                   {/* ✅ VIEW MORE CARD */}
+                  {/* ✅ VIEW MORE CARD */}
                   {activeOffers.length > 3 && (
                     <div
                       onClick={() => setShowAllOffers(true)}
-                      className="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer w-[220px] sm:w-[200px] rounded-2xl border-2 border-dashed border-indigo-300 bg-white/40 hover:bg-white/70 text-indigo-600 font-bold mx-2 my-3 px-4 py-6 text-center transition-all duration-300 hover:border-indigo-400"
+                      className="
+      relative flex-shrink-0
+      w-[170px]
+      rounded-2xl
+      px-4 py-4
+      bg-gradient-to-br from-violet-50 via-pink-50 to-indigo-50
+      border border-white/80
+      shadow-sm
+      hover:shadow-lg
+      transition-all duration-300
+      cursor-pointer
+      overflow-hidden
+      hover:-translate-y-1
+      group
+    "
                     >
-                      <div className="w-10 h-10 mb-3 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500">
-                        +
+                      {/* TOP ACCENT */}
+                      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-pink-400 via-violet-500 to-indigo-500"></div>
+
+                      {/* GLOW */}
+                      <div className="absolute -top-8 -right-8 w-20 h-20 bg-pink-200/40 rounded-full blur-2xl group-hover:scale-125 transition duration-500"></div>
+
+                      {/* PLUS ICON */}
+                      <div className="relative z-10 w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mt-2">
+                        <span className="text-2xl font-light text-violet-600">
+                          +
+                        </span>
                       </div>
-                      <span>View More →</span>
+
+                      {/* TEXT */}
+                      <div className="relative z-10 text-center mt-4">
+                        <p className="text-sm font-semibold text-gray-800">
+                          More Offers
+                        </p>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          tap to explore
+                        </p>
+                      </div>
+
+                      {/* MINI DECOR */}
+                      <div className="relative z-10 mt-4 flex items-center justify-center gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -891,86 +941,76 @@ useEffect(() => {
             <div className="overflow-y-auto h-[75vh] lg:h-auto pr-1 pb-8 no-scrollbar flex justify-center lg:block">
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:overflow-x-auto sm:justify-start lg:grid lg:grid-cols-3 no-scrollbar w-full max-w-lg lg:max-w-none px-2 pb-4">
                 {activeOffers.map((offer) => {
-  const isApplied = appliedOffers.some(
-    (o) => o._id === offer._id,
-  );
+                  const isApplied = appliedOffers.some(
+                    (o) => o._id === offer._id,
+                  );
 
-  return (
-    <div
-      key={offer._id}
-      onClick={() => !isApplied && handleApplyOffer(offer)}
-      className={`relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2 cursor-pointer
-      
-      ${isApplied ? "opacity-50 pointer-events-none" : ""}
-      `}
-    >
-      {/* TOP GRADIENT */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
+                  return (
+                    <div
+                      key={offer._id}
+                      onClick={() => !isApplied && handleApplyOffer(offer)}
+                      className={`
+    relative flex-shrink-0 
+    w-[170px]
+    rounded-2xl
+    px-4 py-4
+    bg-white/80 backdrop-blur-xl
+    border border-gray-100
+    shadow-sm
+    hover:shadow-md
+    transition-all duration-300
+    cursor-pointer
+    overflow-hidden
 
-      {/* APPLIED MESSAGE */}
-      {isApplied && (
-        <p className="text-black text-xs mt-2 font-semibold">
-          Offer applied. Check the Cart to see it
-        </p>
-      )}
+    ${isApplied ? "opacity-60 pointer-events-none" : "hover:-translate-y-1"}
+  `}
+                    >
+                      {/* SOFT TOP ACCENT */}
+                      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-pink-400 via-violet-500 to-indigo-500"></div>
 
-      {/* TITLE */}
-      <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
-        {offer.title}
-      </p>
+                      {/* APPLIED BADGE */}
+                      {isApplied && (
+                        <div className="absolute top-2 right-2 text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">
+                          Applied
+                        </div>
+                      )}
 
-      {/* DIVIDER */}
-      <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
+                      {/* OFFER TITLE */}
+                      <p className="mt-3 text-sm font-semibold text-gray-800 leading-snug line-clamp-2">
+                        {offer.title}
+                      </p>
 
-      {/* DISCOUNT */}
-      {offer.discountPercent > 0 && (
-        <p className="text-indigo-600 text-base font-black">
-          Get {offer.discountPercent}% Off
-        </p>
-      )}
+                      {/* DISCOUNT */}
+                      {offer.discountPercent > 0 && (
+                        <div className="mt-4">
+                          <p className="text-2xl font-black text-violet-600 leading-none">
+                            {offer.discountPercent}%
+                          </p>
 
-      {/* CODE & VALIDITY */}
-      <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2 mb-10">
-        <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
-          Promo Code
-        </span>
+                          {offer.expiryDate && (
+                            <p className="text-[10px] text-gray-400 mt-1 tracking-wide">
+                              Valid till{" "}
+                              {new Date(offer.expiryDate).toLocaleDateString(
+                                "en-IN",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                },
+                              )}
+                            </p>
+                          )}
+                        </div>
+                      )}
 
-        <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
-          {offer.code}
-        </span>
-
-        {offer.expiryDate && (
-          <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-3.5 h-3.5 text-indigo-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-              />
-            </svg>
-
-            Valid till--
-            {new Date(offer.expiryDate).toLocaleDateString(
-              "en-IN",
-              {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              },
-            )}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-})}
+                      {/* MINI BOTTOM DECOR */}
+                      <div className="mt-4 flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
