@@ -23,6 +23,8 @@ export default function ProductDisplay() {
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
   const [appliedOffers, setAppliedOffers] = useState([]);
+  const [savedCartConfigs, setSavedCartConfigs] = useState([]);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const isAlreadyInCart = configs.some((c) => c.designId);
 
   const getPreviewSrc = (value) =>
@@ -32,6 +34,12 @@ export default function ProductDisplay() {
     return configs.reduce((total, config) => {
       return total + (config.quantity || 1);
     }, 0);
+  };
+
+  const markUnsavedChanges = () => {
+    if (savedCartConfigs.length > 0 || isAlreadyInCart) {
+      setHasUnsavedChanges(true);
+    }
   };
 
   const handleApplyOffer = (offer) => {
@@ -65,12 +73,13 @@ export default function ProductDisplay() {
 
         return [...filtered, offer];
       });
-
+      markUnsavedChanges();
       return;
     }
 
     // NORMAL OFFERS
     setAppliedOffers((prev) => [...prev, offer]);
+    markUnsavedChanges();
   };
 
   const getAdjustment = (config) => {
@@ -181,6 +190,8 @@ export default function ProductDisplay() {
         if (!existingProduct) {
           setConfigs([{}]);
           setAppliedOffers([]);
+          setSavedCartConfigs([]);
+          setHasUnsavedChanges(false);
           return;
         }
 
@@ -191,7 +202,10 @@ export default function ProductDisplay() {
   designId: d.designId,
 }));
 
-        setConfigs(restoredConfigs.length > 0 ? restoredConfigs : [{}]);
+        const finalConfigs = restoredConfigs.length > 0 ? restoredConfigs : [{}];
+        setConfigs(finalConfigs);
+        setSavedCartConfigs(finalConfigs);
+        setHasUnsavedChanges(false);
 
         // restore offers
         const allOffers = [];
@@ -212,6 +226,21 @@ export default function ProductDisplay() {
 
     hydrateFromCart();
   }, [location.key, product, user?.id, token]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      e.returnValue = "You have unsaved changes. Do you really want to leave?";
+    };
+
+    if (hasUnsavedChanges) {
+      window.addEventListener("beforeunload", handler);
+    } else {
+      window.removeEventListener("beforeunload", handler);
+    }
+
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [hasUnsavedChanges]);
 
   useEffect(() => {
     const attachScroll = () => {
@@ -291,6 +320,7 @@ export default function ProductDisplay() {
     updated[index][key] = value;
 
     setConfigs(updated);
+    markUnsavedChanges();
   };
 
   const CLOUDINARY_UPLOAD_PRESET = "market_data";
@@ -316,16 +346,21 @@ export default function ProductDisplay() {
 
       // ✅ SAVE CLOUDINARY URL IN CONFIG
       handleChange(index, key, data.secure_url);
+      markUnsavedChanges();
     } catch (err) {
       console.error("Upload failed", err);
     }
   };
 
-  const addConfig = () => setConfigs((prev) => [...prev, {}]);
+  const addConfig = () => {
+    setConfigs((prev) => [...prev, {}]);
+    markUnsavedChanges();
+  };
 
   const removeConfig = (index) => {
     if (configs.length === 1) return; // prevent deleting last
     setConfigs((prev) => prev.filter((_, i) => i !== index));
+    markUnsavedChanges();
   };
 
   const handleNext = () => setActiveIndex((prev) => (prev + 1) % media.length);
@@ -837,6 +872,12 @@ export default function ProductDisplay() {
                 </button>
               </div>
 
+              {hasUnsavedChanges && isAlreadyInCart && (
+                <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+                  You have unsaved changes. Click <strong>Update Cart</strong> to save them, or continue browsing if you want to discard them.
+                </div>
+              )}
+
               {/* DESKTOP STICKY BUTTONS */}
               <div className="hidden lg:flex gap-4 pt-4">
                 <button
@@ -876,6 +917,9 @@ export default function ProductDisplay() {
                       formattedConfigs,
                       appliedOffers,
                     );
+
+                    setSavedCartConfigs(formattedConfigs);
+                    setHasUnsavedChanges(false);
                   }}
                   className="bg-black text-white px-6 py-3 w-full"
                 >
