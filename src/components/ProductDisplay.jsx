@@ -5,6 +5,7 @@ import BottomBar from "./BottomBar";
 import { useEffect, useState, useRef } from "react";
 import { useCart } from "../redux/useCart";
 import ProductShimmer from "./ProductShimmer";
+import toast from "react-hot-toast";
 
 export default function ProductDisplay() {
   const { addToCart } = useCart();
@@ -22,12 +23,51 @@ export default function ProductDisplay() {
   const getPreviewSrc = (value) =>
     typeof value === "string" ? value : URL.createObjectURL(value);
 
-  const handleApplyOffer = (offer) => {
-    setAppliedOffers((prev) => {
-      if (prev.find((o) => o._id === offer._id)) return prev;
-      return [...prev, offer];
-    });
+  const getTotalQuantity = () => {
+    return configs.reduce((total, config) => {
+      return total + (config.quantity || 1);
+    }, 0);
   };
+
+  const handleApplyOffer = (offer) => {
+  // already applied
+  if (appliedOffers.find((o) => o._id === offer._id)) return;
+
+  const title = offer.title?.toLowerCase() || "";
+
+  // match: Buy 2 or more
+  const match = title.match(/buy\s+(\d+)\s+or\s+more/i);
+
+  // IF OFFER HAS BUY CONDITION
+  if (match) {
+    const requiredQty = Number(match[1]);
+
+    const totalQty = getTotalQuantity();
+
+    if (totalQty < requiredQty) {
+      toast.error(`Minimum quantity ${requiredQty} required for this offer`);
+      return;
+    }
+
+    // 🔥 REMOVE OLD "BUY X OR MORE" OFFERS
+    setAppliedOffers((prev) => {
+      const filtered = prev.filter((existingOffer) => {
+        const existingTitle =
+          existingOffer.title?.toLowerCase() || "";
+
+        // remove old buy-x offers
+        return !existingTitle.match(/buy\s+(\d+)\s+or\s+more/i);
+      });
+
+      return [...filtered, offer];
+    });
+
+    return;
+  }
+
+  // NORMAL OFFERS
+  setAppliedOffers((prev) => [...prev, offer]);
+};
 
   const getAdjustment = (config) => {
     let extra = 0;
@@ -73,6 +113,37 @@ export default function ProductDisplay() {
       return total + price * quantity;
     }, 0);
   };
+
+  // AUTO REMOVE INVALID BUY-X OFFERS
+useEffect(() => {
+  const totalQty = getTotalQuantity();
+
+  setAppliedOffers((prev) => {
+    const updatedOffers = prev.filter((offer) => {
+      const title = offer.title?.toLowerCase() || "";
+
+      const match = title.match(/buy\s+(\d+)\s+or\s+more/i);
+
+      // normal offers stay applied
+      if (!match) return true;
+
+      const requiredQty = Number(match[1]);
+
+      // REMOVE if quantity became invalid
+      if (totalQty < requiredQty) {
+        toast.error(
+          `Offer removed because quantity was reduced to ${totalQty}`,
+        );
+
+        return false;
+      }
+
+      return true;
+    });
+
+    return updatedOffers;
+  });
+}, [configs]);
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -124,6 +195,7 @@ export default function ProductDisplay() {
   useEffect(() => {
     setActiveIndex(0);
     setConfigs([{}]);
+    setAppliedOffers([]);
   }, [id]);
 
   // THUMB SCROLL
@@ -818,69 +890,87 @@ export default function ProductDisplay() {
 
             <div className="overflow-y-auto h-[75vh] lg:h-auto pr-1 pb-8 no-scrollbar flex justify-center lg:block">
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:overflow-x-auto sm:justify-start lg:grid lg:grid-cols-3 no-scrollbar w-full max-w-lg lg:max-w-none px-2 pb-4">
-                {activeOffers.map((offer, i) => (
-                  <div
-                    key={offer._id}
-                    className="relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2"
-                  >
-                    {/* Subtle decorative gradient line at the top */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
+                {activeOffers.map((offer) => {
+  const isApplied = appliedOffers.some(
+    (o) => o._id === offer._id,
+  );
 
-                    {/* TITLE */}
-                    <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
-                      {offer.title}
-                    </p>
+  return (
+    <div
+      key={offer._id}
+      onClick={() => !isApplied && handleApplyOffer(offer)}
+      className={`relative flex-shrink-0 w-[220px] sm:w-[200px] rounded-2xl px-4 py-6 text-center bg-white/70 backdrop-blur-md border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(8,112,184,0.08)] transition-all duration-300 my-3 mx-2 cursor-pointer
+      
+      ${isApplied ? "opacity-50 pointer-events-none" : ""}
+      `}
+    >
+      {/* TOP GRADIENT */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-indigo-500 to-teal-400 rounded-t-2xl"></div>
 
-                    {/* DIVIDER */}
-                    <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
+      {/* APPLIED MESSAGE */}
+      {isApplied && (
+        <p className="text-black text-xs mt-2 font-semibold">
+          Offer applied. Check the Cart to see it
+        </p>
+      )}
 
-                    {/* DISCOUNT */}
-                    {offer.discountPercent > 0 && (
-                      <p className="text-indigo-600 text-base font-black">
-                        Get {offer.discountPercent}% Off
-                      </p>
-                    )}
+      {/* TITLE */}
+      <p className="mt-3 text-gray-800 text-sm font-semibold tracking-tight truncate px-1">
+        {offer.title}
+      </p>
 
-                    {/* CODE & VALIDITY CONTAINER */}
-                    <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2 mb-10">
-                      <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
-                        Promo Code
-                      </span>
+      {/* DIVIDER */}
+      <div className="my-3 h-[1px] bg-gradient-to-r from-transparent via-indigo-300 to-transparent w-[80%] mx-auto opacity-60"></div>
 
-                      <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
-                        {offer.code}
-                      </span>
+      {/* DISCOUNT */}
+      {offer.discountPercent > 0 && (
+        <p className="text-indigo-600 text-base font-black">
+          Get {offer.discountPercent}% Off
+        </p>
+      )}
 
-                      {offer.expiryDate && (
-                        <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                            className="w-3.5 h-3.5 text-indigo-500"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 12h.008v.008H9.75V12Zm0 2.25h.008v.008H9.75V14.25Zm0 2.25h.008v.008H9.75v-.008ZM7.5 12h.008v.008H7.5V12Zm0 2.25h.008v.008H7.5V14.25Z"
-                            />
-                          </svg>
-                          Valid till--
-                          {new Date(offer.expiryDate).toLocaleDateString(
-                            "en-IN",
-                            {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            },
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+      {/* CODE & VALIDITY */}
+      <div className="mt-4 bg-indigo-50/40 border border-indigo-100/50 rounded-xl py-3 px-2 mb-10">
+        <span className="block text-[10px] text-teal-600 font-extrabold tracking-widest uppercase">
+          Promo Code
+        </span>
+
+        <span className="block text-gray-800 font-black text-lg tracking-wide uppercase select-all mt-0.5">
+          {offer.code}
+        </span>
+
+        {offer.expiryDate && (
+          <span className="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-3.5 h-3.5 text-indigo-500"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+              />
+            </svg>
+
+            Valid till--
+            {new Date(offer.expiryDate).toLocaleDateString(
+              "en-IN",
+              {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              },
+            )}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+})}
               </div>
             </div>
           </div>
