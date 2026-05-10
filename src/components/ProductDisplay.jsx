@@ -6,6 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import { useCart } from "../redux/useCart";
 import ProductShimmer from "./ProductShimmer";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { useAuth } from "./AuthContext";
 
 export default function ProductDisplay() {
   const { addToCart } = useCart();
@@ -15,10 +17,12 @@ export default function ProductDisplay() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [configs, setConfigs] = useState([{}]);
   const [showAllOffers, setShowAllOffers] = useState(false);
+  const { user, token } = useAuth();
 
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
   const [appliedOffers, setAppliedOffers] = useState([]);
+  const isAlreadyInCart = configs.some((c) => c.__designId);
 
   const getPreviewSrc = (value) =>
     typeof value === "string" ? value : URL.createObjectURL(value);
@@ -130,10 +134,6 @@ export default function ProductDisplay() {
 
         // REMOVE if quantity became invalid
         if (totalQty < requiredQty) {
-          toast.error(
-            `Offer removed because quantity was reduced to ${totalQty}`,
-          );
-
           return false;
         }
 
@@ -154,6 +154,63 @@ export default function ProductDisplay() {
       })
       .catch((err) => console.error(err));
   }, [id]);
+
+  useEffect(() => {
+    const hydrateFromCart = async () => {
+      if (!user?.id || !product?._id) return;
+
+      try {
+        const res = await axios.get(
+          `https://my-project-backend-ee4t.onrender.com/api/cart?userId=${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const items = res.data.items || [];
+
+        // find same product
+        const existingProduct = items.find(
+          (item) => item.productId.toString() === product._id.toString(),
+        );
+
+        // no product in cart
+        if (!existingProduct) {
+          setConfigs([{}]);
+          setAppliedOffers([]);
+          return;
+        }
+
+        // restore configs
+        const restoredConfigs = existingProduct.designs.map((d) => ({
+          ...d.config,
+          quantity: d.quantity || 1,
+          __designId: d._id, // 🔥 IMPORTANT
+        }));
+
+        setConfigs(restoredConfigs.length > 0 ? restoredConfigs : [{}]);
+
+        // restore offers
+        const allOffers = [];
+
+        existingProduct.designs.forEach((d) => {
+          (d.offers || []).forEach((offer) => {
+            if (!allOffers.find((o) => o._id === offer._id)) {
+              allOffers.push(offer);
+            }
+          });
+        });
+
+        setAppliedOffers(allOffers);
+      } catch (err) {
+        console.error("Failed to hydrate cart product", err);
+      }
+    };
+
+    hydrateFromCart();
+  }, [product, user?.id, token]);
 
   useEffect(() => {
     const attachScroll = () => {
@@ -190,13 +247,6 @@ export default function ProductDisplay() {
     return () => clearTimeout(timeout);
   }, [product]); // 👈 THIS is the key
 
-  // RESET
-  useEffect(() => {
-    setActiveIndex(0);
-    setConfigs([{}]);
-    setAppliedOffers([]);
-  }, [id]);
-
   // THUMB SCROLL
   useEffect(() => {
     const currentThumb = thumbnailRefs.current[activeIndex];
@@ -205,23 +255,23 @@ export default function ProductDisplay() {
 
   if (!product) return <ProductShimmer />;
   const activeOffers =
-  product?.offers?.filter((o) => {
-    // must be active
-    if (!o.active) return false;
+    product?.offers?.filter((o) => {
+      // must be active
+      if (!o.active) return false;
 
-    // if no expiry date → still show
-    if (!o.expiryDate) return true;
+      // if no expiry date → still show
+      if (!o.expiryDate) return true;
 
-    // compare dates
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+      // compare dates
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-    const expiry = new Date(o.expiryDate);
-    expiry.setHours(23, 59, 59, 999);
+      const expiry = new Date(o.expiryDate);
+      expiry.setHours(23, 59, 59, 999);
 
-    // show only if not expired
-    return expiry >= today;
-  }) || [];
+      // show only if not expired
+      return expiry >= today;
+    }) || [];
 
   const media =
     product.media?.length > 0
@@ -554,6 +604,7 @@ export default function ProductDisplay() {
                           {field.type === "text" && (
                             <input
                               type="text"
+                              value={config[field.label] || ""}
                               className="border p-2 w-full"
                               onChange={(e) =>
                                 handleChange(index, field, e.target.value)
@@ -564,6 +615,7 @@ export default function ProductDisplay() {
                           {/* TEXTAREA */}
                           {field.type === "textarea" && (
                             <textarea
+                              value={config[field.label] || ""}
                               className="border p-2 w-full"
                               onChange={(e) =>
                                 handleChange(index, field, e.target.value)
@@ -581,6 +633,7 @@ export default function ProductDisplay() {
                                 <input
                                   type="radio"
                                   name={`${field.id}-${index}`}
+                                  checked={config[field.label] === opt.label}
                                   onChange={() =>
                                     handleChange(index, field, opt.label)
                                   }
@@ -598,6 +651,9 @@ export default function ProductDisplay() {
                               >
                                 <input
                                   type="checkbox"
+                                  checked={(config[field.label] || []).includes(
+                                    opt.label,
+                                  )}
                                   onChange={(e) => {
                                     const prev = config[field.label] || [];
 
@@ -615,12 +671,13 @@ export default function ProductDisplay() {
                           {/* DROPDOWN */}
                           {field.type === "dropdown" && (
                             <select
+                              value={config[field.label] || ""}
                               className="border p-2 w-full"
                               onChange={(e) =>
                                 handleChange(index, field, e.target.value)
                               }
                             >
-                              <option>Select</option>
+                              <option value="">Select</option>
                               {field.options?.map((opt) => (
                                 <option key={opt.label} value={opt.label}>
                                   {opt.label}
@@ -783,10 +840,18 @@ export default function ProductDisplay() {
               <div className="hidden lg:flex gap-4 pt-4">
                 <button
                   onClick={() => {
-                    const formattedConfigs = configs.map((c) => ({
-                      config: c,
-                      quantity: c.quantity || 1,
-                    }));
+                    const formattedConfigs = configs.map((c) => {
+                      const cleanedConfig = { ...c };
+
+                      delete cleanedConfig.quantity;
+                      delete cleanedConfig.__designId;
+
+                      return {
+                        designId: c.__designId,
+                        config: cleanedConfig,
+                        quantity: c.quantity || 1,
+                      };
+                    });
                     console.log("ADDING TO CART:", {
                       ...product,
                       image: media[0]?.url,
@@ -804,7 +869,7 @@ export default function ProductDisplay() {
                   }}
                   className="bg-black text-white px-6 py-3 w-full"
                 >
-                  Add to Cart
+                  {isAlreadyInCart ? "Update Cart" : "Add to Cart"}
                 </button>
 
                 <button className="bg-green-500 text-white px-6 py-3 w-full">
@@ -878,13 +943,18 @@ export default function ProductDisplay() {
         <div className="flex gap-3">
           <button
             onClick={() => {
-              const formattedConfigs = configs.map((c) => ({
-                config: {
-                  ...c,
-                  __productImage: media[0]?.url, // 🔥 backup storage
-                },
-                quantity: c.quantity || 1,
-              }));
+              const formattedConfigs = configs.map((c) => {
+  const cleanedConfig = { ...c };
+
+  delete cleanedConfig.quantity;
+  delete cleanedConfig.__designId;
+
+  return {
+    designId: c.__designId,
+    config: cleanedConfig,
+    quantity: c.quantity || 1,
+  };
+});
               console.log("ADDING TO CART:", {
                 ...product,
                 image: media[0]?.url,
