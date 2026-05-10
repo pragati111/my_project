@@ -53,7 +53,7 @@ export default function Cart() {
         product: product.productId,
 
         designs: product.designs.map((d) => ({
-          designId: d._id,
+          designId: d.designId,
           config: d.config,
           quantity: d.quantity,
         })),
@@ -175,11 +175,11 @@ export default function Cart() {
           image: item.image || item.designs?.[0]?.config?.__productImage || "",
           customizations: item.customizations || [], // 🔥 ADD THIS
           designs: (item.designs || []).map((d) => ({
-            _id: d._id, // ✅ ADD THIS
-            config: d.config || {},
-            quantity: d.quantity || 1,
-            offers: d.offers || [], // 🔥 ADD THIS
-          })),
+  designId: d.designId.toString(),
+  config: d.config || {},
+  quantity: d.quantity || 1,
+  offers: d.offers || [],
+})),
         }));
 
         dispatch(setCart(formatted));
@@ -272,7 +272,7 @@ export default function Cart() {
             {cart.map((product) =>
               product.designs.map((d) => (
                 <div
-                  key={d._id}
+                  key={d.designId}
                   className="grid grid-cols-1 md:grid-cols-5 items-center gap-4 border-b py-4"
                 >
                   {/* IMAGE */}
@@ -346,7 +346,7 @@ export default function Cart() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() =>
-                        updateQuantity(product.productId, d._id, d.quantity - 1)
+                        updateQuantity(product.productId, d.designId, d.quantity - 1)
                       }
                       disabled={d.quantity <= 1}
                       className="border px-2 disabled:opacity-50"
@@ -358,7 +358,7 @@ export default function Cart() {
 
                     <button
                       onClick={() =>
-                        updateQuantity(product.productId, d._id, d.quantity + 1)
+                        updateQuantity(product.productId, d.designId, d.quantity + 1)
                       }
                       className="border px-2"
                     >
@@ -378,7 +378,7 @@ export default function Cart() {
                     </span>
 
                     <button
-                      onClick={() => removeFromCart(product.productId, d._id)}
+                      onClick={() => removeFromCart(product.productId, d.designId)}
                       className="text-red-500"
                     >
                       <X size={18} />
