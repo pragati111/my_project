@@ -52,9 +52,10 @@ export const useCart = () => {
             userId: user.id,
             productId: product._id || product.id,
             configs: configs.map((c) => ({
-              quantity: c.quantity || 1,
-              config: c.config ? c.config : c,
-            })),
+  designId: c.designId,
+  quantity: c.quantity || 1,
+  config: c.config ? c.config : c,
+})),
             offers: offers
           },
           {

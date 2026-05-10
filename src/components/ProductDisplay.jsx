@@ -22,7 +22,7 @@ export default function ProductDisplay() {
   const thumbnailRefs = useRef([]);
   const rightRef = useRef(null);
   const [appliedOffers, setAppliedOffers] = useState([]);
-  const isAlreadyInCart = configs.some((c) => c.__designId);
+  const isAlreadyInCart = configs.some((c) => c.designId);
 
   const getPreviewSrc = (value) =>
     typeof value === "string" ? value : URL.createObjectURL(value);
@@ -185,10 +185,10 @@ export default function ProductDisplay() {
 
         // restore configs
         const restoredConfigs = existingProduct.designs.map((d) => ({
-          ...d.config,
-          quantity: d.quantity || 1,
-          __designId: d._id, // 🔥 IMPORTANT
-        }));
+  ...d.config,
+  quantity: d.quantity || 1,
+  designId: d._id,
+}));
 
         setConfigs(restoredConfigs.length > 0 ? restoredConfigs : [{}]);
 
@@ -844,10 +844,10 @@ export default function ProductDisplay() {
                       const cleanedConfig = { ...c };
 
                       delete cleanedConfig.quantity;
-                      delete cleanedConfig.__designId;
+                      delete cleanedConfig.designId;
 
                       return {
-                        designId: c.__designId,
+                        designId: c.designId,
                         config: cleanedConfig,
                         quantity: c.quantity || 1,
                       };
@@ -944,17 +944,17 @@ export default function ProductDisplay() {
           <button
             onClick={() => {
               const formattedConfigs = configs.map((c) => {
-  const cleanedConfig = { ...c };
+                const cleanedConfig = { ...c };
 
-  delete cleanedConfig.quantity;
-  delete cleanedConfig.__designId;
+                delete cleanedConfig.quantity;
+                delete cleanedConfig.designId;
 
-  return {
-    designId: c.__designId,
-    config: cleanedConfig,
-    quantity: c.quantity || 1,
-  };
-});
+                return {
+                  designId: c.designId,
+                  config: cleanedConfig,
+                  quantity: c.quantity || 1,
+                };
+              });
               console.log("ADDING TO CART:", {
                 ...product,
                 image: media[0]?.url,

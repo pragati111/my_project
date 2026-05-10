@@ -26,14 +26,20 @@ export const cartReducer = (state = initialState, action) => {
               ? {
                   ...p,
                   designs: [
-  ...p.designs,
+  ...p.designs.filter(
+    (oldDesign) =>
+      !configs.some(
+        (newDesign) =>
+          newDesign.designId &&
+          newDesign.designId === oldDesign.designId
+      )
+  ),
+
   ...configs.map((c) => ({
     ...c,
     offers: offers || [],
   })),
-].filter(
-  (d, i, arr) => arr.findIndex(x => x._id === d._id) === i
-),
+],
                   offers: [...(p.offers || []), ...offers], // 🔥 ADD THIS
                 }
               : p,
@@ -53,7 +59,8 @@ export const cartReducer = (state = initialState, action) => {
             customizations: product.customizations || [], // 🔥 ADD THIS
             designs: configs.map((c) => ({
   ...c,
-  offers: offers || [],   // ✅ attach here
+  designId: c.designId || crypto.randomUUID(),
+  offers: offers || [],
 })),
           },
         ],
@@ -70,7 +77,7 @@ export const cartReducer = (state = initialState, action) => {
         p.productId === productId
           ? {
               ...p,
-              designs: p.designs.filter((d) => d._id !== designId),
+              designs: p.designs.filter((d) => d.designId !== designId),
             }
           : p
       )
@@ -89,7 +96,7 @@ export const cartReducer = (state = initialState, action) => {
         ? {
             ...p,
             designs: p.designs.map((d) =>
-              d._id === designId
+              d.designId === designId
                 ? { ...d, quantity: nextQuantity }
                 : d
             ),
