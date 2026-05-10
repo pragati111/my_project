@@ -154,7 +154,11 @@ export default function Cart() {
 
   useEffect(() => {
     const fetchCart = async () => {
-      if (!user?.id) return;
+      console.log("fetchCart called, user:", user, "token:", token);
+      if (!user?.id) {
+        console.log("No user.id, returning");
+        return;
+      }
 
       try {
         const res = await axios.get(`${API}/api/cart?userId=${user.id}`, {
@@ -163,7 +167,7 @@ export default function Cart() {
           },
         });
 
-        console.log("Backend Cart:", res.data);
+        console.log("Backend Cart response:", res.data);
 
         // 🔥 IMPORTANT: map backend → your redux format
         const backendItems = res.data.items || [];
@@ -182,14 +186,16 @@ export default function Cart() {
 })),
         }));
 
+        console.log("Formatted items:", formatted);
         dispatch(setCart(formatted));
+        console.log("Dispatched setCart");
       } catch (err) {
         console.error("Failed to fetch cart", err);
       }
     };
 
     fetchCart();
-  }, [user?._id, token]);
+  }, [user?.id, token]);
 
   useEffect(() => {
     const fetchImages = async () => {

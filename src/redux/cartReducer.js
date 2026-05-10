@@ -14,35 +14,41 @@ export const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART: {
       const { product, configs, offers } = action.payload;
-      const productId = product._id || product.id; // 🔥 FIX
+      const productId = product._id || product.id;
 
       const existing = state.items.find((p) => p.productId === productId);
 
       if (existing) {
+        const updatedDesigns = [...existing.designs];
+        const designIdsToKeep = [];
+
+        configs.forEach((newC) => {
+          const designId = newC.designId || crypto.randomUUID();
+          designIdsToKeep.push(designId);
+
+          const existingD = updatedDesigns.find((d) => d.designId === designId);
+          if (existingD) {
+            Object.assign(existingD, newC, {
+              designId,
+              offers: offers || [],
+            });
+          } else {
+            updatedDesigns.push({
+              ...newC,
+              designId,
+              offers: offers || [],
+            });
+          }
+        });
+
+        const filteredDesigns = updatedDesigns.filter(
+          (d) => !d.designId || designIdsToKeep.includes(d.designId),
+        );
+
         return {
           ...state,
           items: state.items.map((p) =>
-            p.productId === productId
-              ? {
-                  ...p,
-                  designs: [
-                    ...p.designs.filter(
-                      (oldDesign) =>
-                        !configs.some(
-                          (newDesign) =>
-                            newDesign.designId &&
-                            newDesign.designId === oldDesign.designId,
-                        ),
-                    ),
-
-                    ...configs.map((c) => ({
-                      ...c,
-                      offers: offers || [],
-                    })),
-                  ],
-                  offers: [...(p.offers || []), ...offers], // 🔥 ADD THIS
-                }
-              : p,
+            p.productId === productId ? { ...p, designs: filteredDesigns } : p,
           ),
         };
       }
@@ -52,11 +58,11 @@ export const cartReducer = (state = initialState, action) => {
         items: [
           ...state.items,
           {
-            productId: productId,
+            productId,
             name: product.productName || product.name,
             price: product.price,
             image: product.image || product.images?.[0] || "",
-            customizations: product.customizations || [], // 🔥 ADD THIS
+            customizations: product.customizations || [],
             designs: configs.map((c) => ({
               ...c,
               designId: c.designId || crypto.randomUUID(),

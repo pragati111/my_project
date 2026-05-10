@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import Sidebar from "./SideBar";
 import TopHeader from "./TopHeader";
 import BottomBar from "./BottomBar";
@@ -12,6 +12,7 @@ import { useAuth } from "./AuthContext";
 export default function ProductDisplay() {
   const { addToCart } = useCart();
   const { id } = useParams();
+  const location = useLocation();
 
   const [product, setProduct] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -187,7 +188,7 @@ export default function ProductDisplay() {
         const restoredConfigs = existingProduct.designs.map((d) => ({
   ...d.config,
   quantity: d.quantity || 1,
-  designId: d._id,
+  designId: d.designId,
 }));
 
         setConfigs(restoredConfigs.length > 0 ? restoredConfigs : [{}]);
@@ -210,7 +211,7 @@ export default function ProductDisplay() {
     };
 
     hydrateFromCart();
-  }, [product, user?.id, token]);
+  }, [location.key, product, user?.id, token]);
 
   useEffect(() => {
     const attachScroll = () => {
@@ -841,17 +842,26 @@ export default function ProductDisplay() {
                 <button
                   onClick={() => {
                     const formattedConfigs = configs.map((c) => {
+                      const designId = c.designId || crypto.randomUUID();
                       const cleanedConfig = { ...c };
 
                       delete cleanedConfig.quantity;
                       delete cleanedConfig.designId;
 
                       return {
-                        designId: c.designId,
+                        designId,
                         config: cleanedConfig,
                         quantity: c.quantity || 1,
                       };
                     });
+
+                    setConfigs((prev) =>
+                      prev.map((c, index) => ({
+                        ...c,
+                        designId: formattedConfigs[index].designId,
+                      })),
+                    );
+
                     console.log("ADDING TO CART:", {
                       ...product,
                       image: media[0]?.url,
@@ -859,7 +869,7 @@ export default function ProductDisplay() {
                     addToCart(
                       {
                         ...product,
-                        price: product.discountedMRP, // ✅ FIX
+                        price: product.discountedMRP,
                         image: media[0]?.url || "",
                         customizations: product.customizations,
                       },
