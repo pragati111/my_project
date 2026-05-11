@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addToCart,
-  removeFromCart,
-  updateQuantity,
-  clearCart,
+  addToCart as addToCartAction,
+  removeFromCart as removeFromCartAction,
+  updateQuantity as updateQuantityAction,
+  clearCart as clearCartAction,
 } from "./cartActions";
 import axios from "axios";
 import { useAuth } from "../components/AuthContext";
@@ -40,7 +40,7 @@ export const useCart = () => {
     cart: items,
     addToCart: async (product, configs,offers = []) => {
       // 1️⃣ Redux update (instant UI)
-      dispatch(addToCart(product, configs, offers));
+      dispatch(addToCartAction(product, configs, offers));
 
       // 2️⃣ Backend call
       if (!user?.id) return;
@@ -70,7 +70,7 @@ export const useCart = () => {
     },
     removeFromCart: async (productId, designId) => {
       // 1️⃣ Redux update (instant UI)
-      dispatch(removeFromCart(productId, designId));
+      dispatch(removeFromCartAction(productId, designId));
 
       // 2️⃣ Backend call
       if (!user?.id) return;
@@ -95,7 +95,7 @@ export const useCart = () => {
     },
     updateQuantity: async (productId, designId, quantity) => {
       // 1️⃣ Redux update (instant UI)
-      dispatch(updateQuantity(productId, designId, quantity));
+      dispatch(updateQuantityAction(productId, designId, quantity));
 
       // 2️⃣ Backend call
       if (!user?.id) return;
@@ -119,7 +119,7 @@ export const useCart = () => {
         console.error("Backend update failed", err);
       }
     },
-    clearCart: () => dispatch(clearCart()),
+    clearCart: () => dispatch(clearCartAction()),
     getTotalQuantity: () =>
       items.reduce(
         (total, product) =>
