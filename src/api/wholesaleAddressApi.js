@@ -1,0 +1,34 @@
+import axios from "axios";
+
+const API = "https://my-project-backend-ee4t.onrender.com";
+
+const getAuthHeader = (token) => {
+  const bearerToken = token || localStorage.getItem("token") || localStorage.getItem("wholesalerToken");
+  if (!bearerToken) return {};
+  return { Authorization: `Bearer ${bearerToken}` };
+};
+
+export const getWholesaleAddresses = (token) =>
+  axios.get(`${API}/api/wholesalers/wholesale`, {
+    headers: getAuthHeader(token),
+  });
+
+export const addWholesaleAddress = (data, token) =>
+  axios.post(`${API}/api/wholesalers/wholesale`, data, {
+    headers: getAuthHeader(token),
+  });
+
+export const updateWholesaleAddress = (id, data, token) =>
+  axios.put(`${API}/api/wholesalers/${id}`, data, {
+    headers: getAuthHeader(token),
+  });
+
+export const deleteWholesaleAddress = (id, token) =>
+  axios.delete(`${API}/api/wholesalers/${id}`, {
+    headers: getAuthHeader(token),
+  });
+
+export const setDefaultWholesaleAddressApi = (id, token) =>
+  axios.put(`${API}/api/wholesalers/default/${id}`, {}, {
+    headers: getAuthHeader(token),
+  });

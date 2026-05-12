@@ -10,7 +10,7 @@ export default function AuthPage() {
   const [showOtp, setShowOtp] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
 
-  const [wholesalerPhone, setWholesalerPhone] = useState("");
+  const [wholesalerEmail, setWholesalerEmail] = useState("");
   const [wholesalerPin, setWholesalerPin] = useState("");
 
   const navigate = useNavigate();
@@ -39,9 +39,9 @@ export default function AuthPage() {
   const handleWholesalerLogin = async () => {
     try {
       const res = await axios.post(
-        "https://my-project-backend-ee4t.onrender.com/api/wholesaler/login",
+        "https://my-project-backend-ee4t.onrender.com/api/wholesalers/login",
         {
-          phoneNumber: wholesalerPhone,
+          email: wholesalerEmail,
           pin: wholesalerPin,
         },
       );
@@ -91,6 +91,7 @@ export default function AuthPage() {
         login({
           user: res.data.user,
           token: res.data.token,
+          role: "customer",
         });
 
         // ✅ redirect
@@ -247,22 +248,16 @@ export default function AuthPage() {
 
               <div className="mt-8">
                 <label className="text-sm font-medium text-gray-700">
-                  Phone Number
+                  Email Address
                 </label>
 
-                <div className="mt-2 flex items-center border rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 bg-gray-100 border-r text-sm">
-                    +91
-                  </div>
-
-                  <input
-                    type="text"
-                    value={wholesalerPhone}
-                    onChange={(e) => setWholesalerPhone(e.target.value)}
-                    placeholder="Enter phone number"
-                    className="flex-1 px-4 py-3 outline-none"
-                  />
-                </div>
+                <input
+                  type="email"
+                  value={wholesalerEmail}
+                  onChange={(e) => setWholesalerEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full mt-2 border rounded-xl px-4 py-3 outline-none"
+                />
               </div>
 
               <div className="mt-5">

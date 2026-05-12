@@ -3,13 +3,21 @@ import { useAuth } from "./AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../redux/useCart";
+import { useWholesaleCart } from "../redux/useWholesaleCart";
 import SearchComponent from "./SearchComponent";
 
 export default function TopHeader() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuth();
-  const { getTotalQuantity } = useCart();
+  const { user, role, logout } = useAuth();
+  const { getTotalQuantity: getCustomerTotalQuantity } = useCart();
+  const { getTotalQuantity: getWholesaleTotalQuantity } = useWholesaleCart();
+
+  // Choose the correct quantity based on role
+  const getTotalQuantity = () =>
+    role === "wholesaler"
+      ? getWholesaleTotalQuantity()
+      : getCustomerTotalQuantity();
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();

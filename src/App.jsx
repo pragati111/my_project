@@ -5,11 +5,12 @@ import { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 
 const DesktopHome = lazy(() => import("./components/DesktopHome"));
+const ProductRoute = lazy(() => import("./components/ProductRoute"));
+const CartRoute = lazy(() => import("./components/CartRoute"));
 const ProductDisplay = lazy(() => import("./components/ProductDisplay"));
 
 const Home = lazy(() => import("./pages/Home"));
 const Categories = lazy(() => import("./pages/Categories"));
-const Cart = lazy(() => import("./pages/Cart"));
 
 const AuthPage = lazy(() => import("./components/AuthPage"));
 const AccountPage = lazy(() => import("./components/AccountPage"));
@@ -33,11 +34,11 @@ function App() {
         <Routes>
           <Route path="/" element={<DesktopHome />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/product/:id" element={<ProductDisplay />} />
+          <Route path="/product/:id" element={<ProductRoute />} />
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />
           <Route path="/manage-address" element={<ManageAddressPage />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={<CartRoute />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
@@ -55,8 +56,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/product/:id" element={<ProductDisplay />} />
+          <Route path="/cart" element={<CartRoute />} />
+          <Route path="/product/:id" element={<ProductRoute />} />
           <Route path="/auth" element={<AuthPage />} /> {/* ✅ added */}
           <Route path="/account" element={<AccountPage />} />
           <Route path="/manage-address" element={<ManageAddressPage />} />

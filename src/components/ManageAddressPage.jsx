@@ -4,23 +4,34 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import {
-  getAddresses,
-  addAddress,
-  updateAddress,
-  deleteAddress,
-  setDefaultAddressApi,
+  getAddresses as getCustomerAddresses,
+  addAddress as addCustomerAddress,
+  updateAddress as updateCustomerAddress,
+  deleteAddress as deleteCustomerAddress,
+  setDefaultAddressApi as setDefaultCustomerAddressApi,
 } from "../api/addressApi";
+import {
+  getWholesaleAddresses,
+  addWholesaleAddress,
+  updateWholesaleAddress,
+  deleteWholesaleAddress,
+  setDefaultWholesaleAddressApi,
+} from "../api/wholesaleAddressApi";
 
 export default function ManageAddressPage() {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const auth = useAuth();
+  const storedRole = auth.role || localStorage.getItem("role");
+  const token =
+    auth.token ||
+    localStorage.getItem("token") ||
+    localStorage.getItem("wholesalerToken");
+  const isWholesale = storedRole === "wholesaler";
   const [editId, setEditId] = useState(null);
 
   const [addresses, setAddresses] = useState([]);
 
   const [showAdd, setShowAdd] = useState(false);
-
-
 
   const [formData, setFormData] = useState({
     house: "",
@@ -30,7 +41,42 @@ export default function ManageAddressPage() {
     state: "",
     type: "",
     landmark: "",
-    phone:""
+    phone: "",
+  });
+
+  const normalizeWholesaleAddress = (addr) => ({
+    _id: addr._id,
+    label: addr.label || addr.fullName || "Address",
+    type: addr.label || addr.fullName || "Wholesale",
+    street: [addr.addressLine1, addr.addressLine2].filter(Boolean).join(", "),
+    city: addr.city || "",
+    state: addr.state || "",
+    pincode: addr.pincode || "",
+    phone: addr.phone || addr.phoneNumber || "",
+    landmark: addr.landmark || "",
+    isDefault: addr.isDefault,
+  });
+
+  const buildWholesalePayload = () => ({
+    fullName: formData.type || "Address",
+    phoneNumber: formData.phone,
+    pincode: formData.pincode,
+    city: formData.city,
+    state: formData.state,
+    country: "India",
+    addressLine1: formData.house,
+    addressLine2: formData.area,
+    landmark: formData.landmark,
+    isDefault: false,
+  });
+
+  const buildCustomerPayload = () => ({
+    label: formData.type || "Home",
+    street: `${formData.house}, ${formData.area}`,
+    city: formData.city,
+    state: formData.state,
+    pincode: formData.pincode,
+    phone: formData.phone,
   });
 
   // ✅ ADD ADDRESS (FIXED)
@@ -40,25 +86,31 @@ export default function ManageAddressPage() {
       return;
     }
 
-    const payload = {
-      label: formData.type || "Home", // type → label
-      street: `${formData.house}, ${formData.area}`, // combine house + area
-      city: formData.city,
-      state: formData.state,
-      pincode: formData.pincode,
-      phone: formData.phone, // or take from user input later
-    };
-
     try {
       if (editId) {
-        await updateAddress(editId, payload, token);
+        if (isWholesale) {
+          await updateWholesaleAddress(editId, buildWholesalePayload(), token);
+        } else {
+          await updateCustomerAddress(editId, buildCustomerPayload(), token);
+        }
       } else {
-        await addAddress(payload, token);
+        if (isWholesale) {
+          await addWholesaleAddress(buildWholesalePayload(), token);
+        } else {
+          await addCustomerAddress(buildCustomerPayload(), token);
+        }
       }
 
       // 🔥 REFRESH LIST
-      const res = await getAddresses(token);
-      setAddresses(res.data.addresses);
+      const res = isWholesale
+        ? await getWholesaleAddresses(token)
+        : await getCustomerAddresses(token);
+
+      setAddresses(
+        isWholesale
+          ? res.data.addresses.map(normalizeWholesaleAddress)
+          : res.data.addresses,
+      );
 
       setShowAdd(false);
       setEditId(null);
@@ -70,10 +122,21 @@ export default function ManageAddressPage() {
   // DELETE
   const handleDelete = async (id) => {
     try {
-      await deleteAddress(id, token);
+      if (isWholesale) {
+        await deleteWholesaleAddress(id, token);
+      } else {
+        await deleteCustomerAddress(id, token);
+      }
 
-      const res = await getAddresses(token);
-      setAddresses(res.data.addresses);
+      const res = isWholesale
+        ? await getWholesaleAddresses(token)
+        : await getCustomerAddresses(token);
+
+      setAddresses(
+        isWholesale
+          ? res.data.addresses.map(normalizeWholesaleAddress)
+          : res.data.addresses,
+      );
     } catch (err) {
       console.error(err);
     }
@@ -82,10 +145,21 @@ export default function ManageAddressPage() {
   // SET DEFAULT
   const setDefault = async (id) => {
     try {
-      await setDefaultAddressApi(id, token);
+      if (isWholesale) {
+        await setDefaultWholesaleAddressApi(id, token);
+      } else {
+        await setDefaultCustomerAddressApi(id, token);
+      }
 
-      const res = await getAddresses(token);
-      setAddresses(res.data.addresses);
+      const res = isWholesale
+        ? await getWholesaleAddresses(token)
+        : await getCustomerAddresses(token);
+
+      setAddresses(
+        isWholesale
+          ? res.data.addresses.map(normalizeWholesaleAddress)
+          : res.data.addresses,
+      );
     } catch (err) {
       console.error(err);
     }
@@ -94,15 +168,22 @@ export default function ManageAddressPage() {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const res = await getAddresses(token);
-        setAddresses(res.data.addresses || []);
+        const res = isWholesale
+          ? await getWholesaleAddresses(token)
+          : await getCustomerAddresses(token);
+
+        setAddresses(
+          isWholesale
+            ? res.data.addresses.map(normalizeWholesaleAddress)
+            : res.data.addresses,
+        );
       } catch (err) {
         console.error(err);
       }
     };
 
     if (token) fetchAddresses();
-  }, [token]);
+  }, [token, isWholesale]);
 
   return (
     <>
