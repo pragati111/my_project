@@ -3,6 +3,7 @@ import { useAuth } from "../components/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const API = "https://my-project-backend-ee4t.onrender.com";
 
@@ -152,7 +153,18 @@ export default function Orders() {
     <>
       <TopHeader />
 
-      <div className="pt-24 px-4 md:px-10 bg-gray-100 min-h-screen">
+      {!token ? (
+        <div className="pt-24 px-4 md:px-10 bg-gray-100 min-h-screen flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg p-8 text-center max-w-md mx-auto">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-800">My Orders</h2>
+            <p className="text-gray-600 mb-6">Please log in to view and track your orders.</p>
+            <Link to="/auth" className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium">
+              Login to Continue
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="pt-24 px-4 md:px-10 bg-gray-100 min-h-screen">
         <div className="max-w-5xl mx-auto">
           {/* HEADER ROW */}
           <div className="flex items-center justify-between mb-2">
@@ -319,6 +331,7 @@ export default function Orders() {
           )}
         </div>
       </div>
+      )}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-lg rounded-xl p-6 relative">

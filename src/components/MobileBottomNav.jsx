@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Package, ShoppingCart } from "lucide-react";
+import { Home, Package, ClipboardList } from "lucide-react";
 
 export default function MobileBottomNav() {
   const location = useLocation();
@@ -40,17 +40,17 @@ export default function MobileBottomNav() {
         </span>
       </Link>
 
-      {/* CART */}
-      <Link to="/cart" className={baseStyle}>
-        <ShoppingCart
+      {/* ORDERS */}
+      <Link to="/orders" className={baseStyle}>
+        <ClipboardList
           size={18}
           className={`mb-[2px] transition-all ${
-            isActive("/cart") ? "text-[#1e3a8a]" : "text-gray-600"
+            isActive("/orders") ? "text-[#1e3a8a]" : "text-gray-600"
           }`}
-          fill={isActive("/cart") ? "currentColor" : "none"}
+          fill={isActive("/orders") ? "currentColor" : "none"}
         />
-        <span className={isActive("/cart") ? "text-[#1e3a8a]" : "text-gray-600"}>
-          Cart
+        <span className={isActive("/orders") ? "text-[#1e3a8a]" : "text-gray-600"}>
+          My Orders
         </span>
       </Link>
     </div>
