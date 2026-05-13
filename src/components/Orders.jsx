@@ -477,7 +477,7 @@ export default function Orders() {
                       <span className="text-gray-500">Quantity:</span>{" "}
                       <span className="font-medium">{d.quantity}</span>
                     </p>
-                    {Object.entries(d.config)
+                    {d.config && Object.entries(d.config)
                       .filter(([key]) => key !== "quantity") // ❌ remove inner quantity
                       .map(([key, val]) => {
                         // 👉 IMAGE CASE
