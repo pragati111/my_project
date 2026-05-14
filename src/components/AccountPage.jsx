@@ -14,7 +14,7 @@ import { useState } from "react";
 import FAQPage from "./FAQPage";
 
 export default function AccountPage() {
-  const { user, logout } = useAuth();
+  const { user, role, logout } = useAuth();
   const navigate = useNavigate();
   const [showFAQ, setShowFAQ] = useState(false);
 
@@ -48,7 +48,10 @@ export default function AccountPage() {
           <h3 className="text-sm text-gray-500 mb-4">QUICK ACTIONS</h3>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div onClick={() => navigate("/orders")} className="group cursor-pointer">
+            <div
+            onClick={() => navigate(role === "wholesaler" ? "/wholesale-orders" : "/orders")}
+            className="group cursor-pointer"
+          >
               <div className="mx-auto w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition">
                 <ShoppingBag size={22} />
               </div>

@@ -1,10 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Package, ClipboardList } from "lucide-react";
+import { useAuth } from "../components/AuthContext";
 
 export default function MobileBottomNav() {
   const location = useLocation();
+  const { role } = useAuth();
 
   const isActive = (path) => location.pathname === path;
+  const ordersPath = role === "wholesaler" ? "/wholesale-orders" : "/orders";
+  const isOrdersActive = location.pathname === ordersPath;
 
   const baseStyle =
     "flex flex-col items-center justify-center text-[10px] transition-all duration-200";
@@ -41,15 +45,15 @@ export default function MobileBottomNav() {
       </Link>
 
       {/* ORDERS */}
-      <Link to="/orders" className={baseStyle}>
+      <Link to={ordersPath} className={baseStyle}>
         <ClipboardList
           size={18}
           className={`mb-[2px] transition-all ${
-            isActive("/orders") ? "text-[#1e3a8a]" : "text-gray-600"
+            isOrdersActive ? "text-[#1e3a8a]" : "text-gray-600"
           }`}
-          fill={isActive("/orders") ? "currentColor" : "none"}
+          fill={isOrdersActive ? "currentColor" : "none"}
         />
-        <span className={isActive("/orders") ? "text-[#1e3a8a]" : "text-gray-600"}>
+        <span className={isOrdersActive ? "text-[#1e3a8a]" : "text-gray-600"}>
           My Orders
         </span>
       </Link>

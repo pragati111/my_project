@@ -62,7 +62,7 @@ export default function WholesaleCart() {
       const address = addresses.find((addr) => addr.isDefault) || addresses[0];
       console.log("WHOLESALE ORDER PAYLOAD:", items);
       const res = await axios.post(
-        `${API}/api/order/create`,
+        `${API}/api/order/wholesale/create`,
         {
           items,
           shippingAddress: {
@@ -89,7 +89,7 @@ export default function WholesaleCart() {
   };
   const createRazorpayOrder = async (orderId) => {
     const res = await axios.post(
-      `${API}/api/payment/create-order`,
+      `${API}/api/payment/wholesale/create-order`,
       { orderId },
       {
         headers: {
@@ -104,7 +104,7 @@ export default function WholesaleCart() {
   const verifyPayment = async (response, orderId) => {
     try {
       await axios.post(
-        `${API}/api/payment/verify`,
+        `${API}/api/order/wholesale/verify-payment`,
         {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
@@ -119,7 +119,7 @@ export default function WholesaleCart() {
       );
 
       alert("✅ Wholesale Order Payment Successful");
-      navigate("/orders");
+      navigate("/wholesale-orders");
     } catch (err) {
       console.error(err);
       alert("❌ Payment Failed");
@@ -503,7 +503,7 @@ export default function WholesaleCart() {
 
                   if (paymentMethod === "COD") {
                     alert("✅ Wholesale Order placed successfully (COD)");
-                    navigate("/orders");
+                    navigate("/wholesale-orders");
                     return;
                   }
 

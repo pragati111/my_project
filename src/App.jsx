@@ -18,6 +18,7 @@ const ManageAddressPage = lazy(() => import("./components/ManageAddressPage"));
 const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
 const SubcategoryDisplay = lazy(() => import("./components/SubcategoryDisplay"));
 const Orders = lazy(() => import("./components/Orders"));
+const WholesaleOrders = lazy(() => import("./components/WholesaleOrders"));
 const FAQPage = lazy(() => import("./components/FAQPage"));
 const AboutUs = lazy(() => import("./components/AboutUs"));
 const ContactUs = lazy(() => import("./components/ContactUs"));
@@ -42,6 +43,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/wholesale-orders" element={<WholesaleOrders />} />
           <Route path="/faqs" element={<FAQPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
@@ -64,6 +66,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/subcategory/:subCategoryName" element={<SubcategoryDisplay />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/wholesale-orders" element={<WholesaleOrders />} />
           <Route path="/faqs" element={<FAQPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
