@@ -1036,12 +1036,12 @@ export default function ProductDisplay() {
                     setSavedCartConfigs(formattedConfigs);
                     setHasUnsavedChanges(false);
                   }}
-                  className="bg-black text-white px-6 py-3 w-full"
+                  className="bg-black text-white py-3 flex-1 rounded-lg min-w-0"
                 >
                   {isAlreadyInCart ? "Update Cart" : "Add to Cart"}
                 </button>
 
-          <button className="bg-green-500 text-white py-3 flex-1 rounded">
+          <button className="bg-green-500 text-white py-3 flex-1 rounded-lg min-w-0">
             Buy Now
           </button>
         </div>
