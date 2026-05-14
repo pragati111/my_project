@@ -888,38 +888,50 @@ export default function WholesaleProductDisplay() {
       <div className=" lg:hidden fixed bottom-[64px] left-0 right-0 bg-white border-t p-3 z-50">
         <div className="flex gap-3">
           <button
-            onClick={() => {
-              const formattedConfigs = configs.map((c) => {
-                const cleanedConfig = { ...c };
+                  onClick={() => {
+                    const formattedConfigs = configs.map((c) => {
+                      const designId = c.designId || crypto.randomUUID();
+                      const cleanedConfig = { ...c };
 
-                delete cleanedConfig.quantity;
-                delete cleanedConfig.designId;
+                      delete cleanedConfig.quantity;
+                      delete cleanedConfig.designId;
 
-                return {
-                  designId: c.designId,
-                  config: cleanedConfig,
-                  quantity: c.quantity || 1,
-                };
-              });
-              console.log("ADDING TO WHOLESALE CART:", {
-                ...product,
-                image: media[0]?.url,
-              });
-              addToWholesaleCart(
-                {
-                  ...product,
-                  price: getBasePrice(),
-                  image: media[0]?.url || "",
-                  customizations: product.customizations,
-                },
-                formattedConfigs,
-                appliedOffers,
-              );
-            }}
-            className="bg-black text-white py-3 flex-1 rounded"
-          >
-            Add to Cart
-          </button>
+                      return {
+                        designId,
+                        config: cleanedConfig,
+                        quantity: c.quantity || 1,
+                      };
+                    });
+
+                    setConfigs((prev) =>
+                      prev.map((c, index) => ({
+                        ...c,
+                        designId: formattedConfigs[index].designId,
+                      })),
+                    );
+
+                    console.log("ADDING TO WHOLESALE CART:", {
+                      ...product,
+                      image: media[0]?.url,
+                    });
+                    addToWholesaleCart(
+                      {
+                        ...product,
+                        price: getBasePrice(),
+                        image: media[0]?.url || "",
+                        customizations: product.customizations,
+                      },
+                      formattedConfigs,
+                      appliedOffers,
+                    );
+
+                    setSavedCartConfigs(formattedConfigs);
+                    setHasUnsavedChanges(false);
+                  }}
+                  className="bg-black text-white px-6 py-3 w-full"
+                >
+                  {isAlreadyInCart ? "Update Cart" : "Add to Cart"}
+                </button>
 
           <button className="bg-green-500 text-white py-3 flex-1 rounded">
             Buy Now
