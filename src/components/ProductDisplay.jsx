@@ -42,6 +42,57 @@ export default function ProductDisplay() {
     }
   };
 
+  const isFieldComplete = (config, field) => {
+    const value = config[field.label];
+
+    if (field.type === "checkbox") {
+      return Array.isArray(value) && value.length > 0;
+    }
+
+    if (field.type === "file") {
+      const selectedOption = Object.values(config).find(
+        (val) => val === "Double Sided" || val === "Single Sided",
+      );
+
+      if (selectedOption === "Single Sided") {
+        return Boolean(value);
+      }
+
+      if (selectedOption === "Double Sided") {
+        return Boolean(config[`${field.label}_front`]) &&
+          Boolean(config[`${field.label}_back`]);
+      }
+
+      return Boolean(value);
+    }
+
+    return value !== undefined && value !== null && value !== "";
+  };
+
+  const isConfigComplete = (config) => {
+    if (!product?.customizations?.length) return true;
+    return product.customizations.every((field) =>
+      isFieldComplete(config, field),
+    );
+  };
+
+  const isFormComplete = () => configs.every((config) => isConfigComplete(config));
+
+  const formatConfigs = () =>
+    configs.map((c) => {
+      const designId = c.designId || crypto.randomUUID();
+      const cleanedConfig = { ...c };
+
+      delete cleanedConfig.quantity;
+      delete cleanedConfig.designId;
+
+      return {
+        designId,
+        config: cleanedConfig,
+        quantity: c.quantity || 1,
+      };
+    });
+
   const handleApplyOffer = (offer) => {
     // already applied
     if (appliedOffers.find((o) => o._id === offer._id)) return;
@@ -368,6 +419,8 @@ export default function ProductDisplay() {
   const handlePrev = () =>
     setActiveIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
 
+  const canSubmit = isFormComplete();
+
   return (
     <div>
       <TopHeader />
@@ -632,8 +685,17 @@ export default function ProductDisplay() {
 
                       {product.customizations?.map((field) => (
                         <div key={field.id}>
-                          <label className="block text-sm mb-1">
+                          <label
+                            className={`block text-sm mb-1 ${
+                              !isFieldComplete(config, field)
+                                ? "text-red-500"
+                                : ""
+                            }`}
+                          >
                             {field.label}
+                            {!isFieldComplete(config, field) && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
                           </label>
 
                           {/* TEXT */}
@@ -882,19 +944,7 @@ export default function ProductDisplay() {
               <div className="hidden lg:flex gap-4 pt-4">
                 <button
                   onClick={() => {
-                    const formattedConfigs = configs.map((c) => {
-                      const designId = c.designId || crypto.randomUUID();
-                      const cleanedConfig = { ...c };
-
-                      delete cleanedConfig.quantity;
-                      delete cleanedConfig.designId;
-
-                      return {
-                        designId,
-                        config: cleanedConfig,
-                        quantity: c.quantity || 1,
-                      };
-                    });
+                    const formattedConfigs = formatConfigs();
 
                     setConfigs((prev) =>
                       prev.map((c, index) => ({
@@ -921,15 +971,24 @@ export default function ProductDisplay() {
                     setSavedCartConfigs(formattedConfigs);
                     setHasUnsavedChanges(false);
                   }}
-                  className="bg-black text-white px-6 py-3 w-full"
+                  disabled={!canSubmit}
+                  className="bg-black text-white px-6 py-3 w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isAlreadyInCart ? "Update Cart" : "Add to Cart"}
                 </button>
 
-                <button className="bg-green-500 text-white px-6 py-3 w-full">
+                <button
+                  className="bg-green-500 text-white px-6 py-3 w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  disabled={!canSubmit}
+                >
                   Buy Now
                 </button>
               </div>
+              {!canSubmit && (
+                <p className="text-sm text-red-600 pt-2">
+                  Complete all required customization fields before continuing.
+                </p>
+              )}
             </div>
           </div>
           {/* PRODUCT SPECIFICATIONS */}
@@ -996,55 +1055,52 @@ export default function ProductDisplay() {
       <div className=" lg:hidden fixed bottom-[64px] left-0 right-0 bg-white border-t p-3 z-50">
         <div className="flex gap-3">
           <button
-                  onClick={() => {
-                    const formattedConfigs = configs.map((c) => {
-                      const designId = c.designId || crypto.randomUUID();
-                      const cleanedConfig = { ...c };
+            onClick={() => {
+              const formattedConfigs = formatConfigs();
 
-                      delete cleanedConfig.quantity;
-                      delete cleanedConfig.designId;
+              setConfigs((prev) =>
+                prev.map((c, index) => ({
+                  ...c,
+                  designId: formattedConfigs[index].designId,
+                })),
+              );
 
-                      return {
-                        designId,
-                        config: cleanedConfig,
-                        quantity: c.quantity || 1,
-                      };
-                    });
+              console.log("ADDING TO CART:", {
+                ...product,
+                image: media[0]?.url,
+              });
+              addToCart(
+                {
+                  ...product,
+                  price: product.discountedMRP,
+                  image: media[0]?.url || "",
+                  customizations: product.customizations,
+                },
+                formattedConfigs,
+                appliedOffers,
+              );
 
-                    setConfigs((prev) =>
-                      prev.map((c, index) => ({
-                        ...c,
-                        designId: formattedConfigs[index].designId,
-                      })),
-                    );
+              setSavedCartConfigs(formattedConfigs);
+              setHasUnsavedChanges(false);
+            }}
+            disabled={!canSubmit}
+            className="bg-black text-white py-3 flex-1 rounded-lg min-w-0 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            {isAlreadyInCart ? "Update Cart" : "Add to Cart"}
+          </button>
 
-                    console.log("ADDING TO CART:", {
-                      ...product,
-                      image: media[0]?.url,
-                    });
-                    addToCart(
-                      {
-                        ...product,
-                        price: product.discountedMRP,
-                        image: media[0]?.url || "",
-                        customizations: product.customizations,
-                      },
-                      formattedConfigs,
-                      appliedOffers,
-                    );
-
-                    setSavedCartConfigs(formattedConfigs);
-                    setHasUnsavedChanges(false);
-                  }}
-                  className="bg-black text-white py-3 flex-1 rounded-lg min-w-0"
-                >
-                  {isAlreadyInCart ? "Update Cart" : "Add to Cart"}
-                </button>
-
-          <button className="bg-green-500 text-white py-3 flex-1 rounded-lg min-w-0">
+          <button
+            className="bg-green-500 text-white py-3 flex-1 rounded-lg min-w-0 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            disabled={!canSubmit}
+          >
             Buy Now
           </button>
         </div>
+        {!canSubmit && (
+          <p className="text-sm text-red-600 pt-2">
+            Complete all required customization fields before continuing.
+          </p>
+        )}
       </div>
       {showAllOffers && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-end lg:items-center justify-center">
