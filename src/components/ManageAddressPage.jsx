@@ -260,7 +260,7 @@ export default function ManageAddressPage() {
                           state: addr.state || "",
                           pincode: addr.pincode || "",
                           type: addr.label || "",
-                          landmark: "",
+                          landmark: addr.landmark || "",
                           phone: addr.phone || "",
                         });
 

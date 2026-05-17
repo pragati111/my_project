@@ -223,7 +223,7 @@ export default function WholesaleCart() {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const res = await axios.get(`${API}/api/wholesalers/wholesale`, {
+        const res = await axios.get(`${API}/api/wholesalers/address`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
